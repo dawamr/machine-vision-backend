@@ -48,7 +48,7 @@ module.exports = {
           .then(parameter_categories => {
             if (!parameter_categories) {
               return res.status(400).send({
-                message: 'Todo Not Found',
+                message: 'Parameter Category Not Found',
               });
             }
             return parameter_categories
