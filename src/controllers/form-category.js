@@ -8,8 +8,8 @@ module.exports = {
     list(req, res) {
         let orderBy = 'createdAt'
         let sortBy = 'Asc'
-        let limits = 1
-        let offset  = 1
+        let limits = 10
+        let offset  = 0
         if(req.query.order_by != undefined){
             orderBy = req.query.order_by
         }

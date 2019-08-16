@@ -1,4 +1,6 @@
-const formCategoryController = require('../controllers').from_category;
+const formCategoryController = require('../controllers').form_category;
+const formSubCategoryController = require('../controllers').form_sub_category;
+// console.log(Object.keys(require('../controllers')));
 module.exports = (app) => {
   
   // Setup Router
@@ -17,9 +19,10 @@ module.exports = (app) => {
 
 
   // (Form Builder) Sub Category
-  // app.post('/api/category/sub', formCategoryController.create)
-  // app.get('/api/category/sub', formCategoryController.list)
-  // app.put('/api/category/sub/:id', formCategoryController.update)
-  // app.delete('/api/category/sub/:id', formCategoryController.delete)
+  app.post('/api/rate/sub', formSubCategoryController.create)
+  app.get('/api/rate/sub', formSubCategoryController.list)
+  app.put('/api/rate/sub/:id', formSubCategoryController.update)
+  app.delete('/api/rate/sub/:id', formSubCategoryController.delete)
+  app.post('/api/rate/sub/search', formSubCategoryController.search)
   
 }

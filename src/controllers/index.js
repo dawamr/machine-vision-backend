@@ -1,5 +1,7 @@
-const from_category = require('./form-category');
+const form_category = require('./form-category');
+const form_sub_category = require('./form-sub-category');
 
 module.exports = {
-  from_category,
+  form_category,
+  form_sub_category,
 };
