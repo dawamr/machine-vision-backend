@@ -7,12 +7,13 @@ module.exports = (app) => {
   }));
 
   // (Form Builder) Category 
-  app.post('/api/category', formCategoryController.create)
-  app.get('/api/category', formCategoryController.list)
-  app.put('/api/category/:id', formCategoryController.update)
-  app.delete('/api/category/:id', formCategoryController.delete)
-  // app.patch('/api/category/:id', formCategoryController.restore)
-  // app.get('/api/category/:name', formCategoryController.search)
+  app.post('/api/rate', formCategoryController.create)
+  app.get('/api/rate', formCategoryController.listAll)
+  app.get('/api/rate/:limit', formCategoryController.listLimit)
+  app.put('/api/rate/:id', formCategoryController.update)
+  app.delete('/api/rate/:id', formCategoryController.delete)
+  app.post('/api/rate/search', formCategoryController.search)
+  // app.patch('/api/rate/:id', formCategoryController.restore)
 
 
   // (Form Builder) Sub Category
