@@ -1,13 +1,12 @@
-var Sequelize = require('sequelize');
 const FormCategory = require('./../models/').form_category;
-const Op = Sequelize.Op;
+
 // console.log(Object.keys(require('../models')));
 
 module.exports = {
     list(req, res) {
         return FormCategory
         .findAll({
-        include: [],
+        // include: 'sub_category',
         order: [
             ['createdAt', 'DESC'],
             ],
@@ -42,6 +41,37 @@ module.exports = {
         .catch(error => res.status(400).send(error));
     },
 
+    delete(req,res){
+        return FormCategory
+        .findOne({
+            where: {
+                id : req.params.id
+            },
+        })
+        .then((FormCategory)=>{
+            return FormCategory.destroy()
+        })
+        .then(Category => res.status(201).send(Category))
+        .catch(error => res.status(400).send(error));
+    },
+
+    //stuck deleteAt not visible
+    // restore(req,res){
+    //     return FormCategory
+    //     .findOne({
+    //         where: {
+    //             id : req.params.id
+    //         },
+    //     })
+    //     .then((FormCategory)=>{
+    //         console.log(FormCategory)
+    //         // return FormCategory.restore()
+    //     })
+    //     .then(Category => res.status(201).send(Category))
+    //     .catch(error => res.status(400).send(error));
+    // },
+
+    //Op is not defined
     // search(req,res){
     //     return FormCategory
     //     .findOne({
