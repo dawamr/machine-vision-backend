@@ -4,26 +4,31 @@ const FormCategory = require('./../models/').form_category;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
 module.exports = {
-
-    listAll(req, res) {
+    
+    list(req, res) {
+        let orderBy = 'createdAt'
+        let sortBy = 'Asc'
+        let limits = 1
+        let offset  = 1
+        if(req.query.order_by != undefined){
+            orderBy = req.query.order_by
+        }
+        if(req.query.sort_by != undefined){
+            sortBy = req.query.sort_by
+        }
+        if(req.query.limit != undefined){
+            limits = req.query.limit
+        }
+        if(req.query.offset != undefined){
+            offset = req.query.offset
+        }
         return FormCategory
         .findAll({
-        // include: 'sub_category',
         order: [
-            ['createdAt', 'DESC'],
-            ],
-        })
-        .then(list => res.status(200).send(list))
-        .catch(error => res.status(400).send(error));
-    },
-
-    listLimit(req, res) {
-        return FormCategory
-        .findAll({
-        limit: req.params.limit,
-        order: [
-            ['createdAt', 'DESC'],
-            ],
+            [orderBy, sortBy]
+        ],
+        limit: limits,
+        offset :offset
         })
         .then(list => res.status(200).send(list))
         .catch(error => res.status(400).send(error));
@@ -89,6 +94,9 @@ module.exports = {
         console.log(req.body.name)
         return FormCategory
         .findAll({
+            order: [
+                ['name', 'Asc']
+            ],
             where: {
                 name : {
                     [Op.like] : '%'+req.body.name+'%'

@@ -8,11 +8,11 @@ module.exports = (app) => {
 
   // (Form Builder) Category 
   app.post('/api/rate', formCategoryController.create)
-  app.get('/api/rate', formCategoryController.listAll)
-  app.get('/api/rate/:limit', formCategoryController.listLimit)
+  app.get('/api/rate', formCategoryController.list)
   app.put('/api/rate/:id', formCategoryController.update)
   app.delete('/api/rate/:id', formCategoryController.delete)
   app.post('/api/rate/search', formCategoryController.search)
+
   // app.patch('/api/rate/:id', formCategoryController.restore)
 
 
