@@ -1,12 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const FormForm = sequelize.define('form_form', {
-    id:{
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV1,
-      primaryKey: true
-    },
-    sub_category_id: DataTypes.UUID,
+    sub_category_id: DataTypes.INTEGER,
     name: DataTypes.STRING,
     types:{
       type : DataTypes.ENUM,

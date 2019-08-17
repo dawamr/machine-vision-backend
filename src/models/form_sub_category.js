@@ -1,12 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const FormSubCategory = sequelize.define('form_sub_category', {
-    id:{
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV1,
-      primaryKey: true
-    },
-    form_category_id: DataTypes.UUID,
+    form_category_id: DataTypes.INTEGER,
     name: DataTypes.STRING
   }, {
     paranoid: true

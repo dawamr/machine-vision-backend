@@ -4,12 +4,13 @@ module.exports = {
     return queryInterface.createTable('form_sub_categories', {
       id: {
         allowNull: false,
+        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.UUID,
-        defaultValue :Sequelize.UUIDV1
+        type: Sequelize.INTEGER
       },
       form_category_id: {
-        type: Sequelize.UUID,
+        type: Sequelize.INTEGER,
+        allowNull: false,
         references :{
           model: 'form_categories',
           key: 'id'

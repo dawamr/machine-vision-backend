@@ -85,17 +85,16 @@ module.exports = {
     },
 
     delete(req,res){
-        return FormSubCategory
-        .findOne({
-            where: {
-                id : req.params.id
-            },
-        })
-        .then((FormSubCategory)=>{
-            return FormSubCategory.destroy()
-        })
-        .then(destroy => res.status(201).send(destroy))
-        .catch(error => res.status(400).send(error));
+        const deleteThis= FormSubCategory.destroy({ where: {
+            id: req.params.id
+        }})
+        if (deleteThis) {
+            res.json({
+                'status': 'OK',
+                'messages': 'User berhasil dihapus',
+                'data': deleteThis,
+            })
+        }
     },
 
     search(req,res){
