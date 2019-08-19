@@ -1,0 +1,25 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "postgres",
+    "database": "mavis",
+    "host": "127.0.0.1",
+    "port": "5433",
+    "dialect": "postgres"
+    
+  },
+  "test": {
+    "username": "postgres",
+    "database": "mavis",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "operatorsAliases": false
+  },
+  "production": {
+    "username": "postgres",
+    "database": "mavis",
+    "host": "127.0.0.1",
+    "dialect": "postgres",
+    "operatorsAliases": false
+  }
+}
