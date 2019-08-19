@@ -42,7 +42,7 @@ module.exports = {
         limit: limits,
         offset :offset
         })
-        .then(list => res.status(200).send(list))
+        .then(data => res.status(200).send(data))
         .catch(error => res.status(400).send(error));
     },
 
@@ -52,7 +52,7 @@ module.exports = {
           name: req.body.name,
           form_category_id: req.body.category_id,
         })
-        .then(create => res.status(201).send(create))
+        .then(data => res.status(201).send(data))
         .catch(error => res.status(400).send(error));
     },
 
@@ -70,7 +70,7 @@ module.exports = {
                 updatedAt :new Date(),
             })
         })
-        .then(update => res.status(201).send(update))
+        .then(data => res.status(201).send(data))
         .catch(error => res.status(400).send(error));
     },
 
@@ -101,7 +101,7 @@ module.exports = {
                 ['name', 'Asc']
             ],
         })
-        .then(search => res.status(201).send(search))
+        .then(data => res.status(201).send(data))
         .catch(error => res.status(400).send(error));
     },
 

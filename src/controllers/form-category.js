@@ -1,6 +1,6 @@
 const FormCategory = require('./../models/').form_category;
 
-// console.log(Object.keys(require('../models')));
+console.log(Object.keys(require('../models')));
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
 module.exports = {
@@ -30,7 +30,7 @@ module.exports = {
         limit: limits,
         offset :offset
         })
-        .then(list => res.status(200).send(list))
+        .then(data => res.status(200).send(data))
         .catch(error => res.status(400).send(error));
     },
 
@@ -39,7 +39,7 @@ module.exports = {
         .create({
           name: req.body.name,
         })
-        .then(Category => res.status(201).send(Category))
+        .then(data => res.status(201).send(data))
         .catch(error => res.status(400).send(error));
     },
 
@@ -56,7 +56,7 @@ module.exports = {
                 updatedAt :new Date(),
             })
         })
-        .then(Category => res.status(201).send(Category))
+        .then(data => res.status(201).send(data))
         .catch(error => res.status(400).send(error));
     },
 
@@ -70,7 +70,7 @@ module.exports = {
         .then((FormCategory)=>{
             return FormCategory.destroy()
         })
-        .then(Category => res.status(201).send(Category))
+        .then(data => res.status(201).send(data))
         .catch(error => res.status(400).send(error));
     },
 
@@ -103,7 +103,7 @@ module.exports = {
                 }
             },
         })
-        .then(search => res.status(201).send(search))
+        .then(data => res.status(201).send(data))
         .catch(error => res.status(400).send(error));
     }
     
