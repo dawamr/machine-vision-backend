@@ -1,6 +1,6 @@
 const FormCategory = require('./../models/').form_category;
 
-console.log(Object.keys(require('../models')));
+// console.log(Object.keys(require('../models')));
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
 module.exports = {

@@ -1,13 +1,17 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const form_field = sequelize.define('form_field', {
+  const FormField = sequelize.define('form_field', {
+    form_id: DataTypes.INTEGER,
     types: DataTypes.STRING,
-    congfigurate: DataTypes.JSON,
+    configuration: DataTypes.JSON,
     is_required: DataTypes.BOOLEAN,
     order: DataTypes.INTEGER
-  }, {});
-  form_field.associate = function(models) {
+  }, {
+    paranoid: true
+  });
+  FormField.associate = function(models) {
     // associations can be defined here
+    FormField.belongsTo(models.form_form, {foreignKey: "form_field_id", as: 'form_field'})
   };
-  return form_field;
+  return FormField;
 };

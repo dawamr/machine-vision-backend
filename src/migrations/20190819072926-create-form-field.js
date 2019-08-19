@@ -8,10 +8,18 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      form_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references :{
+          model: 'form_forms',
+          key: 'id'
+        }
+      },
       types: {
         type: Sequelize.STRING
       },
-      congfigurate: {
+      configuration: {
         type: Sequelize.JSON
       },
       is_required: {
