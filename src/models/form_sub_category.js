@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
   FormSubCategory.associate = function(models) {
     // associations can be defined here
     FormSubCategory.belongsTo(models.form_category, {foreignKey: 'form_category_id', as: 'category'})
-    // FormSubCategory.hasMany(models.form_form, {as: 'form'})
+    FormSubCategory.hasMany(models.form_form, {as: 'form'})
   };
   return FormSubCategory;
 };

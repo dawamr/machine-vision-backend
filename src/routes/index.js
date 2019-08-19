@@ -1,5 +1,6 @@
 const formCategoryController = require('../controllers').form_category;
 const formSubCategoryController = require('../controllers').form_sub_category;
+const formFormController = require('../controllers').form_form;
 // console.log(Object.keys(require('../controllers')));
 module.exports = (app) => {
   
@@ -13,7 +14,7 @@ module.exports = (app) => {
   app.get('/api/rate', formCategoryController.list)
   app.put('/api/rate/:id', formCategoryController.update)
   app.delete('/api/rate/:id', formCategoryController.delete)
-  app.post('/api/rate/search', formCategoryController.search)
+  app.get('/api/rate/search', formCategoryController.search)
 
   // app.patch('/api/rate/:id', formCategoryController.restore)
 
@@ -23,6 +24,13 @@ module.exports = (app) => {
   app.get('/api/rate/sub', formSubCategoryController.list)
   app.put('/api/rate/sub/:id', formSubCategoryController.update)
   app.delete('/api/rate/sub/:id', formSubCategoryController.delete)
-  app.post('/api/rate/sub/search', formSubCategoryController.search)
+  app.get('/api/rate/sub/search', formSubCategoryController.search)
+
+  // (Form Builder) Form
+  app.post('/api/form', formFormController.create)
+  app.get('/api/form', formFormController.list)
+  app.put('/api/form/:id', formFormController.update)
+  app.delete('/api/form/:id', formFormController.delete)
+  app.get('/api/form/search', formFormController.search)
   
 }

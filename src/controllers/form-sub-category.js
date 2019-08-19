@@ -9,7 +9,6 @@ module.exports = {
         let sortBy = 'Asc'
         let limits = 10
         let offset  = 0
-        let filter = ''
         if(req.query.order_by != undefined){ 
             orderBy = req.query.order_by
         }
@@ -22,33 +21,24 @@ module.exports = {
         if(req.query.offset != undefined){
             offset = req.query.offset
         }
+        var cat = {
+            model: FormCategory,
+            as: 'category',
+            attributes : ['id','name','createdAt','updatedAt'],
+        }
         if(req.query.filter != undefined){
-            filter = req.query.filter
-            return FormSubCategory
-            .findAll({
-                include: [{
-                    model: FormCategory,
-                    as: 'category',
-                    where: { name: filter }
-                }],
-                attributes : ['id','form_category_id' ,'name','createdAt','updatedAt'],
-                order: [
-                    [orderBy, sortBy]
-                ],
-                limit: limits,
-                offset :offset
-                })
-                .then(list => res.status(200).send(list))
-                .catch(error => res.status(400).send(error));
+            cat.where = {
+                'id': req.query.filter
+            }
         }
         
         return FormSubCategory
         .findAll({
-        include: 'category',
+        include: [cat],
         attributes : ['id','form_category_id' ,'name','createdAt','updatedAt'],
         order: [
             [orderBy, sortBy]
-        ],
+        ],  
         limit: limits,
         offset :offset
         })

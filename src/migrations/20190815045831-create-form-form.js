@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       types: {
-        type: Sequelize.ENUM(['widget', 'non-widget'])
+        type: Sequelize.STRING
       },
       is_template: {
         type: Sequelize.BOOLEAN,

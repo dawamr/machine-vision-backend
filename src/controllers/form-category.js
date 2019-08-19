@@ -91,7 +91,7 @@ module.exports = {
     // },
 
     search(req,res){
-        console.log(req.body.name)
+        console.log(req.query.name)
         return FormCategory
         .findAll({
             order: [
@@ -99,7 +99,7 @@ module.exports = {
             ],
             where: {
                 name : {
-                    [Op.like] : '%'+req.body.name+'%'
+                    [Op.like] : '%'+req.query.name+'%'
                 }
             },
         })
