@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   process.associate = function(models) {
     process.belongsTo(models.process_machine, {
-      foreignKey: 'process_id'
+      foreignKey: 'process_machine_id'
     });
   };
   return process;

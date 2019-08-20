@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   });
   sector.associate = function(models) {
-    line.belongsTo(models.line, {
+    sector.belongsTo(models.line, {
       foreignKey: 'line_id'
     });
   };

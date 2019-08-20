@@ -12,10 +12,10 @@ module.exports = (sequelize, DataTypes) => {
   });
   process_machine.associate = function(models) {
     process_machine.hasMany(models.process, {
-      foreignKey: 'id'
+      foreignKey: 'process_id'
     });
     process_machine.hasMany(models.machine, {
-      foreignKey: 'id'
+      foreignKey: 'machine_id'
     });
   };
   return process_machine;

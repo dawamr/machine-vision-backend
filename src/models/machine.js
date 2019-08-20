@@ -23,10 +23,10 @@ module.exports = (sequelize, DataTypes) => {
   });
   machine.associate = function(models) {
     machine.belongsTo(models.data_sensor, {
-      foreignKey: 'machine_id'
+      foreignKey: 'data_sensor_id'
     });
     machine.belongsTo(models.process_machine, {
-      foreignKey: 'machine_id'
+      foreignKey: 'process_machine_id'
     });
   };
   return machine;
