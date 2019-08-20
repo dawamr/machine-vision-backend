@@ -2,6 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   const plant = sequelize.define('plant', {
     factory_name: DataTypes.STRING,
+    location: DataTypes.STRING,
     latitude: DataTypes.STRING,
     longitude: DataTypes.STRING,
     logo: DataTypes.STRING,

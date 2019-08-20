@@ -1,48 +1,51 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('plants', {
+    return queryInterface.createTable('machines', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      factory_name: {
+      name: {
         type: Sequelize.STRING
       },
-      location: {
+      code: {
         type: Sequelize.STRING
       },
-      latitude: {
+      manufacturer: {
         type: Sequelize.STRING
       },
-      longitude: {
+      build_year: {
         type: Sequelize.STRING
       },
-      logo: {
+      asset_number: {
         type: Sequelize.STRING
       },
-      total_sector: {
+      cycle_time: {
+        type: Sequelize.STRING
+      },
+      delta_t_tg: {
+        type: Sequelize.STRING
+      },
+      delta_t_tr: {
+        type: Sequelize.STRING
+      },
+      delta_t_gr: {
+        type: Sequelize.STRING
+      },
+      sensor_total_status: {
+        type: Sequelize.BOOLEAN
+      },
+      sensor_reject_status: {
+        type: Sequelize.BOOLEAN
+      },
+      sensor_good_status: {
+        type: Sequelize.BOOLEAN
+      },
+      order: {
         type: Sequelize.INTEGER
-      },
-      total_line: {
-        type: Sequelize.INTEGER
-      },
-      total_team: {
-        type: Sequelize.INTEGER
-      },
-      manufacturing_department: {
-        type: Sequelize.BOOLEAN
-      },
-      engineering_department: {
-        type: Sequelize.BOOLEAN
-      },
-      qc_department: {
-        type: Sequelize.BOOLEAN
-      },
-      warehouse_department: {
-        type: Sequelize.BOOLEAN
       },
       deleted_at: {
         type: Sequelize.DATE
@@ -56,10 +59,10 @@ module.exports = {
         type: Sequelize.DATE
       }
     }).then(() => {
-      queryInterface.addIndex('plants', ['factory_name', 'latitude', 'longitude', 'created_at', 'deleted_at'])
+      queryInterface.addIndex('machines', ['name', 'code', 'manufacturer', 'build_year', 'asset_number', 'order', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('plants');
+    return queryInterface.dropTable('machines');
   }
 };
