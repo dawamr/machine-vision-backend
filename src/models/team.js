@@ -15,7 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   });
   team.associate = function(models) {
-    // associations can be defined here
+    team.belongsTo(models.user_team, {
+      foreignKey: 'team_id'
+    });
   };
   return team;
 };

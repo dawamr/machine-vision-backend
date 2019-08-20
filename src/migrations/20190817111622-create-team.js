@@ -26,6 +26,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
+    }).then(() => {
+      queryInterface.addIndex('teams', ['name', 'order', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {
