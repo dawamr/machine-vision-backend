@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     line_id: DataTypes.INTEGER,
     machine_id: DataTypes.INTEGER,
     team_id: DataTypes.INTEGER,
-    departement_id: DataTypes.INTEGER,
+    department_id: DataTypes.INTEGER,
     job_description_id: DataTypes.INTEGER,
     shift_id: DataTypes.INTEGER
   }, 
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
             foreign_key: 'user_id'
           });
           User.belongsTo(models.Shift, { foreign_key: 'shift_id'});
-          User.belongsTo(models.Departement, { foreign_key: 'departement_id' });
+          User.belongsTo(models.department, { foreign_key: 'department_id' });
           User.belongsTo(models.jobDescription, { foreign_key: 'job_description_id' });
 
         }

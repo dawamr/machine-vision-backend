@@ -35,7 +35,7 @@ module.exports = {
       team_id: {
         type: Sequelize.INTEGER
       },
-      departement_id: {
+      department_id: {
         type: Sequelize.INTEGER
       },
       job_description_id: {

@@ -11,7 +11,7 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      departement_id: {
+      department_id: {
         type: Sequelize.INTEGER
       },
       created_at: {
