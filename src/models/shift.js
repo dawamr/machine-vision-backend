@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   });
     shift.associate = function(models) {
-      shift.hasMany(models.User, { foreignKey: 'shift_id' });
+      shift.hasMany(models.user, { foreignKey: 'shift_id' });
     }
   return shift;
 };

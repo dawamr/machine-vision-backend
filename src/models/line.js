@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     line.hasMany(models.product_category, {
       foreignKey: 'product_category_id'
     });
+    line.hasMany(models.user, {foreignKey: 'line_id'})
   };
   return line;
 };
