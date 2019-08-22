@@ -56,7 +56,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     }).then(() => {
-      queryInterface.addIndex('plants', ['factory_name', 'latitude', 'longitude', 'created_at', 'deleted_at'])
+      queryInterface.addIndex('plants', ['factory_name', 'location', 'latitude', 'longitude', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {

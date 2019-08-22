@@ -14,6 +14,9 @@ module.exports = {
       product_category_id: {
         type: Sequelize.INTEGER
       },
+      deleted_at: {
+        type: Sequelize.DATE
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE
@@ -22,6 +25,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
+    }).then(() => {
+      queryInterface.addIndex('products', ['name', 'product_category_id', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {

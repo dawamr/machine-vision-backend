@@ -9,19 +9,25 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
+        allowNull: false,
         type: Sequelize.STRING
+      },
+      order: {
+        type: Sequelize.INTEGER
       },
       deleted_at: {
         type: Sequelize.DATE
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
+    }).then(() => {
+      queryInterface.addIndex('teams', ['name', 'order', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {

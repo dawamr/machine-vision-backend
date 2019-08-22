@@ -14,14 +14,19 @@ module.exports = {
       role_id: {
         type: Sequelize.INTEGER
       },
-      createdAt: {
+      deleted_at: {
+        type: Sequelize.DATE
+      },
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }
+    }).then(() => {
+      queryInterface.addIndex('user_roles', ['user_id', 'role_id', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {
