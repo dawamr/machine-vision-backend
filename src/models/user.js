@@ -1,17 +1,17 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const user = sequelize.define('user', {
-    name: DataTypes.STRING,
-    username: DataTypes.STRING,
-    password: DataTypes.STRING,
+    name: { type: DataTypes.STRING, allowNull: false},
+    username: { type: DataTypes.STRING, allowNull: false},
+    password: { type: DataTypes.STRING, allowNull: false},
     photo: DataTypes.STRING,
     date_of_birth: DataTypes.DATE,
-    sector_id: DataTypes.INTEGER,
-    line_id: DataTypes.INTEGER,
-    machine_id: DataTypes.INTEGER,
-    team_id: DataTypes.INTEGER,
-    department_id: DataTypes.INTEGER,
-    job_description_id: DataTypes.INTEGER,
+    sector_id: { type: DataTypes.INTEGER, allowNull: false},
+    line_id: { type: DataTypes.INTEGER, allowNull: false},
+    machine_id: { type: DataTypes.INTEGER, allowNull: false},
+    team_id: { type: DataTypes.INTEGER, allowNull: false},
+    department_id: { type: DataTypes.INTEGER, allowNull: false},
+    job_description_id: { type: DataTypes.INTEGER, allowNull: false},
     shift_id: DataTypes.INTEGER
   },{
     underscored: true,
