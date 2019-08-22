@@ -1,18 +1,16 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Shift = sequelize.define('shift', {
+  const shift = sequelize.define('shift', {
     name: DataTypes.STRING,
     time_start: DataTypes.TIME,
     time_end: DataTypes.TIME,
     duration: DataTypes.STRING
   }, {
-    classMethods: {
-      associate: (models) => {
-        Shift.hasMany(models.User, { foreign_key: 'shift_id' });
-      }
-    },
     underscored: true,
     paranoid: true
   });
-  return Shift;
+    shift.associate = function(models) {
+      shift.hasMany(models.User, { foreignKey: 'shift_id' });
+    }
+  return shift;
 };

@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('user', {
+  const user = sequelize.define('user', {
     name: DataTypes.STRING,
     username: DataTypes.STRING,
     password: DataTypes.STRING,
@@ -13,23 +13,20 @@ module.exports = (sequelize, DataTypes) => {
     department_id: DataTypes.INTEGER,
     job_description_id: DataTypes.INTEGER,
     shift_id: DataTypes.INTEGER
-  }, 
-  {
-    classMethods: {
-        associate: (models) => {
-          User.belongsToMany(models.Role, { 
-            through: 'userRole',
-            sourceKey: 'id',
-            foreign_key: 'user_id'
-          });
-          User.belongsTo(models.Shift, { foreign_key: 'shift_id'});
-          User.belongsTo(models.department, { foreign_key: 'department_id' });
-          User.belongsTo(models.jobDescription, { foreign_key: 'job_description_id' });
-
-        }
-    },
+  },{
     underscored: true,
     paranoid: true
-});
-        return User;
+  });
+
+    user.associate = function(models) {
+      user.belongsToMany(models.Role, { 
+        through: 'user_role',
+        foreignKey: 'user_id'
+      });
+      user.belongsTo(models.shift, { foreignKey: 'shift_id'});
+      user.belongsTo(models.department, { foreignKey: 'department_id' });
+      user.belongsTo(models.job_description, { foreignKey: 'job_description_id' });
+
+    }
+        return user;
   };
