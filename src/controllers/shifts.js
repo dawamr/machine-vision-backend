@@ -33,10 +33,10 @@ module.exports = {
         if (!shiftResult) {
           resp.ok(false, "Failed create shift.", null, res.status(400));
         }
-        resp.ok(true, "Success create shift.", shiftResult.dataValues, res)
+        resp.ok(true, "Success create shift.", shiftResult.dataValues, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed create shift.", null, res.status(400))
+        resp.ok(false, "Failed create shift.", null, res.status(400));
         console.log(error)
       });
   },
@@ -76,23 +76,19 @@ module.exports = {
         offset: offsetResult,
       })
       .then(shiftResult => {
-        if (!shiftResult) {
-          resp.ok(false, "Shift not found.", null, res.status(400))
-        }
-
         let totalPage = Math.ceil(shiftResult.count / perPage);
         let data = resp.paging(shiftResult.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, shiftResult.count);
         let total_duration = 0;
         
         return shift
-          .findAndCountAll()
+          .findAndCountAll({
+            where: options,
+          })
           .then(shiftResultDuration => {
-            if (!shiftResult) {
-              resp.ok(false, "Failed get total_duration data.", null, res.status(400));
-            }
             shiftResultDuration.rows.forEach((row)=> {
               total_duration += row.duration
             });
+
             data.total_duration = total_duration;
             resp.ok(true, "Get list data shift.", data, res);
           })
@@ -130,9 +126,6 @@ module.exports = {
         ],
       })
       .then(shiftResult => {
-        if (!shiftResult) {
-          resp.ok(false, "Shift not found.", null, res.status(400))
-        }
         resp.ok(true, "Get all data shift.", shiftResult, res);
       })
       .catch((error) => {
@@ -146,7 +139,7 @@ module.exports = {
       .findByPk(req.params.id)
       .then(shift => {
         if (!shift) {
-          resp.ok(false, "Shift not found.", null, res.status(400))
+          resp.ok(false, "Shift not found.", null, res.status(400));
         }
         resp.ok(true, "Get data shift.", shift, res);
       })
@@ -162,9 +155,11 @@ module.exports = {
     if (((req.body.time_start != undefined) && (req.body.time_start.length > 0)) && ((req.body.time_end != undefined) && (req.body.time_end.length > 0))) {
       let timeStart = new Date("01/01/2007 " + req.body.time_start).getTime() / 1000 | 0;
       let timeEnd = new Date("01/01/2007 " + req.body.time_end).getTime() / 1000 | 0;
+      
       if (timeStart > timeEnd) {
         timeEnd = new Date("01/02/2007 " + req.body.time_end).getTime() / 1000 | 0;
       }
+
       duration = timeEnd - timeStart;
     } 
 
@@ -172,7 +167,7 @@ module.exports = {
       .findByPk(req.params.id)
       .then(shift => {
         if (!shift) {
-          resp.ok(false, "Shift not found.", null, res.status(400))
+          resp.ok(false, "Shift not found.", null, res.status(400));
         }
 
         return shift
@@ -187,12 +182,12 @@ module.exports = {
             resp.ok(true, "Success update shift.", shift.dataValues, res)
           })
           .catch((error) => {
-            resp.ok(false, "Failed update shift.", null, res.status(400))
+            resp.ok(false, "Failed update shift.", null, res.status(400));
             console.log(error)
           });
       })
       .catch((error) => {
-        resp.ok(false, "Failed update shift.", null, res.status(400))
+        resp.ok(false, "Failed update shift.", null, res.status(400));
         console.log(error)
       });
   },
@@ -202,21 +197,21 @@ module.exports = {
       .findByPk(req.params.id)
       .then(shift => {
         if (!shift) {
-          resp.ok(false, "Shift not found.", null, res.status(400))
+          resp.ok(false, "Shift not found.", null, res.status(400));
         }
 
         return shift
           .destroy()
           .then(shift => {
-            resp.ok(true, "Success delete shift.", shift.dataValues, res)
+            resp.ok(true, "Success delete shift.", shift.dataValues, res);
           })
           .catch((error) => {
-            resp.ok(false, "Failed delete shift.", null, res.status(400))
+            resp.ok(false, "Failed delete shift.", null, res.status(400));
             console.log(error)
           });
       })
       .catch((error) => {
-        resp.ok(false, "Failed delete shift.", null, res.status(400))
+        resp.ok(false, "Failed delete shift.", null, res.status(400));
         console.log(error)
       });
   }
