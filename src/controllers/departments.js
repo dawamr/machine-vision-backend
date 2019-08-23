@@ -18,6 +18,7 @@ module.exports = {
         console.log(error)
       });
   },
+
   list(req, res) {
     let orderBy = 'created_at';
     let sortBy = 'desc';
@@ -31,15 +32,12 @@ module.exports = {
     if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
       sortBy = req.query.sort_by;
     }
-
     if ((req.query.page != undefined) && (req.query.page.length > 0)) {
       page = req.query.page;
     }
-
     if ((req.query.per_page != undefined) && (req.query.per_page.length > 0)) {
       perPage = req.query.per_page;
     }
-
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
     }
@@ -55,15 +53,18 @@ module.exports = {
         limit:  perPageResult,
         offset: offsetResult,
       })
-      .then(department => {
-        let totalPage = Math.ceil(department.count / perPage)
-        resp.paging(true, "Get list data department.", department.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, department.count, res)
+      .then(departmentResult => {
+        let totalPage = Math.ceil(departmentResult.count / perPage)
+        let data = resp.paging(departmentResult.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, departmentResult.count);
+
+        resp.ok(true, "Get list data department.", data, res);
       })
       .catch((error) => {
         resp.ok(false, "Failed get list data department.", null, res.status(400))
         console.log(error)
       });
   },
+
   listAll(req, res) {
     let orderBy = 'created_at';
     let sortBy = 'desc';
@@ -75,7 +76,6 @@ module.exports = {
     if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
       sortBy = req.query.sort_by;
     }
-
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
     }
@@ -87,28 +87,30 @@ module.exports = {
           [orderBy, sortBy]
         ],
       })
-      .then(department => {
-        resp.ok(true, "Get all data department.", department, res)
+      .then(departmentResult => {
+        resp.ok(true, "Get all data department.", departmentResult, res)
       })
       .catch((error) => {
         resp.ok(false, "Failed get all data department.", null, res.status(400))
         console.log(error)
       });
   },
+
   detail(req, res) {
     return department
       .findByPk(req.params.id)
-      .then(department => {
-        if (!department) {
+      .then(departmentResult => {
+        if (!departmentResult) {
           resp.ok(false, "Department not found.", null, res.status(400))
         }
-        resp.ok(true, "Get data department.", department, res)
+        resp.ok(true, "Get data department.", departmentResult, res)
       })
       .catch((error) => {
         resp.ok(false, "Failed get department.", null, res.status(400))
         console.log(error)
       });
   },
+
   update(req, res) {
     return department
       .findByPk(req.params.id)
@@ -116,10 +118,10 @@ module.exports = {
         if (!department) {
           resp.ok(false, "Department not found.", null, res.status(400))
         }
+
         return department
           .update({
-            name: req.body.name || department.name,
-            order: req.body.order || department.order,
+            name: req.body.name || departmentResult.name,
           })
           .then(department => {
             resp.ok(true, "Success update department.", department.dataValues, res)
@@ -134,6 +136,7 @@ module.exports = {
         console.log(error)
       });
   },
+
   delete(req, res) {
     return department
       .findByPk(req.params.id)
@@ -141,6 +144,7 @@ module.exports = {
         if (!department) {
           resp.ok(false, "Department not found.", null, res.status(400))
         }
+
         return department
           .destroy()
           .then(department => {
