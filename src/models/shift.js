@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     time_start: DataTypes.TIME,
     time_end: DataTypes.TIME,
-    duration: DataTypes.STRING,
+    duration: DataTypes.INTEGER,
     deleted_at: DataTypes.DATE
   }, {
     createdAt: 'created_at',

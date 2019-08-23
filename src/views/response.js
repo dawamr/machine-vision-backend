@@ -10,19 +10,15 @@ exports.ok = function(success, message, data, res) {
   res.end();
 };
 
-exports.paging = function(success, message, rows, page, perPage, totalPage, totalData, res) {
+exports.paging = function(rows, page, perPage, totalPage, totalData, options) {
   let responsePaging = {
-    'success': success,
-    'message': message,
-    'data': {
-      "rows": rows,
-		  "page": page,
-		  "per_page": perPage,
-		  "total_page": totalPage,
-      "total_data": totalData
-    }
+    ...options,
+    "rows": rows,
+		"page": page,
+		"per_page": perPage,
+		"total_page": totalPage,
+    "total_data": totalData
   };
   
-  res.json(responsePaging);
-  res.end();
+  return responsePaging
 };
