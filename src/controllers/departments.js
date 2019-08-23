@@ -1,7 +1,7 @@
 const department = require('../models').department;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
-const sequelize = require('sequelize')
+const sequelize = require('sequelize');
 
 module.exports = {
   create(req, res){
@@ -11,11 +11,11 @@ module.exports = {
         order: req.body.order,
       })
       .then(department => {
-        resp.ok(true, "Success create department.", department.dataValues, res)
+        resp.ok(true, "Success create department.", department.dataValues, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed create department.", null, res.status(400))
-        console.log(error)
+        resp.ok(false, "Failed create department.", null, res.status(400));
+        console.log(error);
       });
   },
 
@@ -54,14 +54,14 @@ module.exports = {
         offset: offsetResult,
       })
       .then(departmentResult => {
-        let totalPage = Math.ceil(departmentResult.count / perPage)
+        let totalPage = Math.ceil(departmentResult.count / perPage);
         let data = resp.paging(departmentResult.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, departmentResult.count);
 
         resp.ok(true, "Get list data department.", data, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get list data department.", null, res.status(400))
-        console.log(error)
+        resp.ok(false, "Failed get list data department.", null, res.status(400));
+        console.log(error);
       });
   },
 
@@ -88,11 +88,11 @@ module.exports = {
         ],
       })
       .then(departmentResult => {
-        resp.ok(true, "Get all data department.", departmentResult, res)
+        resp.ok(true, "Get all data department.", departmentResult, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get all data department.", null, res.status(400))
-        console.log(error)
+        resp.ok(false, "Failed get all data department.", null, res.status(400));
+        console.log(error);
       });
   },
 
@@ -101,13 +101,13 @@ module.exports = {
       .findByPk(req.params.id)
       .then(departmentResult => {
         if (!departmentResult) {
-          resp.ok(false, "Department not found.", null, res.status(400))
+          resp.ok(false, "Department not found.", null, res.status(400));
         }
-        resp.ok(true, "Get data department.", departmentResult, res)
+        resp.ok(true, "Get data department.", departmentResult, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get department.", null, res.status(400))
-        console.log(error)
+        resp.ok(false, "Failed get department.", null, res.status(400));
+        console.log(error);
       });
   },
 
@@ -116,7 +116,7 @@ module.exports = {
       .findByPk(req.params.id)
       .then(department => {
         if (!department) {
-          resp.ok(false, "Department not found.", null, res.status(400))
+          resp.ok(false, "Department not found.", null, res.status(400));
         }
 
         return department
@@ -124,16 +124,16 @@ module.exports = {
             name: req.body.name || departmentResult.name,
           })
           .then(department => {
-            resp.ok(true, "Success update department.", department.dataValues, res)
+            resp.ok(true, "Success update department.", department.dataValues, res);
           })
           .catch((error) => {
-            resp.ok(false, "Failed update department.", null, res.status(400))
-            console.log(error)
+            resp.ok(false, "Failed update department.", null, res.status(400));
+            console.log(error);
           });
       })
       .catch((error) => {
-        resp.ok(false, "Failed update department.", null, res.status(400))
-        console.log(error)
+        resp.ok(false, "Failed update department.", null, res.status(400));
+        console.log(error);
       });
   },
 
@@ -142,22 +142,22 @@ module.exports = {
       .findByPk(req.params.id)
       .then(department => {
         if (!department) {
-          resp.ok(false, "Department not found.", null, res.status(400))
+          resp.ok(false, "Department not found.", null, res.status(400));
         }
 
         return department
           .destroy()
           .then(department => {
-            resp.ok(true, "Success delete department.", department.dataValues, res)
+            resp.ok(true, "Success delete department.", department.dataValues, res);
           })
           .catch((error) => {
-            resp.ok(false, "Failed delete department.", null, res.status(400))
-            console.log(error)
+            resp.ok(false, "Failed delete department.", null, res.status(400));
+            console.log(error);
           });
       })
       .catch((error) => {
-        resp.ok(false, "Failed delete department.", null, res.status(400))
-        console.log(error)
+        resp.ok(false, "Failed delete department.", null, res.status(400));
+        console.log(error);
       });
   }
 };
