@@ -1,23 +1,27 @@
 const shift = require('../models').shift;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
-const sequelize = require('sequelize')
+const sequelize = require('sequelize');
 
 module.exports = {
   create(req, res){
     let duration = 0;
     let reqTimeStart = "00:00:00";
     let reqTimeEnd = "00:00:00";
+
     if (((req.body.time_start != undefined) && (req.body.time_start.length > 0)) && ((req.body.time_end != undefined) && (req.body.time_end.length > 0))) {
       let timeStart = new Date("01/01/2007 " + req.body.time_start).getTime() / 1000 | 0;
       let timeEnd = new Date("01/01/2007 " + req.body.time_end).getTime() / 1000 | 0;
+      
       if (timeStart > timeEnd) {
         timeEnd = new Date("01/02/2007 " + req.body.time_end).getTime() / 1000 | 0;
       }
+
       reqTimeStart = req.body.time_start;
       reqTimeEnd = req.body.time_end;
       duration = timeEnd - timeStart;  
     }
+
     return shift
       .create({
         name: req.body.name,
@@ -36,12 +40,14 @@ module.exports = {
         console.log(error)
       });
   },
+
   list(req, res) {
     let orderBy = 'created_at';
     let sortBy = 'desc';
     let page = 1;
     let perPage = 10;
     let options = {};
+
     if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
       orderBy = req.query.order_by;
     }
@@ -57,7 +63,9 @@ module.exports = {
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
     }
+
     let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
+
     return shift
       .findAndCountAll({
         where: options,
@@ -71,9 +79,11 @@ module.exports = {
         if (!shiftResult) {
           resp.ok(false, "Shift not found.", null, res.status(400))
         }
+
         let totalPage = Math.ceil(shiftResult.count / perPage);
         let data = resp.paging(shiftResult.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, shiftResult.count);
         let total_duration = 0;
+        
         return shift
           .findAndCountAll()
           .then(shiftResultDuration => {
@@ -96,10 +106,12 @@ module.exports = {
         console.log(error);
       });
   },
+
   listAll(req, res) {
     let orderBy = 'created_at';
     let sortBy = 'desc';
     let options = {};
+
     if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
       orderBy = req.query.order_by;
     }
@@ -109,6 +121,7 @@ module.exports = {
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
     }
+
     return shift
       .findAll({
         where: options,
@@ -127,6 +140,7 @@ module.exports = {
         console.log(error);
       });
   },
+
   detail(req, res) {
     return shift
       .findByPk(req.params.id)
@@ -141,8 +155,10 @@ module.exports = {
         console.log(error);
       });
   },
+
   update(req, res) {
     let duration = 0;
+
     if (((req.body.time_start != undefined) && (req.body.time_start.length > 0)) && ((req.body.time_end != undefined) && (req.body.time_end.length > 0))) {
       let timeStart = new Date("01/01/2007 " + req.body.time_start).getTime() / 1000 | 0;
       let timeEnd = new Date("01/01/2007 " + req.body.time_end).getTime() / 1000 | 0;
@@ -151,12 +167,14 @@ module.exports = {
       }
       duration = timeEnd - timeStart;
     } 
+
     return shift
       .findByPk(req.params.id)
       .then(shift => {
         if (!shift) {
           resp.ok(false, "Shift not found.", null, res.status(400))
         }
+
         return shift
           .update({
             name: req.body.name || shift.name,
@@ -178,6 +196,7 @@ module.exports = {
         console.log(error)
       });
   },
+
   delete(req, res) {
     return shift
       .findByPk(req.params.id)
@@ -185,6 +204,7 @@ module.exports = {
         if (!shift) {
           resp.ok(false, "Shift not found.", null, res.status(400))
         }
+
         return shift
           .destroy()
           .then(shift => {
