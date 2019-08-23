@@ -11,12 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   });
   user_team.associate = function(models) {
-    user_team.hasMany(models.user, {
-      foreignKey: 'user_id'
-    });
-    user_team.hasMany(models.team, {
-      foreignKey: 'team_id'
-    });
+
   };
   return user_team;
 };
