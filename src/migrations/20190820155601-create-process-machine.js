@@ -1,18 +1,17 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('teams', {
+    return queryInterface.createTable('process_machines', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        allowNull: false,
-        type: Sequelize.STRING
+      process_id: {
+        type: Sequelize.INTEGER
       },
-      order: {
+      machine_id: {
         type: Sequelize.INTEGER
       },
       deleted_at: {
@@ -27,10 +26,10 @@ module.exports = {
         type: Sequelize.DATE
       }
     }).then(() => {
-      queryInterface.addIndex('teams', ['name', 'order', 'created_at', 'deleted_at'])
+      queryInterface.addIndex('process_machines', ['process_id', 'machine_id', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('teams');
+    return queryInterface.dropTable('process_machines');
   }
 };

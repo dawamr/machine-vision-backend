@@ -2,7 +2,7 @@
 
 exports.builder = function(perPageResult, page) {
   let showPageResult = page
-	if (showPageResult < 1){
+	if (showPageResult < 1) {
 		showPageResult = 1;
 		page = 1;
 	}

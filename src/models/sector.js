@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const team = sequelize.define('team', {
+  const sector = sequelize.define('sector', {
     name: DataTypes.STRING,
     order: {
       type: DataTypes.INTEGER,
@@ -14,11 +14,13 @@ module.exports = (sequelize, DataTypes) => {
     deletedAt: 'deleted_at',
     paranoid: true
   });
-  team.associate = function(models) {
-    team.belongsToMany(models.user, {
-      through: 'user_team',
-      foreignKey: 'team_id'
+  sector.associate = function(models) {
+    sector.hasMany(models.line, {
+      foreignKey: 'sector_id'
+    });
+    sector.hasMany(models.user, {
+      foreignKey: 'sector_id'
     });
   };
-  return team;
+  return sector;
 };
