@@ -8,20 +8,20 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      name: {
+        type: Sequelize.STRING
+      },
       parameter_category_id: {
         type: Sequelize.INTEGER
       },
       group: {
-        type: Sequelize.ENUM, 
-        values: ['variable','output']
-      },
-      type: {
-        type: Sequelize.ENUM, 
-        values: ['constant','initial','manufacture','kpi','predictive']
+        type: Sequelize.ENUM('variable','output')
       },
       level: {
-        type: Sequelize.ENUM, 
-        values: ['plant','sector','line','machine']
+        type: Sequelize.ENUM('plant','sector','line','machine')
+      },
+      type: {
+        type: Sequelize.ENUM('constant','initial','manufacture','kpi','predictive')
       },
       alarm_configuration: {
         type: Sequelize.JSON
@@ -29,15 +29,17 @@ module.exports = {
       configuration: {
         type: Sequelize.JSON
       },
-      createdAt: {
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        type: Sequelize.DATE
-      },
       deletedAt: {
         type: Sequelize.DATE
       },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      }
     });
   },
   down: (queryInterface, Sequelize) => {
