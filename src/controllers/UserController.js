@@ -83,9 +83,92 @@ function UserController() {
     }
   };
 
+  const detail = (req, res, next) => {
+    let id = req.params.user_id;
+
+    return UserService.byId(id)
+      .then(user => {
+        if (user) {
+          req.data = user;
+          return next();
+        }
+      })
+      .catch(err => {
+        return next(err);
+      });
+  };
+  const update = (req, res, next) => {
+    let id = req.params.user_id;
+    let userObj = req.body;
+    return UserService.update(id, userObj)
+      .then((user) => {
+        req.data = user;
+        return next();
+      })
+      .catch(err => {
+        return next(err);
+      });
+  };
+  const remove = (req, res, next) => {
+    const id = req.params.id;
+    return UserService.remove(id)
+      .then((users) => {
+        req.data = !!users;
+        return next();
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
+
+  const all = (req, res, next) => {
+    return UserService.getAll()
+    .then((user) => {
+      req.data = user;
+      next();
+    })
+    .catch(err => {
+      next(err);
+    });
+  }; 
+
+  const list = (req, res, next) => {
+
+    let params = {
+      query: req.query,
+      username: req.body.username,
+      name:req.body.name,
+      pageSize: req.query.limit,
+      page: req.query.page,
+      sort: req.query.sort,
+    };
+    return UserService.list(params)
+      .then((users) => {
+        if (users) {
+          req.pagination = {
+            page: params.page,
+            pageSize: params.pageSize,
+            rowCount: users.count,
+            pageCount: 0
+          };
+          req.data = users.rows;
+          return next();
+        }
+      })
+      .catch(err => {
+        throw err;
+      });
+  };
+
+
   return {
     login,
-    create
+    create,
+    detail,
+    update,
+    remove,
+    all,
+    list
   };
 }
 

@@ -15,7 +15,7 @@ function TokenService() {
         // should check if `decoded.sub` is present?
         let userId = decoded.data.id;
         // check if token is expired
-        UserService.byIdWithMember(userId)
+        UserService.byId(userId)
           .then(function (p) {
             if (p) {
               let user = p.toJSON();
