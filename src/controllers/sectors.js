@@ -1,19 +1,19 @@
-const department = require('../models').department;
+const sector = require('../models').sector;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
 
 module.exports = {
   create(req, res){
-    return department
+    return sector
       .create({
         name: req.body.name,
       })
-      .then(department => {
-        resp.ok(true, "Success create department.", department.dataValues, res);
+      .then(sector => {
+        resp.ok(true, "Success create sector.", sector.dataValues, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed create department.", null, res.status(400));
+        resp.ok(false, "Failed create sector.", null, res.status(400));
         console.log(error);
       });
   },
@@ -43,7 +43,7 @@ module.exports = {
 
     let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
 
-    return department
+    return sector
       .findAndCountAll({
         where: options,
         order: [
@@ -52,14 +52,14 @@ module.exports = {
         limit:  perPageResult,
         offset: offsetResult,
       })
-      .then(departmentResult => {
-        let totalPage = Math.ceil(departmentResult.count / perPage);
-        let data = resp.paging(departmentResult.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, departmentResult.count);
+      .then(sectorResult => {
+        let totalPage = Math.ceil(sectorResult.count / perPage);
+        let data = resp.paging(sectorResult.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, sectorResult.count);
 
-        resp.ok(true, "Get list data department.", data, res);
+        resp.ok(true, "Get list data sector.", data, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get list data department.", null, res.status(400));
+        resp.ok(false, "Failed get list data sector.", null, res.status(400));
         console.log(error);
       });
   },
@@ -79,83 +79,83 @@ module.exports = {
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
     }
 
-    return department
+    return sector
       .findAll({
         where: options,
         order: [
           [orderBy, sortBy]
         ],
       })
-      .then(departmentResult => {
-        resp.ok(true, "Get all data department.", departmentResult, res);
+      .then(sectorResult => {
+        resp.ok(true, "Get all data sector.", sectorResult, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get all data department.", null, res.status(400));
+        resp.ok(false, "Failed get all data sector.", null, res.status(400));
         console.log(error);
       });
   },
 
   detail(req, res) {
-    return department
+    return sector
       .findByPk(req.params.id)
-      .then(departmentResult => {
-        if (!departmentResult) {
-          resp.ok(false, "Department not found.", null, res.status(400));
+      .then(sectorResult => {
+        if (!sectorResult) {
+          resp.ok(false, "sector not found.", null, res.status(400));
         }
-        resp.ok(true, "Get data department.", departmentResult, res);
+        resp.ok(true, "Get data sector.", sectorResult, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get department.", null, res.status(400));
+        resp.ok(false, "Failed get sector.", null, res.status(400));
         console.log(error);
       });
   },
 
   update(req, res) {
-    return department
+    return sector
       .findByPk(req.params.id)
-      .then(department => {
-        if (!department) {
-          resp.ok(false, "Department not found.", null, res.status(400));
+      .then(sector => {
+        if (!sector) {
+          resp.ok(false, "sector not found.", null, res.status(400));
         }
 
-        return department
+        return sector
           .update({
-            name: req.body.name || department.name,
+            name: req.body.name || sector.name,
           })
-          .then(department => {
-            resp.ok(true, "Success update department.", department.dataValues, res);
+          .then(sector => {
+            resp.ok(true, "Success update sector.", sector.dataValues, res);
           })
           .catch((error) => {
-            resp.ok(false, "Failed update department.", null, res.status(400));
+            resp.ok(false, "Failed update sector.", null, res.status(400));
             console.log(error);
           });
       })
       .catch((error) => {
-        resp.ok(false, "Failed update department.", null, res.status(400));
+        resp.ok(false, "Failed update sector.", null, res.status(400));
         console.log(error);
       });
   },
 
   delete(req, res) {
-    return department
+    return sector
       .findByPk(req.params.id)
-      .then(department => {
-        if (!department) {
-          resp.ok(false, "Department not found.", null, res.status(400));
+      .then(sector => {
+        if (!sector) {
+          resp.ok(false, "sector not found.", null, res.status(400));
         }
 
-        return department
+        return sector
           .destroy()
-          .then(department => {
-            resp.ok(true, "Success delete department.", department.dataValues, res);
+          .then(sector => {
+            resp.ok(true, "Success delete sector.", sector.dataValues, res);
           })
           .catch((error) => {
-            resp.ok(false, "Failed delete department.", null, res.status(400));
+            resp.ok(false, "Failed delete sector.", null, res.status(400));
             console.log(error);
           });
       })
       .catch((error) => {
-        resp.ok(false, "Failed delete department.", null, res.status(400));
+        resp.ok(false, "Failed delete sector.", null, res.status(400));
         console.log(error);
       });
   }

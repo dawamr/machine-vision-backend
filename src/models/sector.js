@@ -2,11 +2,6 @@
 module.exports = (sequelize, DataTypes) => {
   const sector = sequelize.define('sector', {
     name: DataTypes.STRING,
-    order: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue : 0
-    },
     deleted_at: DataTypes.DATE
   }, {
     createdAt: 'created_at',
