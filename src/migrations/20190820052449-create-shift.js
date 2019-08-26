@@ -18,7 +18,7 @@ module.exports = {
         type: Sequelize.TIME
       },
       duration: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       deleted_at: {
         type: Sequelize.DATE
