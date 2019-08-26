@@ -1,25 +1,26 @@
 {
   "development": {
     "username": "postgres",
-    "password": "postgres",
-    "database": "mavis",
+    "password": "kasbi",
+    "database": "mv-db",
     "host": "127.0.0.1",
-    "port": "5433",
-    "dialect": "postgres"
-    
+    "dialect": "postgres",
+    "operatorsAliases": false
   },
   "test": {
     "username": "postgres",
-    "database": "mavis",
+    "password": "kasbi",
+    "database": "mv-db",
     "host": "127.0.0.1",
     "dialect": "postgres",
     "operatorsAliases": false
   },
   "production": {
-    "username": "postgres",
-    "database": "mavis",
+    "username": "root",
+    "password": null,
+    "database": "database_production",
     "host": "127.0.0.1",
-    "dialect": "postgres",
+    "dialect": "mysql",
     "operatorsAliases": false
   }
 }

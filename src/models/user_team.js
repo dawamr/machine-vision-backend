@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     //   foreignKey: 'user_id'
     // });
     // user_team.hasMany(models.team, {
-    //   foreignKey: 'user_team_id'
+    //   foreignKey: 'team_id'
     // });
   };
   return user_team;
