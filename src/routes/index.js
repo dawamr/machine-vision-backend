@@ -1,5 +1,6 @@
 const department = require('./department')
 const shift = require('./shift')
+const plant = require('./plant')
 const resp = require('../views/response');
 
 module.exports = (app) => {
@@ -9,6 +10,7 @@ module.exports = (app) => {
 
   app.use('/api/department', department);
   app.use('/api/shift', shift);
+  app.use('/api/plant', plant);
   app.use(function (err, req, res, next) {
     switch(err.status) { 
       case 400: { 
