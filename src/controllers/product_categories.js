@@ -1,19 +1,19 @@
-const product_category = require('../models').product_category;
+const productCategory = require('../models').product_category;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
 
 module.exports = {
   create(req, res){
-    return product_category
+    return productCategory
       .create({
         name: req.body.name,
       })
-      .then(product_category => {
-        resp.ok(true, "Success create product_category.", product_category.dataValues, res);
+      .then(productCategory => {
+        resp.ok(true, "Success create productCategory.", productCategory.dataValues, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed create product_category.", null, res.status(400));
+        resp.ok(false, "Failed create productCategory.", null, res.status(400));
         console.log(error);
       });
   },
@@ -43,8 +43,11 @@ module.exports = {
 
     let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
 
-    return product_category
+    return productCategory
       .findAndCountAll({
+        include: [{
+          model: productCategory,
+        }],
         where: options,
         order: [
           [orderBy, sortBy]
@@ -56,10 +59,10 @@ module.exports = {
         let totalPage = Math.ceil(productCategoryResult.count / perPage);
         let data = resp.paging(productCategoryResult.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, productCategoryResult.count);
 
-        resp.ok(true, "Get list data product_category.", data, res);
+        resp.ok(true, "Get list data productCategory.", data, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get list data product_category.", null, res.status(400));
+        resp.ok(false, "Failed get list data productCategory.", null, res.status(400));
         console.log(error);
       });
   },
@@ -79,84 +82,91 @@ module.exports = {
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
     }
 
-    return product_category
+    return productCategory
       .findAll({
+        include: [{
+          model: productCategory,
+        }],
         where: options,
         order: [
           [orderBy, sortBy]
         ],
       })
       .then(productCategoryResult => {
-        resp.ok(true, "Get all data product_category.", productCategoryResult, res);
+        resp.ok(true, "Get all data productCategory.", productCategoryResult, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get all data product_category.", null, res.status(400));
+        resp.ok(false, "Failed get all data productCategory.", null, res.status(400));
         console.log(error);
       });
   },
 
   detail(req, res) {
-    return product_category
-      .findByPk(req.params.id)
+    return productCategory
+      .findByPk(req.params.id, {
+        include: [{
+          model: productCategory,
+        }],
+      })
       .then(productCategoryResult => {
         console.log(productCategoryResult);
         if (!productCategoryResult) {
-          resp.ok(false, "product_category not found.", null, res.status(400));
+          resp.ok(false, "productCategory not found.", null, res.status(400));
         }
-        resp.ok(true, "Get data product_category.", productCategoryResult, res);
+        resp.ok(true, "Get data productCategory.", productCategoryResult, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get product_category.", null, res.status(400));
+        resp.ok(false, "Failed get productCategory.", null, res.status(400));
         console.log(error);
       });
   },
 
   update(req, res) {
-    return product_category
+    return productCategory
       .findByPk(req.params.id)
-      .then(product_category => {
-        if (!product_category) {
-          resp.ok(false, "product_category not found.", null, res.status(400));
+      .then(productCategory => {
+        if (!productCategory) {
+          resp.ok(false, "productCategory not found.", null, res.status(400));
         }
 
-        return product_category
+        return productCategory
           .update({
-            name: req.body.name || product_categoryResult.name,
+            name: req.body.name || productCategoryResult.name,
           })
-          .then(product_category => {
-            resp.ok(true, "Success update product_category.", product_category.dataValues, res);
+          .then(productCategory => {
+            resp.ok(true, "Success update productCategory.", productCategory.dataValues, res);
           })
           .catch((error) => {
-            resp.ok(false, "Failed update product_category.", null, res.status(400));
+            resp.ok(false, "Failed update productCategory.", null, res.status(400));
             console.log(error);
           });
       })
       .catch((error) => {
-        resp.ok(false, "Failed update product_category.", null, res.status(400));
+        resp.ok(false, "Failed update productCategory.", null, res.status(400));
         console.log(error);
       });
   },
 
   delete(req, res) {
-    return product_category
+    return productCategory
       .findByPk(req.params.id)
-      .then(product_category => {
-        if (!product_category) {
-          resp.ok(false, "product_category not found.", null, res.status(400));
+      .then(productCategory => {
+        if (!productCategory) {
+          resp.ok(false, "productCategory not found.", null, res.status(400));
         }
 
-        return product_category
+        return productCategory
           .destroy()
-          .then(product_category => {
-            resp.ok(true, "Success delete product_category.", product_category.dataValues, res);
+          .then(productCategory => {
+            resp.ok(true, "Success delete productCategory.", productCategory.dataValues, res);
           })
           .catch((error) => {
-            resp.ok(false, "Failed delete product_category.", null, res.status(400));
+            resp.ok(false, "Failed delete productCategory.", null, res.status(400));
             console.log(error);
           });
       })
       .catch((error) => {
-        resp.ok(false, "Failed delete product_category.", null, res.status(400));
+        resp.ok(false, "Failed delete productCategory.", null, res.status(400));
         console.log(error);
       });
   }

@@ -1,4 +1,4 @@
-const product_category = require('./product_category')
+const productCategory = require('./product_category')
 const resp = require('../views/response');
 
 module.exports = (app) => {
@@ -6,7 +6,7 @@ module.exports = (app) => {
     message: 'Welcome to the MV API!',
   }));
 
-  app.use('/api/product_category', product_category);
+  app.use('/api/product_category', productCategory);
   app.use(function (err, req, res, next) {
     switch(err.status) { 
       case 400: { 
