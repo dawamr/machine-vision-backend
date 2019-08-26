@@ -1,9 +1,10 @@
-const department = require('./department')
-const shift = require('./shift')
-const plant = require('./plant')
-const team = require('./team')
-const product = require('./product')
-const productCategory = require('./product_category')
+const department = require('./department');
+const shift = require('./shift');
+const plant = require('./plant');
+const team = require('./team');
+const product = require('./product');
+const productCategory = require('./product_category');
+const jobDescription = require('./job_description');
 const resp = require('../views/response');
 
 module.exports = (app) => {
@@ -17,9 +18,12 @@ module.exports = (app) => {
   app.use('/api/team', team);
   app.use('/api/product', product);
   app.use('/api/product_category', productCategory);
+  app.use('/api/job_description', jobDescription);
+
   app.use(function(req, res, next) {
     resp.ok(false, "Error 404 not found.", null, res.status(404));
   });
+
   app.use(function (err, req, res, next) {
     switch(err.status) { 
       case 400: { 

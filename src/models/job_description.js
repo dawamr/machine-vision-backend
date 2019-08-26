@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const job_description = sequelize.define('job_description', {
     name: DataTypes.STRING,
     department_id: DataTypes.INTEGER,
+    sector_id: DataTypes.INTEGER,
     deleted_at: DataTypes.DATE
   }, {
     createdAt: 'created_at',
@@ -13,6 +14,9 @@ module.exports = (sequelize, DataTypes) => {
   job_description.associate = function(models)  {
     job_description.belongsTo(models.department, { 
       foreignKey: 'department_id' 
+    });
+    job_description.belongsTo(models.sector, { 
+      foreignKey: 'sector_id' 
     });
     job_description.hasMany(models.user, { 
       foreignKey: 'job_description_id'

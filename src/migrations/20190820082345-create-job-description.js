@@ -14,6 +14,9 @@ module.exports = {
       department_id: {
         type: Sequelize.INTEGER
       },
+      sector_id: {
+        type: Sequelize.INTEGER
+      },
       deleted_at: {
         type: Sequelize.DATE
       },
@@ -26,7 +29,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     }).then(() => {
-      queryInterface.addIndex('job_descriptions', ['name', 'department_id', 'created_at', 'deleted_at'])
+      queryInterface.addIndex('job_descriptions', ['name', 'department_id', 'sector_id', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {
