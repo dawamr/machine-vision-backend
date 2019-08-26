@@ -1,6 +1,10 @@
+const FormUser = require('../models').user;
 const FormForm = require('../models').form_form;
 const FormSubCategory = require('../models').form_sub_category;
 const FormCategory = require('../models').form_category;
+const FormField = require('../models').form_field;
+const FormResponse = require('../models').form_response;
+const FormResponseField = require('../models').form_response_field;
 
 // console.log(Object.keys(require('../models')));
 const Sequelize = require('sequelize');
@@ -68,6 +72,45 @@ module.exports = {
         .then(data => res.status(200).send(data))
         .catch(error => res.status(400).send(error));
 
+    },
+
+    show(req, res){
+
+        var form_field =  FormField.findAll({
+                            attributes: ['id','form_id','types','configuration','is_required','order'],
+                            where: {
+                                'form_id' : req.params.id
+                            }
+                        })
+
+        var form_list =  FormForm.findOne({
+                            attributes:['id','name','types','is_template'],
+                            where: {
+                                'id' : req.params.id
+                            }
+                        })
+        
+        Promise.all([form_list,form_field]).then(function(values) {
+            res.json(values)
+        });
+        
+            // form_field = await FormField.findOne({
+            //     attributes: ['id','form_id','types','configuration','is_required','order'],
+            //     where: {
+            //         'form_id' : req.params.id
+            //     }
+            // })
+            
+            
+            // list_form = await FormForm.findOne({
+            //     attributes:['id','name','types','is_template'],
+            //     include: [form_field],
+            //     where: {
+            //         'id' : req.params.id
+            //     }
+            // })
+
+            // console.log(list_form.get('name'))
     },
 
     create(req,res){

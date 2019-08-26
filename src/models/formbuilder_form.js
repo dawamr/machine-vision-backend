@@ -11,7 +11,9 @@ module.exports = (sequelize, DataTypes) => {
   FormForm.associate = function(models) {
     // associations can be defined here
     FormForm.belongsTo(models.form_sub_category, {foreignKey: "sub_category_id", as: 'sub_category'})
+
     FormForm.hasMany(models.form_field, {as: 'form_field'})
+    FormForm.hasMany(models.form_response, {as: 'form_response'})
   };
   return FormForm;
 };
