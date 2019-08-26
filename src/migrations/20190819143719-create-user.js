@@ -44,7 +44,10 @@ module.exports = {
       shift_id: {
         type: Sequelize.INTEGER
       },
-      createdAt: {
+      deleted_at: {
+        type: Sequelize.DATE
+      },
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
@@ -52,6 +55,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
+    }).then(() => {
+      queryInterface.addIndex('users', ['name', 'username', 'password', 'sector_id', 'line_id', 'machine_id', 'team_id', 'department_id', 'job_description_id', 'shift_id', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {

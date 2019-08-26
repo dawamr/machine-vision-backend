@@ -17,7 +17,6 @@ function UserController() {
     AuthenticationService.authenticate(username, password)
       .then((user) => {
         let user_id = user.get('user_id');
-        console.log(user);
         let payload = {
           iss: req.hostname,
           sub: user_id,

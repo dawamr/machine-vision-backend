@@ -2,9 +2,12 @@
 module.exports = (sequelize, DataTypes) => {
   const user_role = sequelize.define('user_role', {
     user_id: DataTypes.INTEGER,
-    role_id: DataTypes.INTEGER
+    role_id: DataTypes.INTEGER,
+    deleted_at: DataTypes.DATE
   }, {
-    underscored: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
     paranoid: true
   });
   user_role.associate = function(models) {

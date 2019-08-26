@@ -18,7 +18,10 @@ module.exports = {
         type: Sequelize.TIME
       },
       duration: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
+      },
+      deleted_at: {
+        type: Sequelize.DATE
       },
       created_at: {
         allowNull: false,
@@ -28,6 +31,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
+    }).then(() => {
+      queryInterface.addIndex('shifts', ['name', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {

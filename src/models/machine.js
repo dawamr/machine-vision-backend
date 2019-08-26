@@ -28,7 +28,9 @@ module.exports = (sequelize, DataTypes) => {
     machine.belongsTo(models.process_machine, {
       foreignKey: 'process_machine_id'
     });
-    machine.hasMany(models.user, {foreignKey:'machine_id'});
+    machine.hasMany(models.user, {
+      foreignKey:'machine_id'
+    });
   };
   return machine;
 };

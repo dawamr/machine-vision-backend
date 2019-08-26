@@ -11,9 +11,6 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      order: {
-        type: Sequelize.INTEGER
-      },
       deleted_at: {
         type: Sequelize.DATE
       },
@@ -26,7 +23,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     }).then(() => {
-      queryInterface.addIndex('sectors', ['name', 'order', 'created_at', 'deleted_at'])
+      queryInterface.addIndex('sectors', ['name', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {
