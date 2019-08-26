@@ -47,6 +47,9 @@ module.exports = {
 
     return product
       .findAndCountAll({
+        include: [{
+          model: productCategory,
+        }],
         where: options,
         order: [
           [orderBy, sortBy]
@@ -85,7 +88,6 @@ module.exports = {
       .findAll({
         include: [{
           model: productCategory,
-          as: 'product_category',
         }],
         where: options,
         order: [
@@ -103,7 +105,11 @@ module.exports = {
 
   detail(req, res) {
     return product
-      .findByPk(req.params.id)
+      .findByPk(req.params.id, {
+        include: [{
+          model: productCategory,
+        }],
+      })
       .then(productResult => {
         if (!productResult) {
           resp.ok(false, "product not found.", null, res.status(400));

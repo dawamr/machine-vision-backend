@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const product_category = sequelize.define('product_categories', {
+  const product_category = sequelize.define('product_category', {
     name: DataTypes.STRING,
     deleted_at: DataTypes.DATE
   }, {
@@ -10,9 +10,10 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   });
   product_category.associate =  function(models) {
-    // product_category.hasMany(models.product, { 
-    //   foreignKey: 'product_category_id' 
-    // });      
+    product_category.belongsTo(models.product, { 
+      foreignKey: 'id',
+      targetKey: 'product_category_id'
+    });
   };
   return product_category;
 };
