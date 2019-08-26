@@ -33,7 +33,9 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   });
   plant.associate = function(models) {
-    // associations can be defined here
+    // plant.hasMany(models.sector,{foreignKey:'plant_id'});
+    // plant.hasMany(models.line,{foreignKey: 'plant_id'});
+    // plant.hasMany(models.team, {foreignKey: 'plant_id'});
   };
   return plant;
 };
