@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('teams', {
+    return queryInterface.createTable('user_teams', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,7 +11,7 @@ module.exports = {
       user_id: {
         type: Sequelize.UUID
       },
-      order: {
+      team_id: {
         type: Sequelize.INTEGER
       },
       deleted_at: {
@@ -26,10 +26,10 @@ module.exports = {
         type: Sequelize.DATE
       }
     }).then(() => {
-      queryInterface.addIndex('teams', ['name', 'order', 'created_at', 'deleted_at'])
+      queryInterface.addIndex('user_teams', ['user_id', 'team_id', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('teams');
+    return queryInterface.dropTable('user_teams');
   }
 };

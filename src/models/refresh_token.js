@@ -4,6 +4,10 @@ module.exports = (sequelize, DataTypes) => {
     refresh_token: DataTypes.TEXT,
     token: DataTypes.TEXT
   }, {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
+    paranoid: true,
     underscored: true
   });
   refresh_token.associate = function(models) {

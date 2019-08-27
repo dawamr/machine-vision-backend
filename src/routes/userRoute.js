@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/UserController');
-const serviceResponse = require('../helpers/ServiceResponse');
+const userController = require('../../src/controllers/UserController');
+const serviceResponse = require('../../src/helpers/ServiceResponse');
 
 
 router.post('/create', userController.create, serviceResponse);

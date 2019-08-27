@@ -49,12 +49,13 @@ function UserController() {
 
   const create = async (req, res, next) => {
     let userObj = req.body;
-
+    console.log(userObj);
     try {
 
       const user = await UserService.create(userObj)
       if (user) {
-        let id = user.id
+         let id = user.id
+
         let payload = {
           iss: req.hostname,
           sub: id,

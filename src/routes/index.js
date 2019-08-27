@@ -5,10 +5,11 @@ module.exports = (express) => {
   .unless({
     path: [{
       url: '/api',
-      methods: ['GET', 'POST'],
+      methods: ['GET'],
       message: 'Welcome to the MV API!'
-    }, {
-      url: '/api/user/login',
+    }, 
+    {
+      url: '/api/user/create',
       methods: ['POST']
     }]
   }));
