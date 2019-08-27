@@ -7,7 +7,7 @@ const product_categories = require('./product_categories');
 const job_descriptions = require('./job_descriptions');
 const sectors = require('./sectors');
 const process_machines = require('./process_machines');
-
+const machines = require('./machines');
 module.exports = {
   departments,
   shifts,
@@ -18,4 +18,5 @@ module.exports = {
   job_descriptions,
   sectors,
   process_machines,
+  machines,
 };

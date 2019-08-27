@@ -1,5 +1,4 @@
 const processMachine = require('../models').process_machine;
-const product = require('../models').product;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
@@ -7,9 +6,10 @@ const sequelize = require('sequelize');
 module.exports = {
   create(req, res){
     let data = []
-    if (((req.body.process_id != undefined) && (req.body.process_id.toString().length > 0)) && ((req.body.machine_id != undefined) && (req.body.machine_id.length > 0))) {
+    if (((req.body.line_id != undefined) && (req.body.line_id.toString().length > 0)) && ((req.body.process_id != undefined) && (req.body.process_id.toString().length > 0)) && ((req.body.machine_id != undefined) && (req.body.machine_id.length > 0))) {
       req.body.machine_id.forEach(machine_id => {
         let insertData = {
+          "line_id": req.body.line_id,
           "process_id": req.body.process_id,
           "machine_id": machine_id
         };
@@ -17,7 +17,7 @@ module.exports = {
       });
 
     } else {
-      resp.ok(false, "Fields process_id and machine_id required.", null, res.status(400));
+      resp.ok(false, "Fields line_id, process_id and machine_id required.", null, res.status(400));
     }
 
     return processMachine
@@ -136,6 +136,7 @@ module.exports = {
 
         return processMachine
           .update({
+            line_id: req.body.line_id || processMachine.line_id,
             process_id: req.body.process_id || processMachine.process_id,
             machine_id: req.body.machine_id || processMachine.machine_id,
           })

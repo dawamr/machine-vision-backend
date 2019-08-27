@@ -14,6 +14,9 @@ module.exports = {
       machine_id: {
         type: Sequelize.INTEGER
       },
+      line_id: {
+        type: Sequelize.INTEGER
+      },
       deleted_at: {
         type: Sequelize.DATE
       },
@@ -26,7 +29,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     }).then(() => {
-      queryInterface.addIndex('process_machines', ['process_id', 'machine_id', 'created_at', 'deleted_at'])
+      queryInterface.addIndex('process_machines', ['process_id', 'machine_id', 'line_id', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {

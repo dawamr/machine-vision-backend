@@ -40,7 +40,10 @@ module.exports = {
       perPage = req.query.per_page;
     }
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('product.name')), 'LIKE', '%' + req.query.search + '%');
+    }
+    if ((req.query.product_category_id != undefined) && (req.query.product_category_id.length > 0)){
+      options.product_category_id = sequelize.where(sequelize.col('product.product_category_id'), '=', req.query.product_category_id);
     }
 
     let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
@@ -81,7 +84,7 @@ module.exports = {
       sortBy = req.query.sort_by;
     }
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('product.name')), 'LIKE', '%' + req.query.search + '%');
     }
 
     return product
