@@ -6,6 +6,7 @@ const product = require('./product');
 const productCategory = require('./product_category');
 const jobDescription = require('./job_description');
 const sector = require('./sector');
+const processMachine = require('./process_machine')
 const resp = require('../views/response');
 
 module.exports = (app) => {
@@ -21,6 +22,7 @@ module.exports = (app) => {
   app.use('/api/product_category', productCategory);
   app.use('/api/job_description', jobDescription);
   app.use('/api/sector', sector);
+  app.use('/api/process_machine', processMachine);
 
   app.use(function(req, res, next) {
     resp.ok(false, "Error 404 not found.", null, res.status(404));

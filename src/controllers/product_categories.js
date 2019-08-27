@@ -132,7 +132,7 @@ module.exports = {
 
         return productCategory
           .update({
-            name: req.body.name || productCategoryResult.name,
+            name: req.body.name || productCategory.name,
           })
           .then(productCategory => {
             resp.ok(true, "Success update product_category.", productCategory.dataValues, res);
