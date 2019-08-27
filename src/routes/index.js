@@ -9,7 +9,7 @@ module.exports = (express) => {
       message: 'Welcome to the MV API!'
     }, 
     {
-      url: '/api/user/create',
+      url: '/api/user/login',
       methods: ['POST']
     }]
   }));
