@@ -7,14 +7,17 @@ const productCategory = require('./product_category');
 const jobDescription = require('./job_description');
 const sector = require('./sector');
 const processMachine = require('./process_machine');
-const machine = require('./machine');
+const machine = require('./machine');;
+const uploadFile = require('./upload_file');
 const resp = require('../views/response');
+const express = require('express')
 
 module.exports = (app) => {
   app.get('/api', (req, res) => res.status(200).send({
     message: 'Welcome to the MV API!',
   }));
 
+  app.use(express.static('public'));
   app.use('/api/department', department);
   app.use('/api/shift', shift);
   app.use('/api/plant', plant);
@@ -25,6 +28,7 @@ module.exports = (app) => {
   app.use('/api/sector', sector);
   app.use('/api/process_machine', processMachine);
   app.use('/api/machine', machine);
+  app.use('/api/upload', uploadFile);
 
   app.use(function(req, res, next) {
     resp.ok(false, "Error 404 not found.", null, res.status(404));
