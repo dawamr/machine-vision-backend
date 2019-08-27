@@ -160,6 +160,19 @@ function UserController() {
   };
 
 
+  const revokeRefreshToken = (req, res, next) => {
+    const refreshToken = req.params.refresh_token;
+    RefreshTokenService.revoke(refreshToken)
+      .then(revoked => {
+        req.data = revoked;
+        next();
+      })
+      .catch(err => {
+        throw err;
+      });
+  }
+
+
   return {
     login,
     create,
@@ -167,7 +180,8 @@ function UserController() {
     update,
     remove,
     all,
-    list
+    list,
+    revokeRefreshToken
   };
 }
 
