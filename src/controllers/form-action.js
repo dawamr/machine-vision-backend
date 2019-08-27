@@ -77,17 +77,23 @@ module.exports = {
     },
 
     create(req,res){
-        // console.log('ok')
-        return FormField
-        .create({
-            form_id: req.body.form_id,
-            types: req.body.type,
-            configuration: req.body.configuration,
-            is_required: req.body.is_required,
-            order: req.body.order
-        })
-        .then(created => res.status(201).send(created))
-        .catch(error => res.status(400).send(error));
+        console.log(req.body.length)
+
+        let data = req.body
+        var data_field = []
+        res.json[data]
+        
+        for (let index = 0; index < data.length; index++) {
+            data_field = FormField.create({
+                form_id: data[index].form_id,
+                types: data[index].type,
+                configuration: data[index].configuration,
+                is_required: data[index].is_required,
+                order: data[index].order
+            })
+        }
+        Promise.all(data_field, create_form).then((values)=> res.json(values))
+
     },
     update(req,res){
         return FormField

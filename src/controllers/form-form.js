@@ -93,24 +93,6 @@ module.exports = {
         Promise.all([form_list,form_field]).then(function(values) {
             res.json(values)
         });
-        
-            // form_field = await FormField.findOne({
-            //     attributes: ['id','form_id','types','configuration','is_required','order'],
-            //     where: {
-            //         'form_id' : req.params.id
-            //     }
-            // })
-            
-            
-            // list_form = await FormForm.findOne({
-            //     attributes:['id','name','types','is_template'],
-            //     include: [form_field],
-            //     where: {
-            //         'id' : req.params.id
-            //     }
-            // })
-
-            // console.log(list_form.get('name'))
     },
 
     create(req,res){
