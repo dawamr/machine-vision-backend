@@ -143,23 +143,25 @@ module.exports = {
         .then(data => res.status(201).send(data))
         .catch(error => res.status(400).send(error));
     },
-
+    
     search(req,res){
-        console.log(req.query.name)
-        return FormForm
-        .findAll({
-            attributes: ['id','sub_category_id','name','types','is_template','createdAt','updatedAt'],
-            order: [
-                ['name', 'Asc']
-            ],
+        var subCat = {
+            model: FormSubCategory,
+            as: 'sub_category',
+            attributes: ['name'],
+        }
+        return FormForm.findAll({
+            include: [subCat],
+            attributes : ['id','sub_category_id','name','types','is_template','createdAt','updatedAt'],
             where: {
                 name : {
                     [Op.like] : '%'+req.query.name+'%'
                 }
-            },
+            }
         })
-        .then(search => res.status(201).send(search))
+        .then(data => res.status(201).send(data))
         .catch(error => res.status(400).send(error));
+        
     }
 
 }

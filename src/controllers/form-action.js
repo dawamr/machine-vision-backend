@@ -77,22 +77,24 @@ module.exports = {
     },
 
     create(req,res){
-        console.log(req.body.length)
+        // console.log(req.body.length)
 
-        let data = req.body
-        var data_field = []
-        res.json[data]
-        
+        let data = req.body[1].form_field
+        let data_field = []
         for (let index = 0; index < data.length; index++) {
-            data_field = FormField.create({
-                form_id: data[index].form_id,
-                types: data[index].type,
+            data_field.push(FormField.create({
+                form_id: req.body[0].form_id,
+                types: data[index].type,    
                 configuration: data[index].configuration,
                 is_required: data[index].is_required,
                 order: data[index].order
-            })
+            }))
+            
         }
-        Promise.all(data_field, create_form).then((values)=> res.json(values))
+        Promise.all(data_field).then((data)=>{
+            //Create Form Response
+            
+        });
 
     },
     update(req,res){
@@ -116,7 +118,6 @@ module.exports = {
         .then(updated => res.status(201).send(updated))
         .catch(error => res.status(400).send(error));
     },
-
     delete(req,res){
         const deleteThis= FormField.destroy({ where: {
             id: req.params.id

@@ -30,14 +30,14 @@ module.exports = (app) => {
   // (Form Builder) Form list
   app.post('/api/form', formFormController.create)
   app.get('/api/form', formFormController.list)
+  app.get('/api/search/form', formFormController.search) // not working
   app.get('/api/form/:id', formFormController.show)
   app.put('/api/form/:id', formFormController.update)
   app.delete('/api/form/:id', formFormController.delete)
-  app.get('/api/form/search', formFormController.search)
 
   // (Form Builder) Form Action
   app.post('/api/form/action', formAction.create)
-  app.get('/api/form/action', formAction.list)
+  app.get('/api/action/form/', formAction.list)
   app.put('/api/form/action/:id', formAction.update)
   app.delete('/api/form/action/:id', formAction.delete)
   
