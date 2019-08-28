@@ -14,6 +14,7 @@ const process_machines = require('./process_machines');
 const machines = require('./machines');
 const parameters_index = require('./parameters_controller');
 const parameter_category = require('./parameter_category_controller');
+const users = require('./users');
 
 module.exports = {
   form_category,
@@ -31,5 +32,7 @@ module.exports = {
   process_machines,
   machines,   
   parameters_index,
-  parameter_category
+  parameter_category,
+  machines,
+  users,
 };

@@ -11,18 +11,30 @@ const sector = require('./sector');
 const processMachine = require('./process_machine');
 const machine = require('./machine');;
 const uploadFile = require('./upload_file');
+const user = require('./user');
 const resp = require('../views/response');
 const formCategoryController = require('../controllers').form_category;
 const formSubCategoryController = require('../controllers').form_sub_category;
 const formFormController = require('../controllers').form_form;
 const formAction = require('../controllers').form_action;
-// console.log(Object.keys(require('../controllers')));
 const express = require('express')
 
-module.exports = (app) => {
+const express = require('express');
+const app = express.Router();
+const accessToken = require('../middleware/AccessTokenMiddleware');
 
-  app.get('/api', (req, res) => res.status(200).send({
-    message: 'Welcome to the MV API!',
+module.exports = (express) => {
+  app.use(accessToken
+  .unless({
+    path: [{
+      url: '/api',
+      methods: ['GET'],
+      message: 'Welcome to the MV API!'
+    }, 
+    {
+      url: '/api/user/login',
+      methods: ['POST']
+    }]
   }));
   
   // (Form Builder) Category 
@@ -56,8 +68,9 @@ module.exports = (app) => {
   app.put('/api/form/action/:id', formAction.update)
   app.delete('/api/form/action/:id', formAction.delete)
   
-
+  
   app.use(express.static('public'));
+  app.use('/api/user', user);
   app.use('/api/department', department);
   app.use('/api/shift', shift);
   app.use('/api/plant', plant);
@@ -75,22 +88,25 @@ module.exports = (app) => {
   });
 
   app.use(function (err, req, res, next) {
+    console.log(err)
     switch(err.status) { 
       case 400: { 
         console.log(err); 
         resp.ok(false, "Error 400 : " + err.type, null, res.status(400));
         break; 
       }
+      case 401: { 
+        console.log(err); 
+        resp.ok(false, err.message, null, res.status(401));
+        break; 
+      }
       case undefined: { 
         console.log(err);
-        resp.ok(false, "Error " + err.status + " : " + err.type, null, res.status(500)); 
-        break;              
-      } 
-      default: { 
-        console.log(err);
-        resp.ok(false, "Error " + res.status + " : " + err.type, null, res.status(res.status)); 
+        resp.ok(false, err, null, res.status(500)); 
         break;              
       } 
    } 
   });
-}
+
+  return app;
+};

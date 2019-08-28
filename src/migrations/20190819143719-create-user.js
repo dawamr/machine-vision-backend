@@ -1,12 +1,13 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
+    return queryInterface.sequelize.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";')
+    .then(() => {
     return queryInterface.createTable('users', {
       id: {
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4
+        type: Sequelize.UUID
       },
       name: {
         type: Sequelize.STRING
@@ -55,9 +56,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    }).then(() => {
+    })
+    .then(() => {
       queryInterface.addIndex('users', ['name', 'username', 'password', 'sector_id', 'line_id', 'machine_id', 'team_id', 'department_id', 'job_description_id', 'shift_id', 'created_at', 'deleted_at'])
     });
+  })
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('users');

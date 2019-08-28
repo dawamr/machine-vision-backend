@@ -11,9 +11,8 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   });
   product.associate = function(models) {
-    product.hasOne(models.product_category, {
-      foreignKey: 'id',
-      sourceKey: 'product_category_id'
+    product.belongsTo(models.product_category, {
+      foreignKey: 'product_category_id'
     });
   };
   return product;
