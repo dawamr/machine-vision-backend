@@ -9,5 +9,3 @@
 * pg-hstore
 * sequelize
 * sequelize-cli
-
-
