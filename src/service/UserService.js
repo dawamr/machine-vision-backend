@@ -4,6 +4,7 @@ const AuthenticationService = require('./AuthenticationService');
 const UserModel = require('../models').user;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+const team = require('../models').team;
 
 /**
  * UserService Service
@@ -21,6 +22,9 @@ function UserService() {
 
     return new Promise((resolve, reject) => {
       UserModel.findOne({
+        include: [{
+          model: team,
+        }],
         where: {
           id: id
         }

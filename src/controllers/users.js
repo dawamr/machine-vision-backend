@@ -3,6 +3,12 @@ const AuthenticationService = require('../service/AuthenticationService');
 const UserService = require('../service/UserService');
 const randomstring = require("randomstring");
 const RefreshTokenService = require("../service/RefreshTokenService");
+const resp = require('../views/response');
+const pagination = require('../utils/pagination');
+const user = require('../models').user;
+const team = require('../models').team;
+const sequelize = require('sequelize');
+
 
 function UserController() {
 
@@ -43,115 +49,121 @@ function UserController() {
   };
 
 
-  const create = async (req, res, next) => {
+  const create = async (req, res) => {
     let userObj = req.body;
-    console.log(userObj);
     try {
-
       const user = await UserService.create(userObj)
       if (user) {
-         let id = user.id
-
-        let payload = {
-          iss: req.hostname,
-          sub: id,
-          data: user
-        };
-
-        let token = JWTService.encode(payload);
-
-        let refreshToken = {
-          refresh_token: randomstring.generate(),
-          token: token,
-          user_id: id,
-        }
-
-        refreshToken = await RefreshTokenService.insert(refreshToken);
-
-        req.data = user;
-        req.token = token;
-        req.refresh_token = refreshToken.refresh_token;
-        next();
+        resp.ok(true, "Success create user.", user, res);
+      } else {
+        resp.ok(false, "Failed create user.", null, res);
       }
     } catch (error) {
-      // throw error;
-      next(error);
+      resp.ok(false, "Failed create user.", null, res.status(400));
+      console.log(error);
     }
   };
 
-  const detail = (req, res, next) => {
+  const detail = (req, res) => {
     let id = req.params.id;
 
     return UserService.byId(id)
       .then(user => {
         if (user) {
-          req.data = user;
-          return next();
+          resp.ok(true, "Success get user.", user, res);
+        } else {
+          resp.ok(false, "User not found.", null, res);
         }
       })
       .catch(err => {
-        return next(err);
+        resp.ok(false, "Failed get user.", null, res.status(400));
       });
   };
-  const update = (req, res, next) => {
+
+  const update = (req, res) => {
     let id = req.params.id;
     let userObj = req.body;
     return UserService.update(id, userObj)
       .then((user) => {
-        req.data = user;
-        return next();
+        resp.ok(true, "Success update user.", user, res);
       })
       .catch(err => {
-        return next(err);
+        resp.ok(false, "Failed update user.", null, res.status(400));
       });
   };
-  const remove = (req, res, next) => {
+
+  const remove = (req, res) => {
     const id = req.params.id;
     return UserService.remove(id)
-      .then((users) => {
-        req.data = !!users;
-        return next();
-      })
-      .catch(err => {
-        throw err;
-      });
-  };
-
-  const all = (req, res, next) => {
-    return UserService.getAll()
-    .then((user) => {
-      req.data = user;
-      next();
-    })
-    .catch(err => {
-      next(err);
-    });
-  }; 
-
-  const list = (req, res, next) => {
-    let params = {
-      query: req.query,
-      username: req.body.username,
-      name:req.body.name,
-      pageSize: req.query.limit,
-      page: req.query.page,
-      sort: req.query.sort,
-    };
-    return UserService.list(params)
-      .then((users) => {
-        if (users) {
-          req.pagination = {
-            page: params.page,
-            pageSize: params.pageSize,
-            rowCount: users.count,
-            pageCount: 0
-          };
-          req.data = users.rows;
-          return next();
+      .then((user) => {
+        if (user) {
+          resp.ok(true, "Success delete user.", user, res);
+        } else {
+          resp.ok(false, "User not found.", null, res);
         }
       })
       .catch(err => {
-        throw err;
+        resp.ok(false, "Failed delete user.", null, res.status(400));
+        reject(err);
+      });
+  };
+
+  const all = (req, res) => {
+    return UserService.getAll()
+    .then((user) => {
+      resp.ok(true, "Success get list all user.", user, res);
+    })
+    .catch(err => {
+      resp.ok(false, "Failed get list all  user.", null, res.status(400));
+    });
+  }; 
+
+  const list = (req, res) => {
+    let orderBy = 'created_at';
+    let sortBy = 'desc';
+    let page = 1;
+    let perPage = 10;
+    let options = {};
+
+    if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
+      orderBy = req.query.order_by;
+    }
+    if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
+      sortBy = req.query.sort_by;
+    }
+    if ((req.query.page != undefined) && (req.query.page.length > 0)) {
+      page = req.query.page;
+    }
+    if ((req.query.per_page != undefined) && (req.query.per_page.length > 0)) {
+      perPage = req.query.per_page;
+    }
+    if ((req.query.search != undefined) && (req.query.search.length > 0)){
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('user.name')), 'LIKE', '%' + req.query.search + '%');
+    }
+
+    let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
+
+    return user
+      .findAndCountAll({
+        include: [{
+          model: team,
+        }],
+        where: options,
+        order: [
+          [orderBy, sortBy]
+        ],
+        limit:  perPageResult,
+        offset: offsetResult,
+      })
+      .then(userResult => {
+        let totalPage = Math.ceil(userResult.count / perPage);
+        let data = resp.paging(userResult.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, userResult.count);
+
+        resp.ok(true, "Get list data user.", data, res);
+      })
+      .catch((error) => {
+        resp.ok(false, "Failed get list data user.", null, res.status(400));
+        console.log(error);
       });
   };
 
