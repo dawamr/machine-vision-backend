@@ -1,5 +1,4 @@
-module.exports = (app) => {
-  
+
   // Setup Router
 const department = require('./department');
 const shift = require('./shift');

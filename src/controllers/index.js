@@ -1,4 +1,3 @@
-<<<<<<< src/controllers/index.js
 const form_category = require('./form-category');
 const form_sub_category = require('./form-sub-category');
 const form_form = require('./form-form');
