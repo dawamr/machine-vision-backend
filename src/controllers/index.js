@@ -8,6 +8,8 @@ const job_descriptions = require('./job_descriptions');
 const sectors = require('./sectors');
 const process_machines = require('./process_machines');
 const machines = require('./machines');
+const users = require('./users');
+
 module.exports = {
   departments,
   shifts,
@@ -19,4 +21,5 @@ module.exports = {
   sectors,
   process_machines,
   machines,
+  users,
 };
