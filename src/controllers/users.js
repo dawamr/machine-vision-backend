@@ -80,7 +80,7 @@ function UserController() {
   };
 
   const detail = (req, res, next) => {
-    let id = req.params.user_id;
+    let id = req.params.id;
 
     return UserService.byId(id)
       .then(user => {
@@ -94,7 +94,7 @@ function UserController() {
       });
   };
   const update = (req, res, next) => {
-    let id = req.params.user_id;
+    let id = req.params.id;
     let userObj = req.body;
     return UserService.update(id, userObj)
       .then((user) => {
