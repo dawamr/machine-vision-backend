@@ -8,13 +8,14 @@ module.exports = {
         .create({
             name: req.body.name
         })
-        .then(create => res.status(400).send(create))
+        .then(create => res.status(200).send(create))
         .catch(error => res.status(400).send(error));
     },
     list(req,res){
-        return parameter_category
-        .findAll()
-        .then(parameter_categories => res.status(400).send(parameter_categories))
+      return parameter_category
+      .findAll({
+    })
+        .then(parameter_categories => res.status(200).send(parameter_categories))
             .catch(error => res.status(400).send(error));
     },
     update(req, res) {
@@ -38,7 +39,7 @@ module.exports = {
       },
       destroy(req, res) {
         return parameter_category
-          .findByPk(req.params.todoId)
+          .findByPk(req.params.id)
           .then(parameter_categories => {
             if (!parameter_categories) {
               return res.status(400).send({
@@ -58,9 +59,6 @@ module.exports = {
             where: {
                 id : req.params.id
             },
-        })
-        .then((parameter_category)=>{
-            return parameter_category.destroy()
         })
         .then(parameter_id  => res.status(201).send(parameter_id))
         .catch(error => res.status(400).send(error));

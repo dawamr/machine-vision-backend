@@ -30,7 +30,7 @@ module.exports = {
     destroy(req,res){
         return parameters_index
         .findOne({
-            attributes:['id','name'],
+            attributes:['id','name','group','level','configuration','type'],
             where : {
                 id : req.params.id
             }
@@ -57,8 +57,8 @@ module.exports = {
         }
         
         return parameters_index.findAll({
-            attributes: ['id','name'],
-            include: ['parameter_category']
+            attributes: ['id','name',],
+            include: ['parameter_category',]
         })
         .then(data => res.json(data))
         .catch(err => res.json(err))
@@ -67,9 +67,9 @@ module.exports = {
     search(req,res){
     return parameters_index
     .findOne({
-        attributes:['id','name'],
+        attributes:['id','name','group','level','configuration','type'],
         where : {
-            id : req.params.id
+            id : req.params.id,
         }
     }).then(data => res.json(data))
     .catch(err =>res.json(err))
