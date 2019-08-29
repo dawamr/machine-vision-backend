@@ -11,7 +11,11 @@ module.exports = (express) => {
     {
       url: '/api/user/login',
       methods: ['POST']
-    }]
+    },
+  {
+    url: '/api/line',
+    methods: ['POST']
+  }]
   }));
 
   router.use('/api/user', require('./userRoute'));
@@ -23,6 +27,7 @@ module.exports = (express) => {
   router.use('/api/product_category',  require('./product_category'));
   router.use('/api/job_description',  require('./job_description'));
   router.use('/api/sector',  require('./sector'));
+  router.use('/api/line', require('./line'));
 
   router.use(function(req, res, next) {
     resp.ok(false, "Error 404 not found.", null, res.status(404));

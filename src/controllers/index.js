@@ -6,6 +6,7 @@ const products = require('./products');
 const product_categories = require('./product_categories');
 const job_descriptions = require('./job_descriptions');
 const sectors = require('./sectors');
+const line = require('./line');
 
 module.exports = {
   departments,
@@ -16,4 +17,5 @@ module.exports = {
   product_categories,
   job_descriptions,
   sectors,
+  line
 };

@@ -109,7 +109,6 @@ function UserService() {
 
     delete paramsObj.page;
     delete paramsObj.pageSize;
-    const allowedSort = ['username', 'name', 'createdAt', 'updatedAt'];
     let sortKey = 'createdAt';
     let sortType = 'desc';
     if ((paramsObj.sort != undefined) && (paramsObj.sort.length > 0)) {

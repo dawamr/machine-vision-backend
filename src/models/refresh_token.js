@@ -7,8 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     createdAt: 'created_at',
     updatedAt: 'updated_at',
     deletedAt: 'deleted_at',
-    paranoid: true,
-    underscored: true
+    paranoid: true
   });
   refresh_token.associate = function(models) {
     // associations can be defined here

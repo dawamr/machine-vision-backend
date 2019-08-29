@@ -1,5 +1,5 @@
 const moment = require('moment');
-const config = require('./../config/setting');
+const config = require('../config/setting');
 const JWTService = require('../service/JWTService');
 const bcrypt = require('bcrypt-nodejs');
 const AuthenticationService = require('../service/AuthenticationService');
@@ -8,7 +8,7 @@ const fs = require('fs-extra');
 const randomstring = require("randomstring");
 const RefreshTokenService = require("../service/RefreshTokenService");
 
-function UserController() {
+function user() {
 
   const login = (req, res, next) => {
     let username = req.body.username;
@@ -49,7 +49,6 @@ function UserController() {
 
   const create = async (req, res, next) => {
     let userObj = req.body;
-    console.log(userObj);
     try {
 
       const user = await UserService.create(userObj)
@@ -186,4 +185,4 @@ function UserController() {
   };
 }
 
-module.exports = UserController();
+module.exports = user();

@@ -15,10 +15,13 @@ module.exports = (sequelize, DataTypes) => {
     line.belongsTo(models.sector, {
       foreignKey: 'sector_id'
     });
-    // line.hasMany(models.product_category, {
-    //   foreignKey: 'product_category_id'
-    // });
+    line.hasMany(models.product_category, {
+      foreignKey: 'product_category_id'
+    });
     line.hasMany(models.user, {
+      foreignKey: 'line_id'
+    });
+    line.hasMany(models.process_machine, {
       foreignKey: 'line_id'
     });
   };
