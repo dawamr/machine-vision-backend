@@ -40,7 +40,7 @@ module.exports = {
       perPage = req.query.per_page;
     }
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('team.name')), 'LIKE', '%' + req.query.search + '%');
     }
 
     let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
@@ -82,7 +82,7 @@ module.exports = {
       sortBy = req.query.sort_by;
     }
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('team.name')), 'LIKE', '%' + req.query.search + '%');
     }
 
     return team

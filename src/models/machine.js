@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const machine = sequelize.define('machine', {
     name: DataTypes.STRING,
     code: DataTypes.STRING,
+    image: DataTypes.STRING,
     manufacturer: DataTypes.STRING,
     build_year: DataTypes.STRING,
     asset_number: DataTypes.STRING,
@@ -13,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
     sensor_total_status: DataTypes.BOOLEAN,
     sensor_reject_status: DataTypes.BOOLEAN,
     sensor_good_status: DataTypes.BOOLEAN,
-    order: DataTypes.INTEGER,
     deleted_at: DataTypes.DATE
   }, {
     createdAt: 'created_at',
@@ -25,12 +25,16 @@ module.exports = (sequelize, DataTypes) => {
     // machine.belongsTo(models.data_sensor, {
     //   foreignKey: 'data_sensor_id'
     // });
-    machine.belongsTo(models.process_machine, {
-      foreignKey: 'process_machine_id'
+    machine.hasMany(models.process_machine, {
+      foreignKey: 'machine_id'
     });
-    machine.hasMany(models.user, {
-      foreignKey:'machine_id'
+    machine.belongsToMany(models.line, {
+      through: 'process_machine',
+      foreignKey: 'machine_id'
     });
+    // machine.hasMany(models.user, {
+    //   foreignKey:'machine_id'
+    // });
   };
   return machine;
 };

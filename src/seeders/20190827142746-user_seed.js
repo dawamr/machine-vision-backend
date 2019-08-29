@@ -1,5 +1,6 @@
 'use strict';
-
+// username : implementor
+// password : 123456
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('users', [{

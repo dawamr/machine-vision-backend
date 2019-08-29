@@ -25,6 +25,8 @@ module.exports = {
       deleted_at: {
         type: Sequelize.DATE
       }
+    }).then(() => {
+      queryInterface.addIndex('refresh_tokens', ['refresh_token', 'token', 'created_at'])
     });
   },
   down: (queryInterface, Sequelize) => {

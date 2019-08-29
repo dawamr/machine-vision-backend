@@ -39,7 +39,7 @@ module.exports = {
       perPage = req.query.per_page;
     }
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('product_category.name')), 'LIKE', '%' + req.query.search + '%');
     }
 
     let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
@@ -80,7 +80,7 @@ module.exports = {
       sortBy = req.query.sort_by;
     }
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('product_category.name')), 'LIKE', '%' + req.query.search + '%');
     }
 
     return productCategory
@@ -132,7 +132,7 @@ module.exports = {
 
         return productCategory
           .update({
-            name: req.body.name || productCategoryResult.name,
+            name: req.body.name || productCategory.name,
           })
           .then(productCategory => {
             resp.ok(true, "Success update product_category.", productCategory.dataValues, res);

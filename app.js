@@ -21,27 +21,27 @@ app.use(bodyParser.urlencoded({
 app.use(apiEndpoint(express));
 
 // handle 404 error
-app.use((req, res, next) => {
-  let err = new Error('Path Not Found');
-  err.status = 404;
-  next(err);
-});
+// app.use((req, res, next) => {
+//   let err = new Error('Path Not Found');
+//   err.status = 404;
+//   next(err);
+// });
 
 // handle server error
-app.use((err, req, res, next) => {
-  let statusCode = err.code;
-  if (statusCode >= 100 && statusCode < 600)
-    res.status(statusCode);
-  else
-    res.status(500);
-  let message = err.message;
-  delete err.message;
-  delete err.code;
-  res.json({
-    status: false,
-    message: message,
-    data: err
-  });
-});
+// app.use((err, req, res, next) => {
+//   let statusCode = err.code;
+//   if (statusCode >= 100 && statusCode < 600)
+//     res.status(statusCode);
+//   else
+//     res.status(500);
+//   let message = err.message;
+//   delete err.message;
+//   delete err.code;
+//   res.json({
+//     status: false,
+//     message: message,
+//     data: err
+//   });
+// });
 
 module.exports = app;

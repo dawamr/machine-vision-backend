@@ -14,6 +14,9 @@ module.exports = {
       code: {
         type: Sequelize.STRING
       },
+      image: {
+        type: Sequelize.STRING
+      },
       manufacturer: {
         type: Sequelize.STRING
       },
@@ -44,9 +47,6 @@ module.exports = {
       sensor_good_status: {
         type: Sequelize.BOOLEAN
       },
-      order: {
-        type: Sequelize.INTEGER
-      },
       deleted_at: {
         type: Sequelize.DATE
       },
@@ -59,7 +59,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     }).then(() => {
-      queryInterface.addIndex('machines', ['name', 'code', 'manufacturer', 'build_year', 'asset_number', 'order', 'created_at', 'deleted_at'])
+      queryInterface.addIndex('machines', ['name', 'code', 'manufacturer', 'build_year', 'asset_number', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {

@@ -16,7 +16,6 @@ function RefreshTokenService() {
   }
 
   const getByTokenAndUser = (token) => {
-    console.log(token)
     return new Promise((resolve, reject) => {
       RefreshTokenModel.findOne({
         where: {
@@ -49,10 +48,27 @@ function RefreshTokenService() {
     });
   }
 
+  const getByToken = (token) => {
+    return new Promise((resolve, reject) => {
+      RefreshTokenModel.findOne({
+        where: {
+          token: token,
+        }
+      })
+        .then(token => {
+          resolve(token);
+        })
+        .catch(err => {
+          reject(err);
+        })
+    });
+  }
+
   return {
     insert,
     getByTokenAndUser,
-    revoke
+    revoke,
+    getByToken
   }
 }
 

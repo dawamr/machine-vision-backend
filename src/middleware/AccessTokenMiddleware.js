@@ -23,8 +23,10 @@ function AccessTokenMiddleware(req, res, next) {
       next(err);
     }
   } else {
-    let error = Error('Access token not found');
+    let error = new Error();
     error.code = 401;
+    error.status = 401;
+    error.message = 'Access token not found';
     next(error);
   }
 }
