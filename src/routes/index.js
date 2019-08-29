@@ -32,11 +32,7 @@ module.exports = (express) => {
     {
       url: '/api/user/login',
       methods: ['POST']
-    },
-  {
-    url: '/api/line',
-    methods: ['POST']
-  }]
+    }]
   }));
   
   // (Form Builder) Category 
