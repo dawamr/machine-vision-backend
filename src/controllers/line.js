@@ -27,7 +27,6 @@ module.exports = {
 
     let paramsObj = {
       query: req.query,
-      username: req.body.username,
       name:req.body.name,
       pageSize: req.query.limit,
       page: req.query.page,

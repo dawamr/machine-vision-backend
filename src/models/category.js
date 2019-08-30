@@ -1,0 +1,20 @@
+'use strict';
+module.exports = (sequelize, DataTypes) => {
+  const category = sequelize.define('category', {
+    name: DataTypes.STRING,
+    deleted_at: DataTypes.DATE
+  }, {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    deletedAt: 'deleted_at',
+    paranoid: true
+  });
+  category.associate = function(models) {
+    category.belongsToMany(models.reason, {
+      through: 'category_reason',
+      foreignKey: 'category_id',
+      otherKey: 'reason_id'
+    });
+  };
+  return category;
+};
