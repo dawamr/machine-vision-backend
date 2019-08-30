@@ -1,5 +1,8 @@
 
 const line = require('../models').line;
+const process_machine = require('../models').process_machine;
+const machine = require('../models').machine;
+const process = require('../models').process;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
@@ -133,6 +136,45 @@ module.exports = {
       .catch(err => {
         next(err);
       });
+  },
+  
+  filter(req, res, next) {
+    let lineId = 1;
+    let sectorId = 1;
+
+    if(req.body.line_id != undefined){
+      lineId = req.body.line_id
+    }
+    if(req.body.sector_id != undefined){
+      sectorId = req.body.sector_id
+    }
+
+    return line
+    .findAll({
+      where:{
+        id: lineId,
+        sector_id: sectorId
+      },
+      include: [{
+        model: machine,
+        attributes: [['name','machine_name']],
+        through: {
+          model: process_machine
+        }
+      },{
+        model: process,
+        attributes: [['name','process_name']],
+        through: {
+          model: process_machine
+        }
+      }]
+    })
+    .then(resultLine => {
+      req.data = resultLine;
+      next();
+    }, (err) => {
+      next(err)
+    });
   }
 
 

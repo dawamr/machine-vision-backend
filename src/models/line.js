@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     line.hasMany(models.product_category, {
       foreignKey: 'product_category_id'
     });
-    line.hasMany(models.process_machine, {
+    line.hasMany(models.process, {
       foreignKey: 'line_id'
     });
     line.hasMany(models.user, {
@@ -26,7 +26,13 @@ module.exports = (sequelize, DataTypes) => {
     });
     line.belongsToMany(models.machine, {
       through: 'process_machine',
-      foreignKey: 'line_id'
+      foreignKey: 'line_id',
+      otherKey: 'machine_id'
+    });
+    line.belongsToMany(models.process, {
+      through: 'process_machine',
+      foreignKey: 'line_id',
+      otherKey: 'process_id'
     });
   };
   return line;

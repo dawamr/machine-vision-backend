@@ -10,8 +10,11 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   });
   process.associate = function(models) {
-    process.belongsTo(models.process_machine, {
-      foreignKey: 'process_machine_id'
+    process.belongsToMany(models.machine, {
+      through: 'process_machine',
+      as: 'machines',
+      foreignKey: 'process_id',
+      otherKey: 'machine_id'
     });
   };
   return process;

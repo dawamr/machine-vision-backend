@@ -11,19 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     deletedAt: 'deleted_at',
     paranoid: true
   });
-  process_machine.associate = function(models) {
-    process_machine.hasMany(models.process, {
-      foreignKey: 'process_id'
-    });
-    process_machine.hasMany(models.machine, {
-      foreignKey: 'id',
-      sourceKey: 'machine_id'
-    });
-    process_machine.belongsTo(models.line, {
-      foreignKey: 'id',
-      sourceKey: 'process_machine_id'
-    });
-    process_machine.belongsTo(models.line, { foreignKey: 'process_machine_id'});
+  process_machine.associate = function (models) {
   };
   return process_machine;
 };

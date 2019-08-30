@@ -24,13 +24,15 @@ module.exports = (sequelize, DataTypes) => {
   machine.associate = function(models) {
     // machine.belongsTo(models.data_sensor, {
     //   foreignKey: 'data_sensor_id'
+    // // });
+    // machine.hasMany(models.process_machine, {
+    //   foreignKey: 'machine_id'
     // });
-    machine.hasMany(models.process_machine, {
-      foreignKey: 'machine_id'
-    });
-    machine.belongsToMany(models.line, {
+    machine.belongsToMany(models.process, {
       through: 'process_machine',
-      foreignKey: 'machine_id'
+      as: 'processes',
+      foreignKey: 'machine_id',
+      otherKey: 'process_id'
     });
     // machine.hasMany(models.user, {
     //   foreignKey:'machine_id'

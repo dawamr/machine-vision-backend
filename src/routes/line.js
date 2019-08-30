@@ -9,6 +9,7 @@ router.put('/update/:id', lineController.update, serviceResponse);
 router.get('/all', lineController.listAll, serviceResponse);
 router.get('/list', lineController.list, serviceResponse);
 router.get('/detail/:id', lineController.detail, serviceResponse);
+router.get('/filter', lineController.filter, serviceResponse);
 
 router.delete('/delete/:id',lineController.delete, serviceResponse);
 

@@ -17,6 +17,7 @@ const formCategoryController = require('../controllers').form_category;
 const formSubCategoryController = require('../controllers').form_sub_category;
 const formFormController = require('../controllers').form_form;
 const formAction = require('../controllers').form_action;
+const line = require('./line');
 const express = require('express');
 const app = express.Router();
 const accessToken = require('../middleware/AccessTokenMiddleware');
@@ -80,6 +81,7 @@ module.exports = (express) => {
   app.use('/api/process_machine', processMachine);
   app.use('/api/machine', machine);
   app.use('/api/upload', uploadFile);
+  app.use('/api/line', line);
 
   app.use(function(req, res, next) {
     resp.ok(false, "Error 404 not found.", null, res.status(404));
