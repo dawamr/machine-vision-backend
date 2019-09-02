@@ -57,12 +57,6 @@ module.exports = {
           })
           .then((result) => {
             if (result) {
-              req.pagination = {
-                page: paramsObj.page,
-                pageSize: paramsObj.pageSize,
-                rowCount: result.count,
-                pageCount: 0
-              };
               req.data = result.rows;
               next();
             }

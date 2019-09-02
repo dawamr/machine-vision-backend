@@ -15,24 +15,11 @@ module.exports = (sequelize, DataTypes) => {
     line.belongsTo(models.sector, {
       foreignKey: 'sector_id'
     });
-    line.hasMany(models.product_category, {
+    line.belongsTo(models.product_category, {
       foreignKey: 'product_category_id'
     });
     line.hasMany(models.process, {
       foreignKey: 'line_id'
-    });
-    line.hasMany(models.user, {
-      foreignKey: 'line_id'
-    });
-    line.belongsToMany(models.machine, {
-      through: 'process_machine',
-      foreignKey: 'line_id',
-      otherKey: 'machine_id'
-    });
-    line.belongsToMany(models.process, {
-      through: 'process_machine',
-      foreignKey: 'line_id',
-      otherKey: 'process_id'
     });
   };
   return line;

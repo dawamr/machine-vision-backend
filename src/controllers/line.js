@@ -51,12 +51,6 @@ module.exports = {
       })
       .then((lineResult) => {
         if (lineResult) {
-          req.pagination = {
-            page: paramsObj.page,
-            pageSize: paramsObj.pageSize,
-            rowCount: lineResult.count,
-            pageCount: 0
-          };
           req.data = lineResult.rows;
           next();
         }
@@ -155,17 +149,15 @@ module.exports = {
         sector_id: sectorId
       },
       include: [{
-        model: machine,
-        attributes: [['name','machine_name']],
-        through: {
-          model: process_machine
-        }
-      },{
         model: process,
-        attributes: [['name','process_name']],
-        through: {
-          model: process_machine
-        }
+        attributes: [['id', 'process_id'],['name','process_name']],
+        include: [{
+          model: machine,
+          attributes: [['id', 'machine_id'],['name', 'machine_name']],
+          through: {
+            model: process_machine
+          }
+        }]
       }]
     })
     .then(resultLine => {
@@ -175,6 +167,5 @@ module.exports = {
       next(err)
     });
   }
-
 
 };

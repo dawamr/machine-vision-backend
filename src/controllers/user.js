@@ -144,12 +144,6 @@ function user() {
     return UserService.list(params)
       .then((users) => {
         if (users) {
-          req.pagination = {
-            page: params.page,
-            pageSize: params.pageSize,
-            rowCount: users.count,
-            pageCount: 0
-          };
           req.data = users.rows;
           return next();
         }

@@ -2,7 +2,7 @@ const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const apiEndpoint = require('./src/routes');
-
+const cors = require('cors');
 // Set up the express app
 const app = express();
 
@@ -17,6 +17,8 @@ app.use(bodyParser.urlencoded({
   extended: false,
   limit: '5mb'
 }));
+
+app.use(cors());
 
 app.use(apiEndpoint(express));
 
