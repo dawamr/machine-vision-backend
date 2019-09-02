@@ -17,8 +17,14 @@ module.exports = {
     },
 
     listAll(req, res, next) {
-        return Reason
+        if(req.query != undefined) {
+            return Reason
             .findAll({
+                where:{
+                    impact:{
+                        [Op.like]: (req.query.impact) ? '%' + req.query.impact + '%' : '%'
+                    }
+                },
                 include: [{
                     model: Category,
                     attributes: [
@@ -32,6 +38,61 @@ module.exports = {
             }, (err) => {
                 next(err);
             })
+        }
+        if(req.query.category_id != null) {
+            return Reason
+            .findAll({
+                where:{
+                    category_id: req.query.category_id
+                },
+                include: [{
+                    model: Category,
+                    attributes: [
+                        ['name', 'category_name']
+                    ]
+                }]
+            })
+            .then(result => {
+                req.data = result;
+                next();
+            }, (err) => {
+                next(err);
+            })
+        }
+        if((req.query.category_id != null) && (req.query != undefined)) {
+            return Reason
+            .findAll({
+                where:{
+                    category_id: req.query.category_id,
+                    impact:{
+                        [Op.like]: (req.query.impact) ? '%' + req.query.impact + '%' : '%'
+                    }
+                },
+                include: [{
+                    model: Category,
+                    attributes: [
+                        ['name', 'category_name']
+                    ]
+                }]
+            })
+            .then(result => {
+                req.data = result;
+                next();
+            }, (err) => {
+                next(err);
+            })
+        }
+        else {
+            return Reason
+            .findAll()
+            .then(result => {
+                req.data = result;
+                next();
+            }, (err) => {
+                next(err);
+            })
+        }
+       
     },
 
     list(req, res, next) {
