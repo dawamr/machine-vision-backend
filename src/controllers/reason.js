@@ -8,20 +8,10 @@ module.exports = {
         let reasonObj = req.body;
         return Reason
             .create(reasonObj)
-            .then(reason => {
-                return CategoryReason
-                    .create({
-                        reason_id: reason.dataValues.id,
-                        category_id: reasonObj.category_id
-                    })
-                    .then(result => {
-                        req.data = reason;
-                        next();
-                    }, (err) => {
-                        next(err);
-                    })
-            })
-            .catch(err => {
+            .then(result => {
+                req.data = result;
+                next();
+            }, (err) => {
                 next(err);
             })
     },
@@ -31,7 +21,6 @@ module.exports = {
             .findAll({
                 include: [{
                     model: Category,
-                    through: CategoryReason,
                     attributes: [
                         ['name', 'category_name']
                     ]
@@ -52,7 +41,7 @@ module.exports = {
 
         let paramsObj = {
             query: req.query,
-            name: req.body.name,
+            impact: req.body.impact,
             pageSize: req.query.limit,
             page: req.query.page,
             sort: req.query.sort,
@@ -66,13 +55,12 @@ module.exports = {
         return Reason
             .findAndCountAll({
                 where: {
-                    name: {
-                        [Op.like]: (queryParams.name) ? '%' + queryParams.name + '%' : '%'
+                    impact: {
+                        [Op.like]: (queryParams.impact) ? '%' + queryParams.impact + '%' : '%'
                     }
                 },
                 include: [{
                     model: Category,
-                    through: CategoryReason,
                     attributes: [
                         ['name', 'category_name']
                     ]
@@ -102,7 +90,6 @@ module.exports = {
                 },
                 include: [{
                     model: Category,
-                    through: CategoryReason,
                     attributes: [
                         ['name', 'category_name']
                     ]
@@ -111,7 +98,7 @@ module.exports = {
                 if (result) {
                     req.data = result;
                     next();
-                } else {
+                } else {category
                     let err = Error('Reason not found');
                     next(err);
                 }
@@ -133,20 +120,9 @@ module.exports = {
 
                 return Reason
                     .update(reasonObj)
-                    .then(reason => {
-                        console.log(Reason.dataValues.id);
-                        // if (reasonObj.category_id != undefined) {
-                        //     return CategoryReason
-                        //         .update({
-                        //             category_id: reasonObj.category_id
-                        //         })
-                        //         .then(result => {
-                        //             req.data = Reason;
-                        //             next();
-                        //         }, (err) => {
-                        //             next(err);
-                        //         })
-                        // }
+                    .then(Result => {
+                        req.data = Result;
+                        next();
                     })
                     .catch(err => {
                         next(err);

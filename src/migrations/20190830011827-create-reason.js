@@ -14,7 +14,7 @@ module.exports = {
       impact: {
         type: Sequelize.STRING
       },
-      reason: {
+      category_id: {
         type: Sequelize.INTEGER
       },
       deleted_at: {
