@@ -5,31 +5,50 @@ const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
 
 module.exports = {
-  create(req, res){
-    let data = []
-    if (((req.body.line_id != undefined) && (req.body.process_id.toString().length > 0)) && ((req.body.machine_id != undefined) && (req.body.machine_id.length > 0))) {
-      req.body.machine_id.forEach(machine_id => {
-        let insertData = {
-          "process_id": req.body.process_id,
-          "machine_id": machine_id
-        };
-        data.push(insertData);
-      });
+  // create(req, res){
+  //   let data = []
+  //   if (((req.body.line_id != undefined) && (req.body.process_id.toString().length > 0)) && ((req.body.machine_id != undefined) && (req.body.machine_id.length > 0))) {
+  //     req.body.machine_id.forEach(machine_id => {
+  //       let insertData = {
+  //         "process_id": req.body.process_id,
+  //         "machine_id": machine_id
+  //       };
+  //       data.push(insertData);
+  //     });
 
-    } else {
-      resp.ok(false, "Fields process_id and machine_id required.", null, res.status(400));
-    }
+  //   } else {
+  //     resp.ok(false, "Fields process_id and machine_id required.", null, res.status(400));
+  //   }
 
-    return processMachine
-      .bulkCreate(data, { 
-        returning: true 
+  //   return processMachine
+  //     .bulkCreate(data, { 
+  //       returning: true 
+  //     })
+  //     .then(processMachine => {
+  //       resp.ok(true, "Success create product_category.", processMachine, res);
+  //     })
+  //     .catch((error) => {
+  //       resp.ok(false, "Failed create product_category.", null, res.status(400));
+  //     });
+  // },
+  create(req, res, next){
+    let processObj = req.body;
+    return process
+    .create(processObj)
+    .then(process => {
+      return processMachine
+      .create({
+        process_id: process.dataValues.id,
+        machine_id: processObj.machine_id
       })
-      .then(processMachine => {
-        resp.ok(true, "Success create product_category.", processMachine, res);
+      .then(result => {
+        req.data = process
+        next();
       })
-      .catch((error) => {
-        resp.ok(false, "Failed create product_category.", null, res.status(400));
-      });
+    })
+    .catch(err => {
+      next(err);
+    })
   },
 
   list(req, res) {

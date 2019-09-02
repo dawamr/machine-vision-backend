@@ -10,10 +10,8 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   });
   category.associate = function(models) {
-    category.belongsToMany(models.reason, {
-      through: 'category_reason',
-      foreignKey: 'category_id',
-      otherKey: 'reason_id'
+    category.hasMany(models.reason, {
+      foreignKey: 'category_id'
     });
   };
   return category;

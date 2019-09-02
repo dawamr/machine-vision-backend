@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
   const reason = sequelize.define('reason', {
     name: DataTypes.STRING,
     impact: DataTypes.STRING,
+    category_id: DataTypes.INTEGER,
     deleted_at: DataTypes.DATE
   }, {
     createdAt: 'created_at',
@@ -11,10 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   });
   reason.associate = function(models) {
-    reason.belongsToMany(models.category, {
-      through: 'category_reason',
-      foreignKey: 'reason_id',
-      otherKey: 'category_id'
+    reason.belongsTo(models.category, {
+      foreignKey: 'category_id'
     });
   };
   return reason;

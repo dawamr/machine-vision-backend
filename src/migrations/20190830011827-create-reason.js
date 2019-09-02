@@ -14,6 +14,9 @@ module.exports = {
       impact: {
         type: Sequelize.STRING
       },
+      reason: {
+        type: Sequelize.INTEGER
+      },
       deleted_at: {
         type: Sequelize.DATE
       },

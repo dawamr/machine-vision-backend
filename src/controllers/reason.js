@@ -1,5 +1,4 @@
 const Reason = require('../models').reason;
-const CategoryReason = require('../models').category_reason;
 const Category = require('../models').category;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
