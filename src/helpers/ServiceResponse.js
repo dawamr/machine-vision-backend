@@ -4,7 +4,6 @@ function ServiceResponse() {
   return (req, res, next) => {
     let data = [];
     const rawData = req.data;
-    let pagination = req.pagination;
 
     if (Array.isArray(rawData)) {
       if (rawData)
@@ -18,25 +17,16 @@ function ServiceResponse() {
     let jsonRes = {
       status: true,
       message: _.get(req.response, 'message', 'OK'),
-      meta: {},
       data: data
     };
 
-    if (pagination) {
-      jsonRes.meta.pagination = {
-        page: parseInt(pagination.page),
-        limit: parseInt(pagination.pageSize),
-        total: parseInt(pagination.rowCount),
-        pageCount: parseInt(pagination.pageCount)
-      };
-    }
 
     if (req.token) {
-      jsonRes.meta.token = req.token;
+      jsonRes.data.token = req.token;
     }
 
     if (req.refresh_token) {
-      jsonRes.meta.refresh_token = req.refresh_token;
+      jsonRes.data.refresh_token = req.refresh_token;
     }
 
     res.status(_.get(req.response, 'code', 200));
