@@ -1,4 +1,4 @@
 module.exports = {
-    jwtExpired: 386000000,
+    jwtExpired: 86400,
     jwtSecret: 'express'
   };

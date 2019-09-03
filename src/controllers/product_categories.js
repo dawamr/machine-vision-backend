@@ -68,36 +68,14 @@ module.exports = {
       });
   },
 
-  listAll(req, res) {
-    let orderBy = 'created_at';
-    let sortBy = 'desc';
-    let options = {};
-
-    if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
-      orderBy = req.query.order_by;
-    }
-    if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
-      sortBy = req.query.sort_by;
-    }
-    if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('product_category.name')), 'LIKE', '%' + req.query.search + '%');
-    }
-
+  listAll(req, res, next) {
     return productCategory
-      .findAll({
-        include: [{
-          model: product,
-        }],
-        where: options,
-        order: [
-          [orderBy, sortBy]
-        ],
-      })
-      .then(productCategoryResult => {
-        resp.ok(true, "Get all data product_category.", productCategoryResult, res);
+      .findAll()
+      .then(productResult => {
+        resp.ok(true, "Get all data product category.", productResult, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get all data product_category.", null, res.status(400));
+        resp.ok(false, "Failed get all data product category.", null, res.status(400));
         console.log(error);
       });
   },
@@ -129,7 +107,6 @@ module.exports = {
         if (!productCategory) {
           resp.ok(false, "Product_category not found.", null, res.status(400));
         }
-
         return productCategory
           .update({
             name: req.body.name || productCategory.name,

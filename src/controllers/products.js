@@ -72,38 +72,21 @@ module.exports = {
       });
   },
 
-  listAll(req, res) {
-    let orderBy = 'created_at';
-    let sortBy = 'desc';
-    let options = {};
-
-    if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
-      orderBy = req.query.order_by;
-    }
-    if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
-      sortBy = req.query.sort_by;
-    }
-    if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('product.name')), 'LIKE', '%' + req.query.search + '%');
-    }
+  listAll(req, res, next) {
 
     return product
-      .findAll({
-        include: [{
-          model: productCategory,
-        }],
-        where: options,
-        order: [
-          [orderBy, sortBy]
-        ],
-      })
-      .then(productResult => {
-        resp.ok(true, "Get all data product.", productResult, res);
-      })
-      .catch((error) => {
-        resp.ok(false, "Failed get all data product.", null, res.status(400));
-        console.log(error);
-      });
+    .findAll({
+      include: [{
+        model: productCategory
+      }]
+    })
+    .then(productResult => {
+          resp.ok(true, "Get all data product.", productResult, res);
+        })
+        .catch((error) => {
+          resp.ok(false, "Failed get all data product.", null, res.status(400));
+          console.log(error);
+        });
   },
 
   detail(req, res) {

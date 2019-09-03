@@ -1,4 +1,5 @@
 const productCategoryController = require('../controllers').product_categories;
+
 const express = require('express')
 const productCategory = express.Router();
 

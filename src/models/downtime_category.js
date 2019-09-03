@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const role = sequelize.define('role', {
+  const downtime_category = sequelize.define('downtime_category', {
     name: DataTypes.STRING,
     deleted_at: DataTypes.DATE
   }, {
@@ -9,11 +9,10 @@ module.exports = (sequelize, DataTypes) => {
     deletedAt: 'deleted_at',
     paranoid: true
   });
-  role.associate = function(models){
-    role.belongsToMany(models.user, { 
-      through: 'user_role',
-      foreignKey: 'role_id'
+  downtime_category.associate = function(models) {
+    downtime_category.hasMany(models.downtime_reason, {
+      foreignKey: 'category_id'
     });
-  }; 
-return role;
+  };
+  return downtime_category;
 };

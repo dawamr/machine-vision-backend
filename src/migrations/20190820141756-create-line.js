@@ -29,7 +29,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     }).then(() => {
-      queryInterface.addIndex('lines', ['name', 'sector_id', 'product_category_id', 'created_at', 'deleted_at'])
+      queryInterface.addIndex('lines', ['name', 'sector_id', 'product_category_id','created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {

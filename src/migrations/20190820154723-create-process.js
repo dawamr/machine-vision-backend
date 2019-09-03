@@ -11,6 +11,9 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
+      line_id: {
+        type: Sequelize.INTEGER
+      },
       deleted_at: {
         type: Sequelize.DATE
       },
@@ -23,7 +26,7 @@ module.exports = {
         type: Sequelize.DATE
       }
     }).then(() => {
-      queryInterface.addIndex('processes', ['name', 'created_at', 'deleted_at'])
+      queryInterface.addIndex('processes', ['name', 'line_id', 'created_at', 'deleted_at'])
     });
   },
   down: (queryInterface, Sequelize) => {

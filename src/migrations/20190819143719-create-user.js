@@ -45,6 +45,9 @@ module.exports = {
       shift_id: {
         type: Sequelize.INTEGER
       },
+      role_id: {
+        type: Sequelize.INTEGER
+      },
       deleted_at: {
         type: Sequelize.DATE
       },

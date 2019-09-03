@@ -10,11 +10,13 @@ const products = require('./products');
 const product_categories = require('./product_categories');
 const job_descriptions = require('./job_descriptions');
 const sectors = require('./sectors');
+const line = require('./lines');
 const process_machines = require('./process_machines');
 const machines = require('./machines');
 const parameters_index = require('./parameters_controller');
 const parameter_category = require('./parameter_category_controller');
 const users = require('./users');
+const category = require('./downtime_categories');
 
 module.exports = {
   form_category,
@@ -29,10 +31,12 @@ module.exports = {
   product_categories,
   job_descriptions,
   sectors,
+  line,
   process_machines,
   machines,   
   parameters_index,
   parameter_category,
   machines,
   users,
+  category
 };

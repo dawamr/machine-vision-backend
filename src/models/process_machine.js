@@ -3,7 +3,6 @@ module.exports = (sequelize, DataTypes) => {
   const process_machine = sequelize.define('process_machine', {
     process_id: DataTypes.INTEGER,
     machine_id: DataTypes.INTEGER,
-    line_id: DataTypes.INTEGER,
     deleted_at: DataTypes.DATE
   }, {
     createdAt: 'created_at',
@@ -11,18 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     deletedAt: 'deleted_at',
     paranoid: true
   });
-  process_machine.associate = function(models) {
-    process_machine.hasMany(models.process, {
-      foreignKey: 'process_id'
-    });
-    process_machine.hasMany(models.machine, {
-      foreignKey: 'id',
-      sourceKey: 'machine_id'
-    });
-    process_machine.belongsTo(models.line, {
-      foreignKey: 'id',
-      sourceKey: 'process_machine_id'
-    });
+  process_machine.associate = function (models) {
   };
   return process_machine;
 };

@@ -37,14 +37,12 @@ function UserController() {
         return RefreshTokenService.insert(refreshToken);
       })
       .then(refreshToken => {
-
-          req.refresh_token = refreshToken.refresh_token;
-          return next();
-        
+        req.data.token = req.token;
+        req.data.refresh_token = refreshToken.refresh_token;
+        resp.ok(true, "Success login.", req.data, res);
       })
       .catch(err => {
-        // throw err;
-        next(err);
+        resp.ok(false, "Failed login.", null, res);
       });
   };
 
