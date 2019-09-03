@@ -1,7 +1,9 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const category = sequelize.define('category', {
+  const downtime_reason = sequelize.define('downtime_reason', {
     name: DataTypes.STRING,
+    impact: DataTypes.STRING,
+    category_id: DataTypes.INTEGER,
     deleted_at: DataTypes.DATE
   }, {
     createdAt: 'created_at',
@@ -9,10 +11,10 @@ module.exports = (sequelize, DataTypes) => {
     deletedAt: 'deleted_at',
     paranoid: true
   });
-  category.associate = function(models) {
-    category.hasMany(models.reason, {
+  downtime_reason.associate = function(models) {
+    downtime_reason.belongsTo(models.downtime_category, {
       foreignKey: 'category_id'
     });
   };
-  return category;
+  return downtime_reason;
 };

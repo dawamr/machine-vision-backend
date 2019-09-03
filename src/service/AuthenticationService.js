@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt-nodejs');
 const SaltLength = 9;
 
 const User = require('./../models').user;
+const role = require('./../models').role;
 
 /**
  * Authentication Service
@@ -25,6 +26,9 @@ function AuthenticationService() {
   const authenticate = (username, password) => {
 
     let auth = User.findOne({
+      include: [{
+        model: role,
+      }],
       where: {
             username: username
       }
@@ -37,11 +41,11 @@ function AuthenticationService() {
           if (bcrypt.compareSync(password, data.password)) {
             resolve(data);
           } else {
-            reject(Error('Username atau password tidak cocok.'));
+            reject(Error('Username or password not match.'));
           }
 
         } else {
-          reject(Error('Username belum terdaftar.'));
+          reject(Error('Username not register.'));
         }
       })
         .catch(function (e) {

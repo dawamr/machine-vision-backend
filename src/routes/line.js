@@ -1,16 +1,14 @@
-const lineController = require('../controllers/line');
+const lineController = require('../controllers/lines');
 const serviceResponse = require('../../src/helpers/ServiceResponse');
 const express = require('express');
-const router = express.Router();
+const line = express.Router();
 
-router.post('/add', lineController.create, serviceResponse);
-router.put('/update/:id', lineController.update, serviceResponse);
+line.post('/', lineController.create, serviceResponse);
+line.put('/:id', lineController.update, serviceResponse);
+line.get('/list_all', lineController.listAll, serviceResponse);
+line.get('/list', lineController.list, serviceResponse);
+line.get('/:id', lineController.detail, serviceResponse);
+line.get('/filter', lineController.filter, serviceResponse);
+line.delete('/:id',lineController.delete, serviceResponse);
 
-router.get('/all', lineController.listAll, serviceResponse);
-router.get('/list', lineController.list, serviceResponse);
-router.get('/detail/:id', lineController.detail, serviceResponse);
-router.get('/filter', lineController.filter, serviceResponse);
-
-router.delete('/delete/:id',lineController.delete, serviceResponse);
-
-module.exports = router;
+module.exports = line;

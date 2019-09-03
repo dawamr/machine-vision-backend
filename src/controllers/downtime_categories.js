@@ -1,4 +1,4 @@
-const Category = require('../models').category;
+const Category = require('../models').downtime_category;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 

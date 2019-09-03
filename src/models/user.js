@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     department_id: DataTypes.INTEGER,
     job_description_id: DataTypes.INTEGER,
     shift_id: DataTypes.INTEGER,
+    role_id: DataTypes.INTEGER,
     deleted_at: DataTypes.DATE
   }, {
     createdAt: 'created_at',
