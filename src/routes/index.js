@@ -53,10 +53,17 @@ module.exports = (express) => {
  app.put('/api/parameter_category/:id', parameter_category_controller.update)
  app.delete('/api/parameter_category/:id', parameter_category_controller.destroy)
 
+ // (Form Builder) Sub Category
+ app.post('/api/category/sub', formSubCategoryController.create)
+ app.get('/api/category/sub', formSubCategoryController.list)
+ app.put('/api/category/sub/:id', formSubCategoryController.update)
+ app.delete('/api/category/sub/:id', formSubCategoryController.delete)
+ app.get('/api/category/sub/search', formSubCategoryController.search)
 
   // (Form Builder) Category 
   app.post('/api/category', formCategoryController.create)
-  app.get('/api/category', formCategoryController.list)
+  app.get('/api/category', formCategoryController.listAll)
+  app.get('/api/category/:id', formCategoryController.list)
   app.put('/api/category/:id', formCategoryController.update)
   app.delete('/api/category/:id', formCategoryController.delete)
   app.get('/api/category/search', formCategoryController.search)
@@ -64,12 +71,6 @@ module.exports = (express) => {
   // app.patch('/api/category/:id', formCategoryController.restore)
 
 
-  // (Form Builder) Sub Category
-  app.post('/api/category/sub', formSubCategoryController.create)
-  app.get('/api/category/sub', formSubCategoryController.list)
-  app.put('/api/category/sub/:id', formSubCategoryController.update)
-  app.delete('/api/category/sub/:id', formSubCategoryController.delete)
-  app.get('/api/category/sub/search', formSubCategoryController.search)
 
   // (Form Builder) Form list
   app.post('/api/form', formFormController.create)
