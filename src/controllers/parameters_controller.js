@@ -1,9 +1,7 @@
 const parameters_index = require('../models').parameters;
-const resp = require('../views/response');
-const pagination = require('../utils/pagination');
-const sequelize = require('sequelize');
-const op = sequelize.Op;
 
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op
 module.exports = {
     create(req,res){
         return parameters_index
@@ -81,9 +79,6 @@ module.exports = {
         if ((req.query.per_page != undefined) && (req.query.per_page.length > 0)) {
             perPage = req.query.per_page;
         }
-        if ((req.query.category_id != undefined) && (req.query.category_id.length > 0)){
-            category = true
-        }
 
         let skip = (page - 1) * perPage
         parameters_index.findAll({
@@ -92,10 +87,13 @@ module.exports = {
                 [orderBy, sortBy]
             ],
             where : {
-                
-            },
-            limit: perPage,
-            offset: skip
+                parameter_category_id : {
+                    [Op.and]: {
+                        [Op.eq]: req.query.category_id,
+                        [Op.ne]: null
+                    }
+                }
+            }
         }).then(result_parameter => {
             res.json(result_parameter)
         }).catch (err=> res.send(err))
