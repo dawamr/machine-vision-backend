@@ -1,26 +1,40 @@
 const parameters_index = require('../models').parameters;
+const resp = require('../views/response');
+const pagination = require('../utils/pagination');
+const sequelize = require('sequelize');
+const op = sequelize.Op;
 
 module.exports = {
     create(req,res){
         return parameters_index
         .create({
-            name : req.body.name
-        }
-        )
+            name : req.body.name, 
+            parameter_category_id : req.body.parameter_category_id, 
+            group : req.body.group, 
+            level : req.body.level, 
+            type : req.body.type, 
+            configuration : req.body.configuration
+        })
         .then(data => res.status(201).send(data))
         .catch(err => res.status(400).send(err))
     },
+
     update(req,res){
         return parameters_index
         .findOne({
-            attributes:['id','name'],
+            attributes:['id','name','parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
             where : {
                 id : req.params.id
             }
         })
-        .then(parameter=>{
-            return parameter.update({
-                name: req.body.name || parameter.name,
+        .then(resultParameter=>{
+            return resultParameter.update({
+                name : req.body.name || resultParameter.name,
+                parameter_category_id : req.body.parameter_category_id || resultParameter.parameter_category_id, 
+                group : req.body.group || resultParameter.group, 
+                level : req.body.level || resultParameter.level, 
+                type : req.body.type || resultParameter.type, 
+                configuration : req.body.configuration || resultParameter.configuration,
                 updatedAt: new Date()
             })
         })
@@ -47,21 +61,45 @@ module.exports = {
     },
 
     list(req,res){
-        let orderBy = 'createdAt'
-        let sortBy = 'asc'
-        if(req.query.order_by != undefined){
-            orderBy = req.query.order_by
+        let orderBy = 'createdAt';
+        let sortBy = 'desc';
+        let page = 1;
+        let perPage = 10;
+        // let searchQuery = [];
+        // let options = {};
+        // let parameterOptions = {};
+        let required = false;
+        if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
+            orderBy = req.query.order_by;
         }
-        if(req.query.sort_by != undefined){
-            sortBy = req.query.sort_by
+        if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
+            sortBy = req.query.sort_by;
         }
-        
-        return parameters_index.findAll({
-            attributes: ['id','name',],
-            include: ['parameter_category',]
-        })
-        .then(data => res.json(data))
-        .catch(err => res.json(err))
+        if ((req.query.page != undefined) && (req.query.page.length > 0)) {
+            page = req.query.page;
+        }
+        if ((req.query.per_page != undefined) && (req.query.per_page.length > 0)) {
+            perPage = req.query.per_page;
+        }
+        if ((req.query.category_id != undefined) && (req.query.category_id.length > 0)){
+            category = true
+        }
+
+        let skip = (page - 1) * perPage
+        parameters_index.findAll({
+            attributes:['id','name','parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
+            order: [
+                [orderBy, sortBy]
+            ],
+            where : {
+                
+            },
+            limit: perPage,
+            offset: skip
+        }).then(result_parameter => {
+            res.json(result_parameter)
+        }).catch (err=> res.send(err))
+   
     },
 
     search(req,res){
@@ -71,7 +109,7 @@ module.exports = {
         where : {
             id : req.params.id,
         }
-    }).then(data => res.json(data))
+    }).then(data => resp.ok(data))
     .catch(err =>res.json(err))
     }
 };
