@@ -6,12 +6,11 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op
 module.exports = {
     
-    list(req, res) {
-        let orderBy = 'createdAt'
-        let sortBy = 'Asc'
-        let limits = 10
-        let offset  = 0
-        let search;
+    listAll(req, res) {
+        let orderBy = 'createdAt';
+        let sortBy = 'desc';
+        let page = 1;
+        let perPage = 10;
         
         if(req.query.order_by != undefined){
             orderBy = req.query.order_by
@@ -19,24 +18,69 @@ module.exports = {
         if(req.query.sort_by != undefined){
             sortBy = req.query.sort_by
         }
-        if(req.query.limit != undefined){
-            limits = req.query.limit
+        if(req.query.page != undefined){
+            page = req.query.page
         }
-        if(req.query.offset != undefined){
-            offset = req.query.offset
+        if(req.query.per_page != undefined){
+            perPage = req.query.per_page
         }
+        let skip = (page - 1) * perPage
         return FormCategory
         .findAll({
         order: [
             [orderBy, sortBy]
         ],
-        limit: limits,
-        offset :offset
+        limit: perPage,
+        offset :skip
         })
-        .then(data => res.status(200).send(data))
+        .then(data => {
+            res.json(data)
+        })
         .catch(error => res.status(400).send(error));
     },
 
+    list(req, res) {
+        let orderBy = 'createdAt';
+        let sortBy = 'desc';
+        let page = 1;
+        let perPage = 10;
+        
+        if(req.query.order_by != undefined){
+            orderBy = req.query.order_by
+        }
+        if(req.query.sort_by != undefined){
+            sortBy = req.query.sort_by
+        }
+        if(req.query.page != undefined){
+            page = req.query.page
+        }
+        if(req.query.per_page != undefined){
+            perPage = req.query.per_page
+        }
+        let skip = (page - 1) * perPage
+        return FormCategory
+        .findAll({
+        order: [
+            [orderBy, sortBy]
+        ],
+        limit: perPage,
+        offset :skip
+        })
+        .then(data => {
+            return FormSubCategory.findAll({
+                attributes:['id','name','form_category_id','createdAt','updatedAt'],
+                where:{
+                    form_category_id:req.params.id
+                }
+            }).then(result=> {
+                Promise.all([data,result]).then(function(values) {
+                    res.json(values)
+                });
+            })
+        })
+        .catch(error => res.status(400).send(error));
+    },
+    
     create(req,res){
         return FormCategory
         .create({
