@@ -23,9 +23,6 @@ module.exports = {
       type: {
         type: Sequelize.ENUM('constant','initial','manufacture','kpi','predictive')
       },
-      alarm_configuration: {
-        type: Sequelize.JSON
-      },
       configuration: {
         type: Sequelize.JSON
       },
