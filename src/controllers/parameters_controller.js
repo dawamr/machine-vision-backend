@@ -1,7 +1,9 @@
 const parameters_index = require('../models').parameters;
+const resp = require('../views/response');
+const pagination = require('../utils/pagination');
+const sequelize = require('sequelize');
+const Op = sequelize.Op;
 
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op
 module.exports = {
     create(req,res){
         return parameters_index
@@ -63,8 +65,7 @@ module.exports = {
         let sortBy = 'desc';
         let page = 1;
         let perPage = 10;
-        // let searchQuery = [];
-        // let options = {};
+        let options = {};
         // let parameterOptions = {};
         let required = false;
         if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
@@ -73,31 +74,41 @@ module.exports = {
         if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
             sortBy = req.query.sort_by;
         }
-        if ((req.query.page != undefined) && (req.query.page.length > 0)) {
-            page = req.query.page;
+        if ((req.query.category_id != undefined) && (req.query.category_id.length > 0)){
+            options.parameter_category_id = sequelize.where(sequelize.col('parameter_category_id'), '=', req.query.category_id );
+            required = true;
         }
-        if ((req.query.per_page != undefined) && (req.query.per_page.length > 0)) {
-            perPage = req.query.per_page;
+        if ((req.query.group != undefined) && (req.query.group.length > 0)){
+            options.group = sequelize.where(sequelize.col('group'), '=', req.query.group );
+            required = true;
         }
-
+        if ((req.query.level != undefined) && (req.query.level.length > 0)){
+            options.level = sequelize.where(sequelize.col('level'), '=', req.query.level );
+            required = true;
+        }
+        // console.log(req.query.category_id)
         let skip = (page - 1) * perPage
-        parameters_index.findAll({
+        if(req.query.category_id != undefined){
+            return parameters_index.findAll({
+                attributes:['id','name','parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
+                order: [
+                    [orderBy, sortBy]
+                ],
+                where : options,
+                limit: perPage,
+                offset :skip
+            }).then(result_parameter => {
+                res.json(result_parameter)
+            }).catch (err=> res.send(err))
+        }
+        return parameters_index.findAll({
             attributes:['id','name','parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
             order: [
                 [orderBy, sortBy]
             ],
-            where : {
-                parameter_category_id : {
-                    [Op.and]: {
-                        [Op.eq]: req.query.category_id,
-                        [Op.ne]: null
-                    }
-                }
-            }
         }).then(result_parameter => {
             res.json(result_parameter)
         }).catch (err=> res.send(err))
-   
     },
 
     search(req,res){
