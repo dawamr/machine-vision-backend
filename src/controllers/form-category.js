@@ -59,13 +59,7 @@ module.exports = {
         }
         let skip = (page - 1) * perPage
         return FormCategory
-        .findAll({
-        order: [
-            [orderBy, sortBy]
-        ],
-        limit: perPage,
-        offset :skip
-        })
+        .findByPk(req.params.id)
         .then(data => {
             return FormSubCategory.findAll({
                 attributes:['id','name','form_category_id','createdAt','updatedAt'],
@@ -108,17 +102,27 @@ module.exports = {
     },
 
     delete(req,res){
-        return FormCategory
-        .findOne({
+        var category  = FormCategory.destroy({
             where: {
                 id : req.params.id
             },
         })
-        .then((FormCategory)=>{
-            return FormCategory.destroy()
+        var sub_category  = FormSubCategory.destroy({
+            attributes:['id','name','form_category_id','createdAt','updatedAt'],
+            where: {
+                form_category_id : req.params.id
+            },
+            truncate: true
         })
-        .then(data => res.status(201).send(data))
-        .catch(error => res.status(400).send(error));
+
+        Promise.all([category,sub_category])
+        .then(function(values) {
+            res.json({status: "success-deleted"})
+        }).catch(err=>{
+            console.log(err)
+            // res.json(err)
+        })
+        
     },
 
     //stuck deleteAt not visible
