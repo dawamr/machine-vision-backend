@@ -76,15 +76,17 @@ module.exports = {
     },
     
     create(req,res){
+        if(req.body.name == null){res.status(400).send(res.json({status:'name is required'}))}
         return FormCategory
         .create({
           name: req.body.name,
         })
         .then(data => res.status(201).send(data))
-        .catch(error => res.status(400).send(error));
+        .catch(error => res.status(400).send(res.json(error)));
     },
 
     update(req,res){
+        if(req.body.name){return res.status(400).send(res.json({status:'name is required'}))}
         return FormCategory
         .findOne({
             where: {
@@ -119,7 +121,7 @@ module.exports = {
         .then(function(values) {
             res.json({status: "success-deleted"})
         }).catch(err=>{
-            console.log(err)
+            res.status(400).send(err);
             // res.json(err)
         })
         

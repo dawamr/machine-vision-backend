@@ -90,9 +90,13 @@ module.exports = {
                             }
                         })
         
-        Promise.all([form_list,form_field]).then(function(values) {
+        Promise.all([form_list,form_field])
+        .then(function(values) {
             res.json(values)
-        });
+        })
+        .catch(err =>{
+            res.status(400).send(err);
+        })
     },
 
     create(req,res){
