@@ -39,7 +39,7 @@ module.exports = {
             })
         })
         .then(data => res.json(data))
-        .catch(err =>res.json(err))
+        .catch(error => res.status(400).send(error));
     },
     destroy(req,res){
         return parameters_index
@@ -56,7 +56,7 @@ module.exports = {
             })
         })
         .then(data => res.json(data))
-        .catch(err =>res.json(err))
+        .catch(error => res.status(400).send(error));
 
     },
 
@@ -99,7 +99,8 @@ module.exports = {
                 offset :skip
             }).then(result_parameter => {
                 res.json(result_parameter)
-            }).catch (err=> res.send(err))
+            })
+            .catch(error => res.status(400).send(error));
         }
         return parameters_index.findAll({
             attributes:['id','name','parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
@@ -108,7 +109,8 @@ module.exports = {
             ],
         }).then(result_parameter => {
             res.json(result_parameter)
-        }).catch (err=> res.send(err))
+        })
+        .catch(error => res.status(400).send(error));
     },
 
     search(req,res){
@@ -119,6 +121,6 @@ module.exports = {
             id : req.params.id,
         }
     }).then(data => resp.ok(data))
-    .catch(err =>res.json(err))
+    .catch(error => res.status(400).send(error));
     }
 };
