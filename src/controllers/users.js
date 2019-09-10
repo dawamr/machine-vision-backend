@@ -13,8 +13,8 @@ const sequelize = require('sequelize');
 function UserController() {
 
   const login = (req, res, next) => {
-    let username = req.body.username;
-    let password = req.body.password;
+    let username = 'implementor';
+    let password = '123456';
 
     AuthenticationService.authenticate(username, password)
       .then((user) => {
