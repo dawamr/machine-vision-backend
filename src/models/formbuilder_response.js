@@ -2,7 +2,8 @@
 module.exports = (sequelize, DataTypes) => {
   const FormResponse = sequelize.define('form_response', {
     form_id: DataTypes.INTEGER,
-    user_id: DataTypes.INTEGER
+    user_id: DataTypes.INTEGER,
+    response: DataTypes.JSON
   }, {
     paranoid: true
   });
