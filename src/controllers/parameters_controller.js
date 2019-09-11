@@ -1,31 +1,45 @@
 const parameters_index = require('../models').parameters;
+const resp = require('../views/response');
+const pagination = require('../utils/pagination');
+const sequelize = require('sequelize');
+const Op = sequelize.Op;
 
 module.exports = {
     create(req,res){
         return parameters_index
         .create({
-            name : req.body.name
-        }
-        )
+            name : req.body.name, 
+            parameter_category_id : req.body.parameter_category_id, 
+            group : req.body.group, 
+            level : req.body.level, 
+            type : req.body.type, 
+            configuration : req.body.configuration
+        })
         .then(data => res.status(201).send(data))
         .catch(err => res.status(400).send(err))
     },
+
     update(req,res){
         return parameters_index
         .findOne({
-            attributes:['id','name'],
+            attributes:['id','name','parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
             where : {
                 id : req.params.id
             }
         })
-        .then(parameter=>{
-            return parameter.update({
-                name: req.body.name || parameter.name,
+        .then(resultParameter=>{
+            return resultParameter.update({
+                name : req.body.name || resultParameter.name,
+                parameter_category_id : req.body.parameter_category_id || resultParameter.parameter_category_id, 
+                group : req.body.group || resultParameter.group, 
+                level : req.body.level || resultParameter.level, 
+                type : req.body.type || resultParameter.type, 
+                configuration : req.body.configuration || resultParameter.configuration,
                 updatedAt: new Date()
             })
         })
         .then(data => res.json(data))
-        .catch(err =>res.json(err))
+        .catch(error => res.status(400).send(error));
     },
     destroy(req,res){
         return parameters_index
@@ -42,26 +56,61 @@ module.exports = {
             })
         })
         .then(data => res.json(data))
-        .catch(err =>res.json(err))
+        .catch(error => res.status(400).send(error));
 
     },
 
     list(req,res){
-        let orderBy = 'createdAt'
-        let sortBy = 'asc'
-        if(req.query.order_by != undefined){
-            orderBy = req.query.order_by
+        let orderBy = 'createdAt';
+        let sortBy = 'desc';
+        let page = 1;
+        let perPage = 10;
+        let options = {};
+        // let parameterOptions = {};
+        let required = false;
+        if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
+            orderBy = req.query.order_by;
         }
-        if(req.query.sort_by != undefined){
-            sortBy = req.query.sort_by
+        if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
+            sortBy = req.query.sort_by;
         }
-        
+        if ((req.query.category_id != undefined) && (req.query.category_id.length > 0)){
+            options.parameter_category_id = sequelize.where(sequelize.col('parameter_category_id'), '=', req.query.category_id );
+            required = true;
+        }
+        if ((req.query.group != undefined) && (req.query.group.length > 0)){
+            options.group = sequelize.where(sequelize.col('group'), '=', req.query.group );
+            required = true;
+        }
+        if ((req.query.level != undefined) && (req.query.level.length > 0)){
+            options.level = sequelize.where(sequelize.col('level'), '=', req.query.level );
+            required = true;
+        }
+        // console.log(req.query.category_id)
+        let skip = (page - 1) * perPage
+        if(req.query.category_id != undefined){
+            return parameters_index.findAll({
+                attributes:['id','name','parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
+                order: [
+                    [orderBy, sortBy]
+                ],
+                where : options,
+                limit: perPage,
+                offset :skip
+            }).then(result_parameter => {
+                res.json(result_parameter)
+            })
+            .catch(error => res.status(400).send(error));
+        }
         return parameters_index.findAll({
-            attributes: ['id','name',],
-            include: ['parameter_category',]
+            attributes:['id','name','parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
+            order: [
+                [orderBy, sortBy]
+            ],
+        }).then(result_parameter => {
+            res.json(result_parameter)
         })
-        .then(data => res.json(data))
-        .catch(err => res.json(err))
+        .catch(error => res.status(400).send(error));
     },
 
     search(req,res){
@@ -71,7 +120,7 @@ module.exports = {
         where : {
             id : req.params.id,
         }
-    }).then(data => res.json(data))
-    .catch(err =>res.json(err))
+    }).then(data => resp.ok(data))
+    .catch(error => res.status(400).send(error));
     }
 };

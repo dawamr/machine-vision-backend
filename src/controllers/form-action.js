@@ -91,10 +91,9 @@ module.exports = {
             }))
             
         }
-        Promise.all(data_field).then((data)=>{
-            //Create Form Response
-            
-        });
+        Promise.all(data_field)
+        .then(updated => res.status(201).send(updated))
+        .catch(error => res.status(400).send(error));
 
     },
     update(req,res){
@@ -125,8 +124,13 @@ module.exports = {
         if (deleteThis) {
             res.json({
                 'status': 'OK',
-                'messages': 'User berhasil dihapus',
+                'messages': 'Delete Success',
                 'data': deleteThis,
+            })
+        }else{
+            res.json({
+                "status" : "Error",
+                'messages': 'Error Delete',
             })
         }
     },

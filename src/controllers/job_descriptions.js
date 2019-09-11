@@ -1,4 +1,5 @@
 const jobDescription = require('../models').job_description;
+const jobDescription2 = require('../models').job_description;
 const department = require('../models').department;
 const sector = require('../models').sector;
 const resp = require('../views/response');
@@ -14,8 +15,25 @@ module.exports = {
         sector_id: req.body.sector_id,
         order: req.body.order,
       })
-      .then(jobDescription => {
-        resp.ok(true, "Success create job description.", jobDescription.dataValues, res);
+      .then(jobDescriptionCreated => {
+        return jobDescription
+          .findByPk(jobDescriptionCreated.id, {
+            include: [{
+              model: department,
+            }, {
+              model: sector,
+            }],
+          })
+          .then(jobDescriptionResult => {
+            if (!jobDescriptionResult) {
+              resp.ok(false, "Failed create job description.", null, res.status(400));
+            }
+            resp.ok(true, "Success create job description.", jobDescriptionResult, res);
+          })
+          .catch((error) => {
+            resp.ok(false, "Failed create job description.", null, res.status(400));
+            console.log(error);
+          });
       })
       .catch((error) => {
         resp.ok(false, "Failed create job description.", null, res.status(400));
@@ -121,7 +139,7 @@ module.exports = {
       })
       .then(jobDescriptionResult => {
         if (!jobDescriptionResult) {
-          resp.ok(false, "jobDescription not found.", null, res.status(400));
+          resp.ok(false, "job description not found.", null, res.status(400));
         }
         resp.ok(true, "Get data job description.", jobDescriptionResult, res);
       })
@@ -138,15 +156,32 @@ module.exports = {
         if (!jobDescription) {
           resp.ok(false, "Job description not found.", null, res.status(400));
         }
-
         return jobDescription
           .update({
             name: req.body.name || jobDescription.name,
             department_id: req.body.department_id || jobDescription.department_id,
             sector_id: req.body.sector_id || jobDescription.sector_id,
           })
-          .then(jobDescription => {
-            resp.ok(true, "Success update job description.", jobDescription.dataValues, res);
+          .then(jobDescription => { 
+            return jobDescription2
+              .findByPk(jobDescription.id, {
+                include: [{
+                  model: department,
+                }, {
+                  model: sector,
+                }],
+              })
+              .then(jobDescription2 => {
+                if (!jobDescription2) {
+                  resp.ok(false, "Failed update job description.", null, res.status(400));
+                }
+                resp.ok(true, "Success update job description.", jobDescription2.dataValues, res);
+              })
+              .catch((error) => {
+                resp.ok(false, "Failed update job description.", null, res.status(400));
+                console.log(error);
+                reject(error)
+              });
           })
           .catch((error) => {
             resp.ok(false, "Failed update job description.", null, res.status(400));
@@ -156,6 +191,26 @@ module.exports = {
       .catch((error) => {
         resp.ok(false, "Failed update job description.", null, res.status(400));
         console.log(error);
+      });
+        
+    return jobDescription
+      .findByPk(req.params.id, {
+        include: [{
+          model: department,
+        }, {
+          model: sector,
+        }],
+      })
+      .then(jobDescriptionResult => {
+        if (!jobDescriptionResult) {
+          resp.ok(false, "Failed get job description.", null, res.status(400));
+        }
+        resp.ok(true, "Success update job description.", jobDescriptionResult, res);
+      })
+      .catch((error) => {
+        resp.ok(false, "Failed get job description.", null, res.status(400));
+        console.log(error);
+        reject(error)
       });
   },
 

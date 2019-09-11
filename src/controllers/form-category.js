@@ -6,12 +6,11 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op
 module.exports = {
     
-    list(req, res) {
-        let orderBy = 'createdAt'
-        let sortBy = 'Asc'
-        let limits = 10
-        let offset  = 0
-        let search;
+    listAll(req, res) {
+        let orderBy = 'createdAt';
+        let sortBy = 'desc';
+        let page = 1;
+        let perPage = 10;
         
         if(req.query.order_by != undefined){
             orderBy = req.query.order_by
@@ -19,34 +18,75 @@ module.exports = {
         if(req.query.sort_by != undefined){
             sortBy = req.query.sort_by
         }
-        if(req.query.limit != undefined){
-            limits = req.query.limit
+        if(req.query.page != undefined){
+            page = req.query.page
         }
-        if(req.query.offset != undefined){
-            offset = req.query.offset
+        if(req.query.per_page != undefined){
+            perPage = req.query.per_page
         }
+        let skip = (page - 1) * perPage
         return FormCategory
         .findAll({
         order: [
             [orderBy, sortBy]
         ],
-        limit: limits,
-        offset :offset
+        limit: perPage,
+        offset :skip
         })
-        .then(data => res.status(200).send(data))
+        .then(data => {
+            res.json(data)
+        })
         .catch(error => res.status(400).send(error));
     },
 
+    list(req, res) {
+        let orderBy = 'createdAt';
+        let sortBy = 'desc';
+        let page = 1;
+        let perPage = 10;
+        
+        if(req.query.order_by != undefined){
+            orderBy = req.query.order_by
+        }
+        if(req.query.sort_by != undefined){
+            sortBy = req.query.sort_by
+        }
+        if(req.query.page != undefined){
+            page = req.query.page
+        }
+        if(req.query.per_page != undefined){
+            perPage = req.query.per_page
+        }
+        let skip = (page - 1) * perPage
+        return FormCategory
+        .findByPk(req.params.id)
+        .then(data => {
+            return FormSubCategory.findAll({
+                attributes:['id','name','form_category_id','createdAt','updatedAt'],
+                where:{
+                    form_category_id:req.params.id
+                }
+            }).then(result=> {
+                Promise.all([data,result]).then(function(values) {
+                    res.json(values)
+                });
+            })
+        })
+        .catch(error => res.status(400).send(error));
+    },
+    
     create(req,res){
+        if(req.body.name == null){res.status(400).send(res.json({status:'name is required'}))}
         return FormCategory
         .create({
           name: req.body.name,
         })
         .then(data => res.status(201).send(data))
-        .catch(error => res.status(400).send(error));
+        .catch(error => res.status(400).send(res.json(error)));
     },
 
     update(req,res){
+        if(req.body.name){return res.status(400).send(res.json({status:'name is required'}))}
         return FormCategory
         .findOne({
             where: {
@@ -64,17 +104,27 @@ module.exports = {
     },
 
     delete(req,res){
-        return FormCategory
-        .findOne({
+        var category  = FormCategory.destroy({
             where: {
                 id : req.params.id
             },
         })
-        .then((FormCategory)=>{
-            return FormCategory.destroy()
+        var sub_category  = FormSubCategory.destroy({
+            attributes:['id','name','form_category_id','createdAt','updatedAt'],
+            where: {
+                form_category_id : req.params.id
+            },
+            truncate: true
         })
-        .then(data => res.status(201).send(data))
-        .catch(error => res.status(400).send(error));
+
+        Promise.all([category,sub_category])
+        .then(function(values) {
+            res.json({status: "success-deleted"})
+        }).catch(err=>{
+            res.status(400).send(err);
+            // res.json(err)
+        })
+        
     },
 
     //stuck deleteAt not visible
