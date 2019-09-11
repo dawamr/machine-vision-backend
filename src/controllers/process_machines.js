@@ -8,21 +8,35 @@ module.exports = {
   create(req, res, next){
     let processObj = req.body;
     return process
-    .create(processObj)
+    .create({
+      name: req.body.process_name,
+      line_id: req.body.line_id
+    })
     .then(process => {
       return processMachine
       .create({
         process_id: process.dataValues.id,
         machine_id: processObj.machine_id
       })
-      .then(result => {
-        req.data = process
-        next();
+      .then(processMachine => {
+        let result = {
+          process: process,
+          process_machine: processMachine
+        }
+
+        data = result;
+
+        resp.ok(true, "Success create process and process_machine.", data, res);
       })
+      .catch((error) => {
+        resp.ok(false, "Failed create process_machine.", null, res.status(400));
+        console.log(error);
+      });
     })
-    .catch(err => {
-      next(err);
-    })
+    .catch((error) => {
+      resp.ok(false, "Failed create process.", null, res.status(400));
+      console.log(error);
+    });
   },
 
   list(req, res) {
@@ -128,12 +142,38 @@ module.exports = {
 
         return processMachine
           .update({
-            line_id: req.body.line_id || processMachine.line_id,
-            process_id: req.body.process_id || processMachine.process_id,
             machine_id: req.body.machine_id || processMachine.machine_id,
           })
           .then(processMachine => {
-            resp.ok(true, "Success update process machine.", processMachine.dataValues, res);
+            return process
+              .findByPk(processMachine.process_id)
+              .then(process => {
+                if (!process) {
+                  resp.ok(false, "Process machine not found.", null, res.status(400));
+                }
+
+                return process
+                  .update({
+                    name: req.body.process_name || process.name,
+                  })
+                  .then(process => {
+                    let result = {
+                      process: process,
+                      process_machine: processMachine
+                    }
+        
+                    data = result;
+                    resp.ok(true, "Success update process and process machine.", data, res);
+                  })
+                  .catch((error) => {
+                    resp.ok(false, "Failed update process.", null, res.status(400));
+                    console.log(error);
+                  })
+                })
+              .catch((error) => {
+                resp.ok(false, "Failed get process.", null, res.status(400));
+                console.log(error);
+              })
           })
           .catch((error) => {
             resp.ok(false, "Failed update process machine.", null, res.status(400));

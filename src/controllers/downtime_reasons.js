@@ -1,5 +1,5 @@
-const Reason = require('../models').reason;
-const Category = require('../models').category;
+const Reason = require('../models').downtime_reason;
+const Category = require('../models').downtime_category;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 

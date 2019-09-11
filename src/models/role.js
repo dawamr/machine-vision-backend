@@ -2,7 +2,6 @@
 module.exports = (sequelize, DataTypes) => {
   const role = sequelize.define('role', {
     name: DataTypes.STRING,
-    role_id: DataTypes.INTEGER,
     deleted_at: DataTypes.DATE
   }, {
     createdAt: 'created_at',

@@ -9,6 +9,7 @@ module.exports = {
         let sortBy = 'Asc'
         let limits = 10
         let offset  = 0
+        // let category_id
         if(req.query.order_by != undefined){ 
             orderBy = req.query.order_by
         }
@@ -20,6 +21,9 @@ module.exports = {
         }
         if(req.query.offset != undefined){
             offset = req.query.offset
+        }
+        if(req.query.category_id != undefined){
+            category_id = req.query.category_id
         }
         var cat = {
             model: FormCategory,
@@ -67,6 +71,7 @@ module.exports = {
         .then((FormSubCategory)=>{
             return FormSubCategory.update({
                 name: req.body.name || FormSubCategory.name,
+                category_id : req.body.category_id || FormSubCategory.category_id,
                 updatedAt :new Date(),
             })
         })
