@@ -27,7 +27,7 @@ module.exports = {
 
     let paramsObj = {
       query: req.query,
-      name:req.body.name,
+      name:req.query.name,
       pageSize: req.query.limit,
       page: req.query.page,
       sort: req.query.sort,
@@ -62,7 +62,12 @@ module.exports = {
 
   listAll(req, res, next) {
     return line
-    .findAll()
+    .findAll({where: {
+      name: {
+        [Op.like]: (req.query.name) ? '%' + req.query.name + '%' : '%'
+      }
+    }
+  })
     .then(resultLine => {
         req.data = resultLine;
         next();

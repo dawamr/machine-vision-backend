@@ -69,13 +69,32 @@ module.exports = {
   },
 
   listAll(req, res, next) {
+    let orderBy = 'created_at';
+    let sortBy = 'desc';
+    let options = {};
+
+    if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
+      orderBy = req.query.order_by;
+    }
+    if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
+      sortBy = req.query.sort_by;
+    }
+    if ((req.query.search != undefined) && (req.query.search.length > 0)){
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
+    }
+
     return productCategory
-      .findAll()
-      .then(productResult => {
-        resp.ok(true, "Get all data product category.", productResult, res);
+      .findAll({
+        where: options,
+        order: [
+          [orderBy, sortBy]
+        ],
+      })
+      .then(processMachineResult => {
+        resp.ok(true, "Get all data process machine.", processMachineResult, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get all data product category.", null, res.status(400));
+        resp.ok(false, "Failed get all data process machine.", null, res.status(400));
         console.log(error);
       });
   },

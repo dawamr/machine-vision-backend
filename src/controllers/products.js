@@ -103,7 +103,7 @@ module.exports = {
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
     }
 
-    return processMachine
+    return product
       .findAll({
         where: options,
         order: [
