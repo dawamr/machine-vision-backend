@@ -1,10 +1,10 @@
 {
   "development": {
-    "username": "nesya",
-    "password": "postgres",
-    "database": "mv-db",
-    "host": "127.0.0.1", 
-    "dialect": "postgres",
+    "username": "bulpbsyzcxlzvx",
+    "password": "39efe248b20ffcfc817751fe0be93876325bd988231fce85a0dfbd794f0a5947",
+    "database": "def5o8g6he2889",
+    "host": "ec2-23-23-173-30.compute-1.amazonaws.com",
+    "dialect": "postgres", 
     "operatorsAliases": false
   },
   "test": {
