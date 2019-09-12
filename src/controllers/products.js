@@ -4,7 +4,7 @@ const productCategory = require('../models').product_category;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
-const Op = Sequelize.Op;
+const Op = sequelize.Op;
 
 
 module.exports = {
@@ -15,7 +15,6 @@ module.exports = {
         product_category_id: req.body.product_category_id
       })
       .then(result => {
-        console.log(result.dataValues.id)
         return product.findOne({
             where: {
               id: result.dataValues.id

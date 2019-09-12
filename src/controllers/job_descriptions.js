@@ -5,7 +5,7 @@ const sector = require('../models').sector;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
-const Op = Sequelize.Op;
+const Op = sequelize.Op;
 
 
 module.exports = {
