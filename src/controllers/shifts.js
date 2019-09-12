@@ -2,9 +2,10 @@ const shift = require('../models').shift;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 module.exports = {
-  create(req, res){
+  create(req, res) {
     let duration = 0;
     let reqTimeStart = "00:00:00";
     let reqTimeEnd = "00:00:00";
@@ -12,14 +13,14 @@ module.exports = {
     if (((req.body.time_start != undefined) && (req.body.time_start.length > 0)) && ((req.body.time_end != undefined) && (req.body.time_end.length > 0))) {
       let timeStart = new Date("01/01/2007 " + req.body.time_start).getTime() / 1000 | 0;
       let timeEnd = new Date("01/01/2007 " + req.body.time_end).getTime() / 1000 | 0;
-      
+
       if (timeStart > timeEnd) {
         timeEnd = new Date("01/02/2007 " + req.body.time_end).getTime() / 1000 | 0;
       }
 
       reqTimeStart = req.body.time_start;
       reqTimeEnd = req.body.time_end;
-      duration = timeEnd - timeStart;  
+      duration = timeEnd - timeStart;
     }
 
     return shift
@@ -60,11 +61,15 @@ module.exports = {
     if ((req.query.per_page != undefined) && (req.query.per_page.length > 0)) {
       perPage = req.query.per_page;
     }
-    if ((req.query.search != undefined) && (req.query.search.length > 0)){
+    if ((req.query.search != undefined) && (req.query.search.length > 0)) {
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
     }
 
-    let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
+    let {
+      offsetResult,
+      perPageResult,
+      showPageResult
+    } = pagination.builder(perPage, page);
 
     return shift
       .findAndCountAll({
@@ -72,20 +77,20 @@ module.exports = {
         order: [
           [orderBy, sortBy]
         ],
-        limit:  perPageResult,
+        limit: perPageResult,
         offset: offsetResult,
       })
       .then(shiftResult => {
         let totalPage = Math.ceil(shiftResult.count / perPage);
         let data = resp.paging(shiftResult.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, shiftResult.count);
         let total_duration = 0;
-        
+
         return shift
           .findAndCountAll({
             where: options,
           })
           .then(shiftResultDuration => {
-            shiftResultDuration.rows.forEach((row)=> {
+            shiftResultDuration.rows.forEach((row) => {
               total_duration += row.duration
             });
 
@@ -104,26 +109,13 @@ module.exports = {
   },
 
   listAll(req, res) {
-    let orderBy = 'created_at';
-    let sortBy = 'desc';
-    let options = {};
-
-    if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
-      orderBy = req.query.order_by;
-    }
-    if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
-      sortBy = req.query.sort_by;
-    }
-    if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
-    }
-
     return shift
       .findAll({
-        where: options,
-        order: [
-          [orderBy, sortBy]
-        ],
+        where: {
+          name: {
+            [Op.like]: (req.query.name) ? '%' + req.query.name + '%' : '%'
+          }
+        }
       })
       .then(shiftResult => {
         resp.ok(true, "Get all data shift.", shiftResult, res);
@@ -155,13 +147,13 @@ module.exports = {
     if (((req.body.time_start != undefined) && (req.body.time_start.length > 0)) && ((req.body.time_end != undefined) && (req.body.time_end.length > 0))) {
       let timeStart = new Date("01/01/2007 " + req.body.time_start).getTime() / 1000 | 0;
       let timeEnd = new Date("01/01/2007 " + req.body.time_end).getTime() / 1000 | 0;
-      
+
       if (timeStart > timeEnd) {
         timeEnd = new Date("01/02/2007 " + req.body.time_end).getTime() / 1000 | 0;
       }
 
       duration = timeEnd - timeStart;
-    } 
+    }
 
     return shift
       .findByPk(req.params.id)

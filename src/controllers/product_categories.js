@@ -3,6 +3,8 @@ const product = require('../models').product;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 
 module.exports = {
   create(req, res){
@@ -69,27 +71,14 @@ module.exports = {
   },
 
   listAll(req, res, next) {
-    let orderBy = 'created_at';
-    let sortBy = 'desc';
-    let options = {};
-
-    if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
-      orderBy = req.query.order_by;
-    }
-    if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
-      sortBy = req.query.sort_by;
-    }
-    if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
-    }
 
     return productCategory
-      .findAll({
-        where: options,
-        order: [
-          [orderBy, sortBy]
-        ],
-      })
+      .findAll({where: {
+        name: {
+          [Op.like]: (req.query.name) ? '%' + req.query.name + '%' : '%'
+        }
+      }
+    })
       .then(processMachineResult => {
         resp.ok(true, "Get all data process machine.", processMachineResult, res);
       })
