@@ -92,12 +92,16 @@ module.exports = {
   listAll(req, res, next) {
 
     return product
-      .findAll({where: {
-        name: {
-          [Op.like]: (req.query.name) ? '%' + req.query.name + '%' : '%'
+      .findAll({
+        include: [{
+          model: productCategory,
+        }],
+        where: {
+          name: {
+            [Op.like]: (req.query.name) ? '%' + req.query.name + '%' : '%'
+          }
         }
-      }
-    })
+      })
       .then(processMachineResult => {
         resp.ok(true, "Get all data process machine.", processMachineResult, res);
       })
