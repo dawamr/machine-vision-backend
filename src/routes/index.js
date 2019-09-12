@@ -25,6 +25,7 @@ const app = express.Router();
 const accessToken = require('../middleware/AccessTokenMiddleware');
 const parameters_controller = require('../controllers/index').parameters_index;
 const parameter_category_controller = require('../controllers').parameter_category;
+const formCreateController = require('../controllers').form_create;
 
 module.exports = (express) => {
   app.use(accessToken
@@ -44,7 +45,7 @@ module.exports = (express) => {
  app.get('/api/parameters', parameters_controller.list)
  app.post('/api/parameters', parameters_controller.create)
  app.put('/api/parameters/:id', parameters_controller.update)
- app.delete('/api/parameters:id', parameters_controller.destroy)
+ app.delete('/api/parameters/:id', parameters_controller.destroy)
 
  // Parameter Category
  app.post('/api/parameter_category', parameter_category_controller.create)
@@ -71,6 +72,8 @@ module.exports = (express) => {
   // app.patch('/api/category/:id', formCategoryController.restore)
 
 
+  app.get('/api/form/create',formCreateController.list)
+  app.post('/api/form/create',formCreateController.store)
 
   // (Form Builder) Form list
   app.post('/api/form', formFormController.create)
@@ -79,6 +82,7 @@ module.exports = (express) => {
   app.get('/api/form/:id', formFormController.show)
   app.put('/api/form/:id', formFormController.update)
   app.delete('/api/form/:id', formFormController.delete)
+
 
   // (Form Builder) Form Action
   app.post('/api/form/action', formAction.create)
