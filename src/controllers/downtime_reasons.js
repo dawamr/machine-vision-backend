@@ -1,4 +1,5 @@
 const Reason = require('../models').downtime_reason;
+const reason = require('../models').downtime_reason;
 const Category = require('../models').downtime_category;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -9,90 +10,99 @@ module.exports = {
         return Reason
             .create(reasonObj)
             .then(result => {
-                req.data = result;
-                next();
+                return Reason.findByPk(result.dataValues.id, {
+                        include: [{
+                            model: Category,
+                            attributes: [
+                                ['name', 'category_name']
+                            ]
+                        }]
+                    })
+                    .then(newData => {
+                        req.data = newData;
+                        next();
+                    })
             }, (err) => {
                 next(err);
             })
     },
 
     listAll(req, res, next) {
-        if(req.query != undefined) {
+        if (req.query != undefined) {
             return Reason
-            .findAll({
-                where:{
-                    impact:{
-                        [Op.like]: (req.query.impact) ? '%' + req.query.impact + '%' : '%'
-                    }
-                },
-                include: [{
-                    model: Category,
-                    attributes: [
-                        ['name', 'category_name']
-                    ]
-                }]
-            })
-            .then(result => {
-                req.data = result;
-                next();
-            }, (err) => {
-                next(err);
-            })
+                .findAll({
+                    where: {
+                        impact: {
+                            [Op.like]: (req.query.impact) ? '%' + req.query.impact + '%' : '%'
+                        }
+                    },
+                    include: [{
+                        model: Category,
+                        attributes: [
+                            ['name', 'category_name']
+                        ]
+                    }]
+                })
+                .then(result => {
+                    req.data = result;
+                    next();
+                }, (err) => {
+                    next(err);
+                })
         }
-        if(req.query.category_id != null) {
+        if (req.query.category_id != null) {
             return Reason
-            .findAll({
-                where:{
-                    category_id: req.query.category_id
-                },
-                include: [{
-                    model: Category,
-                    attributes: [
-                        ['name', 'category_name']
-                    ]
-                }]
-            })
-            .then(result => {
-                req.data = result;
-                next();
-            }, (err) => {
-                next(err);
-            })
+                .findAll({
+                    where: {
+                        category_id: req.query.category_id
+                    },
+                    include: [{
+                        model: Category,
+                        attributes: [
+                            ['name', 'category_name']
+                        ]
+                    }]
+                })
+                .then(result => {
+                    req.data = result;
+                    next();
+                }, (err) => {
+                    next(err);
+                })
         }
-        if((req.query.category_id != null) && (req.query != undefined)) {
+        if ((req.query.category_id != null) && (req.query != undefined)) {
             return Reason
-            .findAll({
-                where:{
-                    category_id: req.query.category_id,
-                    impact:{
-                        [Op.like]: (req.query.impact) ? '%' + req.query.impact + '%' : '%'
-                    }
-                },
-                include: [{
-                    model: Category,
-                    attributes: [
-                        ['name', 'category_name']
-                    ]
-                }]
-            })
-            .then(result => {
-                req.data = result;
-                next();
-            }, (err) => {
-                next(err);
-            })
-        }
-        else {
+                .findAll({
+                    where: {
+                        category_id: req.query.category_id,
+                        impact: {
+                            [Op.like]: (req.query.impact) ? '%' + req.query.impact + '%' : '%'
+                        }
+                    },
+                    include: [{
+                        model: Category,
+                        attributes: [
+                            ['name', 'category_name']
+                        ]
+                    }]
+                })
+                .then(result => {
+                    req.data = result;
+                    next();
+                }, (err) => {
+                    next(err);
+                })
+        } else {
             return Reason
-            .findAll()
-            .then(result => {
-                req.data = result;
-                next();
-            }, (err) => {
-                next(err);
-            })
+                .findAll()
+                .then(result => {
+                    req.data = result;
+                    next();
+                }, (err) => {
+                    next(err);
+                })
         }
-       
+
     },
 
     list(req, res, next) {
@@ -159,7 +169,8 @@ module.exports = {
                 if (result) {
                     req.data = result;
                     next();
-                } else {category
+                } else {
+                    category
                     let err = Error('Reason not found');
                     next(err);
                 }
@@ -182,8 +193,18 @@ module.exports = {
                 return Reason
                     .update(reasonObj)
                     .then(Result => {
-                        req.data = Result;
-                        next();
+                        return reason.findByPk(Result.dataValues.id, {
+                                include: [{
+                                    model: Category,
+                                    attributes: [
+                                        ['name', 'category_name']
+                                    ]
+                                }]
+                            })
+                            .then(newData => {
+                                req.data = newData;
+                                next();
+                            })
                     })
                     .catch(err => {
                         next(err);

@@ -44,7 +44,7 @@ module.exports = (express) => {
  app.get('/api/parameters', parameters_controller.list)
  app.post('/api/parameters', parameters_controller.create)
  app.put('/api/parameters/:id', parameters_controller.update)
- app.delete('/api/parameters:id', parameters_controller.destroy)
+ app.delete('/api/parameters/:id', parameters_controller.destroy)
 
  // Parameter Category
  app.post('/api/parameter_category', parameter_category_controller.create)

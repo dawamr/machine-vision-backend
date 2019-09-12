@@ -3,6 +3,8 @@ const product = require('../models').product;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
+const Op = sequelize.Op;
+
 
 module.exports = {
   create(req, res){
@@ -69,13 +71,19 @@ module.exports = {
   },
 
   listAll(req, res, next) {
+
     return productCategory
-      .findAll()
-      .then(productResult => {
-        resp.ok(true, "Get all data product category.", productResult, res);
+      .findAll({where: {
+        name: {
+          [Op.like]: (req.query.name) ? '%' + req.query.name + '%' : '%'
+        }
+      }
+    })
+      .then(processMachineResult => {
+        resp.ok(true, "Get all data process machine.", processMachineResult, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get all data product category.", null, res.status(400));
+        resp.ok(false, "Failed get all data process machine.", null, res.status(400));
         console.log(error);
       });
   },
