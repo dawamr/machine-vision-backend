@@ -127,22 +127,6 @@ module.exports = {
         
     },
 
-    //stuck deleteAt not visible
-    // restore(req,res){
-    //     return FormCategory
-    //     .findOne({
-    //         where: {
-    //             id : req.params.id
-    //         },
-    //     })
-    //     .then((FormCategory)=>{
-    //         console.log(FormCategory)
-    //         // return FormCategory.restore()
-    //     })
-    //     .then(Category => res.status(201).send(Category))
-    //     .catch(error => res.status(400).send(error));
-    // },
-
     search(req,res){
         console.log(req.query.name)
         return FormCategory
