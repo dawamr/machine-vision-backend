@@ -67,7 +67,7 @@ module.exports = {
             [orderBy, sortBy]
         ],
         limit: perPage,
-        offset :skip
+        offset :skip,
         where: {'types': type}
         })
         .then(data => res.status(200).send(data))
@@ -76,7 +76,6 @@ module.exports = {
     },
 
     show(req, res){
-
         var form_field =  FormField.findAll({
                             attributes: ['id','form_id','types','configuration','is_required','order'],
                             where: {
