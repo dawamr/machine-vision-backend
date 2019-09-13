@@ -14,8 +14,8 @@ module.exports = {
     list(req, res){
         let orderBy = 'createdAt'
         let sortBy = 'Asc'
-        let limits = 10
-        let offset  = 0
+        let page = 1;
+        let perPage = 10;
         let type = ['widget','non-widget']
         if(req.query.order_by != undefined){
             orderBy = req.query.order_by
@@ -23,12 +23,13 @@ module.exports = {
         if(req.query.sort_by != undefined){
             sortBy = req.query.sort_by
         }
-        if(req.query.limit != undefined){
-            limits = req.query.limit
+        if(req.query.page != undefined){
+            page = req.query.page
         }
-        if(req.query.offset != undefined){
-            offset = req.query.offset
+        if(req.query.per_page != undefined){
+            perPage = req.query.per_page
         }
+        let skip = (page - 1) * perPage
         if(req.query.type != undefined){
             type = req.query.type
         }
@@ -65,8 +66,8 @@ module.exports = {
         order: [
             [orderBy, sortBy]
         ],
-        limit: limits,
-        offset :offset,
+        limit: perPage,
+        offset :skip
         where: {'types': type}
         })
         .then(data => res.status(200).send(data))
