@@ -80,18 +80,27 @@ module.exports = {
         // console.log(req.body.length)
         let data = req.body.form_field
         let data_response = []
+        let data_field_response =[]
         for (let index = 0; index < data.length; index++) {
             data_response.push(FormResponse.create({
                 form_id: data[index].form_id,
                 user_id: req.body.user_id,
-                response: data.configuration
+                response: data[index].configuration
             }))
         }
-
         Promise.all(data_response)
-        .then(result => res.status(201).send(result))
+        .then(result => {
+            for(let index =0; index < result.length; index++){
+                data_field_response.push(FormResponseField.create({
+                    form_field_id : data[index].field_id,
+                    form_response_id: result[index].id
+                }))
+            }
+            Promise.all(data_field_response)
+            .then(result2 => res.status(200).send({result,result2}))
+            .catch(error => res.status(400).send(error));
+        })
         .catch(error => res.status(400).send(error));
-
     },
     update(req,res){
         return FormField
