@@ -182,26 +182,6 @@ module.exports = {
         resp.ok(false, "Failed update job description.", null, res.status(400));
         console.log(error);
       });
-        
-    return jobDescription
-      .findByPk(req.params.id, {
-        include: [{
-          model: department,
-        }, {
-          model: sector,
-        }],
-      })
-      .then(jobDescriptionResult => {
-        if (!jobDescriptionResult) {
-          resp.ok(false, "Failed get job description.", null, res.status(400));
-        }
-        resp.ok(true, "Success update job description.", jobDescriptionResult, res);
-      })
-      .catch((error) => {
-        resp.ok(false, "Failed get job description.", null, res.status(400));
-        console.log(error);
-        reject(error)
-      });
   },
 
   delete(req, res) {

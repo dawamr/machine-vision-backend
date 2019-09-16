@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
     sector.hasMany(models.user, {
       foreignKey: 'sector_id'
     });
+    sector.hasMany(models.line, {
+      foreignKey: 'sector_id'
+    });
   };
   return sector;
 };
