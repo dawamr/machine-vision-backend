@@ -59,7 +59,9 @@ module.exports = {
         }
         let skip = (page - 1) * perPage
         return FormCategory
-        .findByPk(req.params.id)
+        .findByPk(req.params.id,{
+            attributes :['name','createdAt','updatedAt']
+        })
         .then(data => {
             return FormSubCategory.findAll({
                 attributes:['id','name','form_category_id','createdAt','updatedAt'],
