@@ -106,7 +106,7 @@ module.exports = {
             sub_category_id: req.body.sub_category,
             name: req.body.name,
             types: req.body.type,
-            is_template : req.body.is_template
+            is_template: "false"
         })
         .then(created => res.status(201).send(created))
         .catch(error => res.status(400).send(error));
