@@ -41,7 +41,7 @@ module.exports = {
       perPage = req.query.per_page;
     }
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('product_category.name')), 'LIKE', '%' + req.query.search + '%');
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('product_category.name')), 'LIKE', '%' + req.query.search.toLowerCase() + '%');
     }
 
     let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
@@ -71,7 +71,6 @@ module.exports = {
   },
 
   listAll(req, res, next) {
-
     return productCategory
       .findAll({where: {
         name: {

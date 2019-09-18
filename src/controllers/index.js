@@ -18,6 +18,9 @@ const parameter_category = require('./parameter_category_controller');
 const users = require('./users');
 const category = require('./downtime_categories');
 const form_create = require('./form_create');
+const sensors = require('./sensors');
+const sensor_categories = require('./sensor_categories');
+const data_sensors = require('./data_sensors');
 
 
 module.exports = {
@@ -41,5 +44,8 @@ module.exports = {
   machines,
   users,
   category,
-  form_create
+  form_create,
+  sensors,
+  sensor_categories,
+  data_sensors
 };
