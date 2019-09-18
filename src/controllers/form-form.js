@@ -134,32 +134,9 @@ module.exports = {
     },
 
     async delete(req,res){
-        // console.log(req.params)
-        ////
-        // FormResponse.findAll({
-        //     attributes:['id'],
-        //     where: {form_id : formId},
-        // })
-        // .then(result => {
-        //     for(i=0;i < result.length; i++){
-        //         response_id.push(result[i].id)
-        //     }
-        //     // console.log(response_id)
-        // } )
-        // .catch(error => res.status(400).send(error));
-        ////
         let transaction
         var field_id = []
         let formId = req.params.id
-        // let response_id = []
-        ////
-        
-        
-        
-        ////
-        // let response_field =  FormResponseField.destroy({ where: { form_field_id: field_id }})
-        // Promise.all([response, field, form,response_field]).then(res.json('ok')).catch(err=>res.json(err))
-        // await console.log(field_id)
         try {
             await FormField.findAll({
                 attributes:['id'],
