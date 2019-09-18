@@ -9,14 +9,14 @@ module.exports = (sequelize, DataTypes) => {
     deletedAt: 'deleted_at',
     paranoid: true
   });
-    department.associate = function(models) {
-      department.hasMany(models.job_description, { 
-        foreignKey: 'department_id' 
-      });
-      department.hasMany(models.user, { 
-        foreignKey: 'department_id'
-      });
-    };
+  department.associate = function(models) {
+    department.hasMany(models.job_description, { 
+      foreignKey: 'department_id' 
+    });
+    department.hasMany(models.user, { 
+      foreignKey: 'department_id'
+    });
+  };
 
     return department;
   }

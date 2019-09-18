@@ -79,27 +79,8 @@ module.exports = {
   },
 
   listAll(req, res) {
-    let orderBy = 'created_at';
-    let sortBy = 'desc';
-    let options = {};
-
-    if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
-      orderBy = req.query.order_by;
-    }
-    if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
-      sortBy = req.query.sort_by;
-    }
-    if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
-    }
-
     return plant
-      .findAll({
-        where: options,
-        order: [
-          [orderBy, sortBy]
-        ],
-      })
+      .findOne()
       .then(plantResult => {
         resp.ok(true, "Get all data plant.", plantResult, res);
       })

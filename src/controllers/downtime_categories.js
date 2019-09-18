@@ -17,7 +17,12 @@ module.exports = {
 
     listAll(req, res, next) {
         return Category
-        .findAll()
+        .findAll({where: {
+          name: {
+            [Op.like]: (req.query.name) ? '%' + req.query.name + '%' : '%'
+          }
+        }
+      })
         .then(result => {
             req.data = result;
             next();

@@ -20,13 +20,18 @@ const formAction = require('../controllers').form_action;
 const line = require('./line');
 const downtimeCategory = require('./downtime_category');
 const downtimeReason = require('./downtime_reason');
+const sensor = require('./sensor');
+const sensorCategory = require('./sensor_category');
+const dataSensor = require('./data_sensor');
 const express = require('express');
 const app = express.Router();
 const accessToken = require('../middleware/AccessTokenMiddleware');
 const parameters_controller = require('../controllers/index').parameters_index;
 const parameter_category_controller = require('../controllers').parameter_category;
+const formCreateController = require('../controllers').form_create;
 
 module.exports = (express) => {
+  app.use(express.static('public'));
   app.use(accessToken
   .unless({
     path: [{
@@ -40,25 +45,25 @@ module.exports = (express) => {
     }]
   }));
   
- // Parameter
- app.get('/api/parameters', parameters_controller.list)
- app.post('/api/parameters', parameters_controller.create)
- app.put('/api/parameters/:id', parameters_controller.update)
- app.delete('/api/parameters:id', parameters_controller.destroy)
+  // Parameter
+  app.get('/api/parameters', parameters_controller.list)
+  app.post('/api/parameters', parameters_controller.create)
+  app.put('/api/parameters/:id', parameters_controller.update)
+  app.delete('/api/parameters/:id', parameters_controller.destroy)
 
- // Parameter Category
- app.post('/api/parameter_category', parameter_category_controller.create)
- app.get('/api/parameter_category', parameter_category_controller.list)
- app.get('/api/parameter_category/:id', parameter_category_controller.retrieve)
- app.put('/api/parameter_category/:id', parameter_category_controller.update)
- app.delete('/api/parameter_category/:id', parameter_category_controller.destroy)
+  // Parameter Category
+  app.post('/api/parameter_category', parameter_category_controller.create)
+  app.get('/api/parameter_category', parameter_category_controller.list)
+  app.get('/api/parameter_category/:id', parameter_category_controller.retrieve)
+  app.put('/api/parameter_category/:id', parameter_category_controller.update)
+  app.delete('/api/parameter_category/:id', parameter_category_controller.destroy)
 
- // (Form Builder) Sub Category
- app.post('/api/category/sub', formSubCategoryController.create)
- app.get('/api/category/sub', formSubCategoryController.list)
- app.put('/api/category/sub/:id', formSubCategoryController.update)
- app.delete('/api/category/sub/:id', formSubCategoryController.delete)
- app.get('/api/category/sub/search', formSubCategoryController.search)
+  // (Form Builder) Sub Category
+  app.post('/api/category/sub', formSubCategoryController.create)
+  app.get('/api/category/sub', formSubCategoryController.list)
+  app.put('/api/category/sub/:id', formSubCategoryController.update)
+  app.delete('/api/category/sub/:id', formSubCategoryController.delete)
+  app.get('/api/category/sub/search', formSubCategoryController.search)
 
   // (Form Builder) Category 
   app.post('/api/category', formCategoryController.create)
@@ -71,6 +76,8 @@ module.exports = (express) => {
   // app.patch('/api/category/:id', formCategoryController.restore)
 
 
+  app.get('/api/form/create',formCreateController.list)
+  app.post('/api/form/create',formCreateController.store)
 
   // (Form Builder) Form list
   app.post('/api/form', formFormController.create)
@@ -80,6 +87,7 @@ module.exports = (express) => {
   app.put('/api/form/:id', formFormController.update)
   app.delete('/api/form/:id', formFormController.delete)
 
+
   // (Form Builder) Form Action
   app.post('/api/form/action', formAction.create)
   app.get('/api/action/form/', formAction.list)
@@ -87,7 +95,6 @@ module.exports = (express) => {
   app.delete('/api/form/action/:id', formAction.delete)
   
   
-  app.use(express.static('public'));
   app.use('/api/user', user);
   app.use('/api/department', department);
   app.use('/api/shift', shift);
@@ -101,8 +108,11 @@ module.exports = (express) => {
   app.use('/api/machine', machine);
   app.use('/api/upload', uploadFile);
   app.use('/api/line', line);
-  app.use('/api/category', downtimeCategory);
-  app.use('/api/reason', downtimeReason);
+  app.use('/api/downtime_category', downtimeCategory);
+  app.use('/api/downtime_reason', downtimeReason);
+  app.use('/api/sensor', sensor);
+  app.use('/api/sensor_category', sensorCategory);
+  app.use('/api/data_sensor', dataSensor);
 
   app.use(function(req, res, next) {
     resp.ok(false, "Error 404 not found.", null, res.status(404));
