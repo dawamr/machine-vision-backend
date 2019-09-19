@@ -21,6 +21,7 @@ const form_create = require('./form_create');
 const sensors = require('./sensors');
 const sensor_categories = require('./sensor_categories');
 const data_sensors = require('./data_sensors');
+const cal_formula = require('./calculator_formula');
 
 
 module.exports = {
@@ -47,5 +48,6 @@ module.exports = {
   form_create,
   sensors,
   sensor_categories,
-  data_sensors
+  data_sensors,
+  cal_formula
 };
