@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const CalculatorFormula = sequelize.define('CalculatorFormula', {
+  const calculator_formula = sequelize.define('calculator_formula', {
     name: DataTypes.STRING,
     level: DataTypes.ENUM('plant', 'sector', 'line', 'machine'),
     level_reference_id: DataTypes.ENUM('plant', 'sector', 'line', 'machine'),
@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     paranoid: true
   });
-  CalculatorFormula.associate = function(models) {
+  calculator_formula.associate = function(models) {
     // associations can be defined here
   };
-  return CalculatorFormula;
+  return calculator_formula;
 };
