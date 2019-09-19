@@ -8,9 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
-        type: Sequelize.STRING
-      },
       level: {
         type: Sequelize.ENUM('plant', 'sector', 'line', 'machine')
       },
