@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   calculator_formula.associate = function(models) {
     // associations can be defined here
+    calculator_formula.hasMany(models.calculator_formula_parameter, {as: 'formula_parameter'})
   };
   return calculator_formula;
 };
