@@ -32,10 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       through: 'user_role',
       foreignKey: 'user_id'
     });
-    user.belongsToMany(models.team, { 
-      through: 'user_team',
-      foreignKey: 'user_id'
-    });
+    user.belongsTo(models.team, { foreignKey: 'team_id'});
     user.belongsTo(models.shift, { foreignKey: 'shift_id'});
     user.belongsTo(models.department, { foreignKey: 'department_id' });
     user.belongsTo(models.job_description, { foreignKey: 'job_description_id' });
