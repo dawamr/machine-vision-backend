@@ -44,7 +44,13 @@ function UserService() {
 
   const getAll = () => {
     return new Promise((resolve, reject) => {
-      UserModel.findAll()
+      UserModel.findAll({
+          where: {
+            name: {
+              [Op.like]: (req.query.name) ? '%' + req.query.name + '%' : '%'
+            }
+          }
+        })
         .then(users => {
           resolve(users);
         })
@@ -73,7 +79,7 @@ function UserService() {
     let data = _.clone(_.omitBy(obj, _.isNil));
     const filter = {
       where: {
-        id: parseInt(id)
+        id: id
       },
     }
     if (data.password) {
@@ -84,9 +90,9 @@ function UserService() {
       UserModel.findOne(filter)
         .then(user => {
           if (!user) reject(new Error("user not found"));
-            user.update(data).then((userUpdated) => {
-              resolve(userUpdated);
-            });
+          user.update(data).then((userUpdated) => {
+            resolve(userUpdated);
+          });
         });
     })
   };
@@ -94,10 +100,10 @@ function UserService() {
   const remove = (id) => {
     return new Promise((resolve, reject) => {
       UserModel.destroy({
-        where: {
-          id: id
-        }
-      })
+          where: {
+            id: id
+          }
+        })
         .then(users => {
           resolve(users);
         })
@@ -125,18 +131,20 @@ function UserService() {
 
     return new Promise((resolve, reject) => {
       UserModel.findAndCountAll({
-        where: {
-          name: {
-            [Op.like]: (queryParams.name) ? '%' + queryParams.name + '%' : '%'
+          where: {
+            name: {
+              [Op.like]: (queryParams.name) ? '%' + queryParams.name + '%' : '%'
+            },
+            username: {
+              [Op.like]: (queryParams.username) ? '%' + queryParams.username + '%' : '%'
+            }
           },
-          username: {
-            [Op.like]: (queryParams.username) ? '%' + queryParams.username + '%' : '%'
-          }
-        },
-        order: [ [sortKey , sortType]],
-        offset: (params.page - 1) * params.pageSize,
-        limit: params.pageSize
-      })
+          order: [
+            [sortKey, sortType]
+          ],
+          offset: (params.page - 1) * params.pageSize,
+          limit: params.pageSize
+        })
         .then(users => {
           resolve(users);
         })

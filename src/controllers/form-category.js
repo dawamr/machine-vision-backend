@@ -59,7 +59,9 @@ module.exports = {
         }
         let skip = (page - 1) * perPage
         return FormCategory
-        .findByPk(req.params.id)
+        .findByPk(req.params.id,{
+            attributes :['name','createdAt','updatedAt']
+        })
         .then(data => {
             return FormSubCategory.findAll({
                 attributes:['id','name','form_category_id','createdAt','updatedAt'],
@@ -126,22 +128,6 @@ module.exports = {
         })
         
     },
-
-    //stuck deleteAt not visible
-    // restore(req,res){
-    //     return FormCategory
-    //     .findOne({
-    //         where: {
-    //             id : req.params.id
-    //         },
-    //     })
-    //     .then((FormCategory)=>{
-    //         console.log(FormCategory)
-    //         // return FormCategory.restore()
-    //     })
-    //     .then(Category => res.status(201).send(Category))
-    //     .catch(error => res.status(400).send(error));
-    // },
 
     search(req,res){
         console.log(req.query.name)

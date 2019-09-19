@@ -5,6 +5,8 @@ const sector = require('../models').sector;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
+const Op = sequelize.Op;
+
 
 module.exports = {
   create(req, res){
@@ -93,19 +95,6 @@ module.exports = {
   },
 
   listAll(req, res) {
-    let orderBy = 'created_at';
-    let sortBy = 'desc';
-    let options = {};
-
-    if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
-      orderBy = req.query.order_by;
-    }
-    if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
-      sortBy = req.query.sort_by;
-    }
-    if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('job_description.name')), 'LIKE', '%' + req.query.search + '%');
-    }
 
     return jobDescription
       .findAll({
@@ -114,10 +103,11 @@ module.exports = {
         }, {
           model: sector,
         }],
-        where: options,
-        order: [
-          [orderBy, sortBy]
-        ],
+        where: {
+          name: {
+            [Op.like]: (req.query.name) ? '%' + req.query.name + '%' : '%'
+          }
+        }
       })
       .then(jobDescriptionResult => {
         resp.ok(true, "Get all data job description.", jobDescriptionResult, res);
@@ -191,26 +181,6 @@ module.exports = {
       .catch((error) => {
         resp.ok(false, "Failed update job description.", null, res.status(400));
         console.log(error);
-      });
-        
-    return jobDescription
-      .findByPk(req.params.id, {
-        include: [{
-          model: department,
-        }, {
-          model: sector,
-        }],
-      })
-      .then(jobDescriptionResult => {
-        if (!jobDescriptionResult) {
-          resp.ok(false, "Failed get job description.", null, res.status(400));
-        }
-        resp.ok(true, "Success update job description.", jobDescriptionResult, res);
-      })
-      .catch((error) => {
-        resp.ok(false, "Failed get job description.", null, res.status(400));
-        console.log(error);
-        reject(error)
       });
   },
 

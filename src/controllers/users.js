@@ -6,15 +6,22 @@ const RefreshTokenService = require("../service/RefreshTokenService");
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const user = require('../models').user;
+const user2 = require('../models').user;
 const team = require('../models').team;
+const sector = require('../models').sector;
+const line = require('../models').line;
+const machine = require('../models').machine;
+const department = require('../models').department;
+const jobDescription = require('../models').job_description;
+const shift = require('../models').shift;
 const sequelize = require('sequelize');
 
 
 function UserController() {
 
   const login = (req, res, next) => {
-    let username = req.body.username;
-    let password = req.body.password;
+    let username = 'implementor';
+    let password = '123456';
 
     AuthenticationService.authenticate(username, password)
       .then((user) => {
@@ -49,23 +56,64 @@ function UserController() {
 
   const create = async (req, res) => {
     let userObj = req.body;
-    try {
-      const user = await UserService.create(userObj)
-      if (user) {
-        resp.ok(true, "Success create user.", user, res);
-      } else {
-        resp.ok(false, "Failed create user.", null, res);
-      }
-    } catch (error) {
-      resp.ok(false, "Failed create user.", null, res.status(400));
-      console.log(error);
-    }
+    return UserService.create(userObj)
+      .then(userCreated => {
+        return user
+          .findByPk(
+            userCreated.id, 
+            {
+              include: [{
+                model: team,
+              },{
+                model: sector,
+              },{
+                model: line,
+              },{
+                model: machine,
+              },{
+                model: department,
+              },{
+                model: jobDescription,
+              },{
+                model: shift,
+              }],
+            }
+          )
+          .then(user => {
+            resp.ok(true, "Success create user.", user, res);
+          })
+          .catch(err => {
+            resp.ok(false, "Failed create user.", null, res.status(400));
+          });
+      })
+      .catch((error) => {
+        resp.ok(false, "Failed create user.", null, res.status(400));
+        console.log(error);
+      });
   };
 
   const detail = (req, res) => {
-    let id = req.params.id;
-
-    return UserService.byId(id)
+    return user
+      .findByPk(
+        req.params.id, 
+        {
+          include: [{
+            model: team,
+          },{
+            model: sector,
+          },{
+            model: line,
+          },{
+            model: machine,
+          },{
+            model: department,
+          },{
+            model: jobDescription,
+          },{
+            model: shift,
+          }],
+        }
+      )
       .then(user => {
         if (user) {
           resp.ok(true, "Success get user.", user, res);
@@ -83,7 +131,33 @@ function UserController() {
     let userObj = req.body;
     return UserService.update(id, userObj)
       .then((user) => {
-        resp.ok(true, "Success update user.", user, res);
+        return user2
+          .findByPk(
+            user.id, 
+            {
+              include: [{
+                model: team,
+              },{
+                model: sector,
+              },{
+                model: line,
+              },{
+                model: machine,
+              },{
+                model: department,
+              },{
+                model: jobDescription,
+              },{
+                model: shift,
+              }],
+            }
+          )
+          .then(user2 => {
+            resp.ok(true, "Success update user.", user2, res);
+          })
+          .catch(err => {
+            resp.ok(false, "Failed update user.", null, res.status(400));
+          });
       })
       .catch(err => {
         resp.ok(false, "Failed update user.", null, res.status(400));
@@ -107,14 +181,50 @@ function UserController() {
   };
 
   const all = (req, res) => {
-    return UserService.getAll()
-    .then((user) => {
-      resp.ok(true, "Success get list all user.", user, res);
-    })
-    .catch(err => {
-      resp.ok(false, "Failed get list all  user.", null, res.status(400));
-    });
-  }; 
+    let orderBy = 'created_at';
+    let sortBy = 'desc';
+    let options = {};
+
+    if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
+      orderBy = req.query.order_by;
+    }
+    if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
+      sortBy = req.query.sort_by;
+    }
+    if ((req.query.search != undefined) && (req.query.search.length > 0)){
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('user.name')), 'LIKE', '%' + req.query.search.toLowerCase() + '%');
+    }
+
+    return user
+      .findAll({
+        include: [{
+          model: team,
+        },{
+          model: sector,
+        },{
+          model: line,
+        },{
+          model: machine,
+        },{
+          model: department,
+        },{
+          model: jobDescription,
+        },{
+          model: shift,
+        }],
+        where: options,
+        order: [
+          [orderBy, sortBy]
+        ],
+      })
+      .then(userResult => {
+        resp.ok(true, "Get all data user.", userResult, res);
+      })
+      .catch((error) => {
+        resp.ok(false, "Failed get all data user.", null, res.status(400));
+        console.log(error);
+      });
+  };
 
   const list = (req, res) => {
     let orderBy = 'created_at';
@@ -145,6 +255,18 @@ function UserController() {
       .findAndCountAll({
         include: [{
           model: team,
+        },{
+          model: sector,
+        },{
+          model: line,
+        },{
+          model: machine,
+        },{
+          model: department,
+        },{
+          model: jobDescription,
+        },{
+          model: shift,
         }],
         where: options,
         order: [
