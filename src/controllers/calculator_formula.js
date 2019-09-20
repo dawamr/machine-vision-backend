@@ -7,7 +7,7 @@ const Op = Sequelize.Op
 module.exports = {
 
     list(req, res){
-        res.json('test')
+        res.json('testing')
     }
 
 }
