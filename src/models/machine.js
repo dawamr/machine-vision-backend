@@ -30,6 +30,9 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'machine_id',
       otherKey: 'process_id'
     });
+    machine.hasMany(models.process_machine, {
+      foreignKey: 'machine_id',
+    });
     // machine.hasMany(models.user, {
     //   foreignKey:'machine_id'
     // });

@@ -1,9 +1,10 @@
 const processMachineController = require('../controllers').process_machines;
-const serviceResponse = require('../../src/helpers/ServiceResponse');
 const express = require('express')
 const processMachine = express.Router();
 
-processMachine.post('/', processMachineController.create, serviceResponse)
+processMachine.post('/add_process', processMachineController.createProcess);
+processMachine.post('/add_machine', processMachineController.createMachine);
+processMachine.get('/list_machine', processMachineController.listMachine);
 processMachine.get('/list', processMachineController.list);
 processMachine.get('/list_all', processMachineController.listAll);
 processMachine.get('/:id', processMachineController.detail);
