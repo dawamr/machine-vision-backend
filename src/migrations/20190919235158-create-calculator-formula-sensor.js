@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('calculator_formulas  ', {
+    return queryInterface.createTable('calculator_formula_sensors', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -14,11 +14,8 @@ module.exports = {
       level_reference_id: {
         type: Sequelize.ENUM('plant', 'sector', 'line', 'machine')
       },
-      formula_script: {
-        type: Sequelize.TEXT
-      },
-      formula_xml: {
-        type: Sequelize.TEXT
+      label: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -35,6 +32,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('calculator_formulas  ');
+    return queryInterface.dropTable('calculator_formula_sensors');
   }
 };
