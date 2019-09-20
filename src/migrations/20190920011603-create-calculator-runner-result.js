@@ -1,24 +1,21 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('calculator_formulas  ', {
+    return queryInterface.createTable('calculator_runner_results', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      level: {
-        type: Sequelize.ENUM('plant', 'sector', 'line', 'machine')
+      parameter_id: {
+        type: Sequelize.INTEGER
       },
-      level_reference_id: {
-        type: Sequelize.ENUM('plant', 'sector', 'line', 'machine')
+      parameter_name: {
+        type: Sequelize.STRING
       },
-      formula_script: {
-        type: Sequelize.TEXT
-      },
-      formula_xml: {
-        type: Sequelize.TEXT
+      value: {
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -35,6 +32,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('calculator_formulas');
+    return queryInterface.dropTable('calculator_runner_results');
   }
 };
