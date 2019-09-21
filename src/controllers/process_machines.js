@@ -1,11 +1,15 @@
 const processMachine = require('../models').process_machine;
 const process = require('../models').process;
 const machine = require('../models').machine;
+const line = require('../models').line;
+const productCategory = require('../models').product_category;
+const sector = require('../models').sector;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
 const model = require('../models');
 const db = model.sequelize;
+const createProcessResult = {};
 
 module.exports =  {
   createProcess(req, res){
@@ -31,8 +35,37 @@ module.exports =  {
                 }, {transaction: t});
               });
           });
-    }).then(result => {
-      resp.ok(true, "Success create process, machine and process_machine.", result, res);
+    }).then(() => {
+      
+      return line
+        .findByPk(req.body.line_id, {
+          include: [{
+            model: sector,
+          }, {
+            model: productCategory,
+          },
+          {
+            model: process,
+            attributes: [['id', 'process_id'],['name','process_name']],
+            include: [{
+              model: machine,
+              attributes: [['id', 'machine_id'],['name', 'machine_name']],
+              through: {
+                model: processMachine
+              }
+            }]
+          }],
+        })
+        .then(lineResult => {
+          if (!lineResult) {
+            resp.ok(false, "Line not found.", null, res.status(400));
+          }
+          resp.ok(true, "Success create process, machine, process_machine and get data line.", lineResult, res);
+        })
+        .catch((error) => {
+          resp.ok(false, "Failed get data line.", null, res.status(400));
+          console.log(error);
+        });
 
     }).catch(error => {
       resp.ok(false, "Failed create process, machine and process_machine", null, res.status(400));
@@ -55,8 +88,37 @@ module.exports =  {
               from_machine_id: req.body.from_machine_id,
             }, {transaction: t});
           });
-    }).then(result => {
-      resp.ok(true, "Success create machine and process_machine.", result, res);
+    }).then(() => {
+
+      return line
+        .findByPk(req.body.line_id, {
+          include: [{
+            model: sector,
+          }, {
+            model: productCategory,
+          },
+          {
+            model: process,
+            attributes: [['id', 'process_id'],['name','process_name']],
+            include: [{
+              model: machine,
+              attributes: [['id', 'machine_id'],['name', 'machine_name']],
+              through: {
+                model: processMachine
+              }
+            }]
+          }],
+        })
+        .then(lineResult => {
+          if (!lineResult) {
+            resp.ok(false, "Line not found.", null, res.status(400));
+          }
+          resp.ok(true, "Success create machine, process_machine and get data line.", lineResult, res);
+        })
+        .catch((error) => {
+          resp.ok(false, "Failed get data line.", null, res.status(400));
+          console.log(error);
+        });
 
     }).catch(error => {
       resp.ok(false, "Failed create machine and process_machine", null, res.status(400));

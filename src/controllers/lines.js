@@ -68,7 +68,6 @@ module.exports = {
       options.sector_id = sequelize.where(sequelize.col('line.sector_id'), '=', req.query.sector_id);
     }
 
-
     let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
 
     return line
