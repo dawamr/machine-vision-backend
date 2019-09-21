@@ -7,7 +7,7 @@ const resp = require('../views/response');
 router.post('/', upload.single('file'), function(req, res, next) {
   if(!req.file) {
     res.status(500);
-    return next(err);
+    return next(!req.file);
   }
 
   let fileUrl = 'http://' + config.development.host + ':8000/images/' + req.file.filename

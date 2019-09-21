@@ -90,22 +90,28 @@ module.exports = {
   },
 
   listAll(req, res, next) {
+    let options = {};
+
+    if ((req.query.name != undefined) && (req.query.name.length > 0)){
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('product.name')), 'LIKE', '%' + req.query.name.toLowerCase() + '%');
+    }
+    if ((req.query.product_category_id != undefined)) {
+      options.product_category_id = sequelize.where(sequelize.col('product.product_category_id'), '=', req.query.product_category_id);
+    }
+    
     return product
       .findAll({
+
+        where: options,
         include: [{
           model: productCategory,
-        }],
-        where: {
-          name: {
-            [Op.like]: (req.query.name) ? '%' + req.query.name + '%' : '%'
-          }
-        }
+        }]
       })
-      .then(processMachineResult => {
-        resp.ok(true, "Get all data process machine.", processMachineResult, res);
+      .then(Result => {
+        resp.ok(true, "Get all data product.", Result, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get all data process machine.", null, res.status(400));
+        resp.ok(false, "Failed get all data product.", null, res.status(400));
         console.log(error);
       });
   },
