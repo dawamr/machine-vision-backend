@@ -29,6 +29,7 @@ const accessToken = require('../middleware/AccessTokenMiddleware');
 const parameters_controller = require('../controllers/index').parameters_index;
 const parameter_category_controller = require('../controllers').parameter_category;
 const formCreateController = require('../controllers').form_create;
+const calFormula= require('./calculator_formula');
 
 module.exports = (express) => {
   app.use(express.static('public'));
@@ -94,7 +95,7 @@ module.exports = (express) => {
   app.put('/api/form/action/:id', formAction.update)
   app.delete('/api/form/action/:id', formAction.delete)
   
-  
+  app.use('/api/calculator', calFormula);
   app.use('/api/user', user);
   app.use('/api/department', department);
   app.use('/api/shift', shift);

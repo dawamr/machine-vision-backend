@@ -17,6 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey : 'parameter_category_id',
       as :'parameter_category'
     })
+    parameters.hasMany(models.calculator_runner_result, {as: 'runner_result'})
+    parameters.hasMany(models.calculator_formula_parameter, {as: 'formula_parameter'})
   };
   return parameters;
 };

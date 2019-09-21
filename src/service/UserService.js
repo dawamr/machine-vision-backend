@@ -79,7 +79,7 @@ function UserService() {
     let data = _.clone(_.omitBy(obj, _.isNil));
     const filter = {
       where: {
-        id: parseInt(id)
+        id: id
       },
     }
     if (data.password) {

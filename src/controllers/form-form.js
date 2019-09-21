@@ -133,19 +133,42 @@ module.exports = {
         .catch(error => res.status(400).send(error));
     },
 
-    delete(req,res){
-        return FormForm
-        .findOne({
-            attributes: ['id','sub_category_id','name','types','is_template','createdAt','updatedAt'],
-            where: {
-                id : req.params.id
-            },
-        })
-        .then((FormForm)=>{
-            return FormForm.destroy()
-        })
-        .then(data => res.status(201).send(data))
-        .catch(error => res.status(400).send(error));
+    async delete(req,res){
+        let transaction
+        var field_id = []
+        let formId = req.params.id
+        try {
+            await FormField.findAll({
+                attributes:['id'],
+                where: {form_id : formId},
+            })
+            .then(result => {
+                for(i=0;i < result.length; i++){
+                    field_id.push(result[i].id)
+                }
+                // console.log(field_id)
+            })
+            // transaction = await sequelize.transaction();
+            ////
+            await FormForm.destroy({
+                where : { id : formId }, transaction
+            })
+            ////
+            await FormField.destroy({
+                where :{ form_id : formId }, transaction
+            })
+            ////
+            await FormResponse.destroy({
+                where : {form_id : formId}
+            })
+            ////
+            await FormResponseField.destroy({ where: { form_field_id: {[Op.in] : field_id} }})
+            await transaction.commit()
+            
+            if (transaction.finished === 'commit') { res.status(200).res.json('success delete') }
+        } catch (error) {
+            if (transaction) await transaction.rollback();
+        }
     },
     
     search(req,res){
