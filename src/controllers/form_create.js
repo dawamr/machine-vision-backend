@@ -55,13 +55,7 @@ module.exports = {
             // })
             // .then(result => )
             // .catch(error => res.status(400).send(error));
-        }
-            
-            
-        
-        
-        
-        
+        } 
     },
     store(req,res){
         let data = req.body.form_field

@@ -66,16 +66,25 @@ module.exports = {
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('job_description.name')), 'LIKE', '%' + req.query.search + '%');
     }
 
+    if ((req.query.sector_id != undefined) && (req.query.sector_id.length > 0)) {
+      options.sector_id = sequelize.where(sequelize.col('job_description.sector_id'), '=', req.query.sector_id);
+    }
+
+    if ((req.query.department_id != undefined) && (req.query.department_id.length > 0)) {
+      options.department_id = sequelize.where(sequelize.col('job_description.department_id'), '=', req.query.department_id);
+    }
+
     let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
 
     return jobDescription
       .findAndCountAll({
+       
+        where: options,
         include: [{
           model: department,
         }, {
           model: sector,
         }],
-        where: options,
         order: [
           [orderBy, sortBy]
         ],
@@ -95,19 +104,28 @@ module.exports = {
   },
 
   listAll(req, res) {
+    let options = {};
+
+    if ((req.query.search != undefined) && (req.query.search.length > 0)){
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('job_description.name')), 'LIKE', '%' + req.query.search + '%');
+    }
+
+    if ((req.query.sector_id != undefined) && (req.query.sector_id.length > 0)) {
+      options.sector_id = sequelize.where(sequelize.col('job_description.sector_id'), '=', req.query.sector_id);
+    }
+
+    if ((req.query.department_id != undefined) && (req.query.department_id.length > 0)) {
+      options.department_id = sequelize.where(sequelize.col('job_description.department_id'), '=', req.query.department_id);
+    }
 
     return jobDescription
       .findAll({
+        where: options,
         include: [{
           model: department,
         }, {
           model: sector,
-        }],
-        where: {
-          name: {
-            [Op.like]: (req.query.name) ? '%' + req.query.name + '%' : '%'
-          }
-        }
+        }]
       })
       .then(jobDescriptionResult => {
         resp.ok(true, "Get all data job description.", jobDescriptionResult, res);

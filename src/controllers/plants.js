@@ -137,6 +137,7 @@ module.exports = {
   },
 
   update(req, res) {
+    console.log(req.body.qc_department);
     return plant
       .findByPk(req.params.id)
       .then(plant => {

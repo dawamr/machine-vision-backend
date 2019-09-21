@@ -74,15 +74,15 @@ module.exports = {
     return productCategory
       .findAll({where: {
         name: {
-          [Op.like]: (req.query.name) ? '%' + req.query.name + '%' : '%'
+          [Op.like]: (req.query.search) ? '%' + req.query.search + '%' : '%'
         }
       }
     })
       .then(processMachineResult => {
-        resp.ok(true, "Get all data process machine.", processMachineResult, res);
+        resp.ok(true, "Get all data product_category.", processMachineResult, res);
       })
       .catch((error) => {
-        resp.ok(false, "Failed get all data process machine.", null, res.status(400));
+        resp.ok(false, "Failed get all data product_category.", null, res.status(400));
         console.log(error);
       });
   },
