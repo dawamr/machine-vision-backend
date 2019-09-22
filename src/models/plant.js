@@ -21,6 +21,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue : 0
     },
+    total_machine: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue : 0
+    },
     manufacturing_department: DataTypes.BOOLEAN,
     engineering_department: DataTypes.BOOLEAN,
     qc_department: DataTypes.BOOLEAN,
