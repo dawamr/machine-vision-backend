@@ -4,6 +4,7 @@ const calFormula = express.Router();
 
 // calFormula.post('/', calFormulaController.create)
 calFormula.get('/list_all', calFormulaController.listAll);
+calFormula.get('/list', calFormulaController.list);
 // calFormula.get('/list_all', calFormulaController.listAll);
 // calFormula.get('/:id', calFormulaController.detail);
 // calFormula.put('/:id', calFormulaController.update);
