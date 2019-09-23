@@ -1,18 +1,18 @@
 const processMachine = require('../models').process_machine;
 const process = require('../models').process;
+const process2 = require('../models').process;
 const machine = require('../models').machine;
-const line = require('../models').line;
-const productCategory = require('../models').product_category;
-const sector = require('../models').sector;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
 const model = require('../models');
 const db = model.sequelize;
-const createProcessResult = {};
 
 module.exports =  {
   createProcess(req, res){
+    let machineID;
+    let processID;
+
     return db.transaction(t => { 
       return process
         .create({
@@ -20,50 +20,62 @@ module.exports =  {
           line_id: req.body.line_id,
         }, {transaction: t})
         .then(process => {
-          
+          processID = process.id;
+
           return machine
             .create({
               name: req.body.machine_name,
             }, {transaction: t})
             .then(machine => {
-              
+              machineID = machine.dataValues.id;
+
               return processMachine
                 .create({
-                  process_id: process.dataValues.id,
-                  machine_id: machine.dataValues.id,
+                  process_id: processID,
+                  machine_id: machineID,
                   from_machine_id: req.body.from_machine_id,
-                }, {transaction: t});
+                }, {transaction: t})
+                .then(processMachine => {
+                  processMachineID = processMachine.id;
+                });
               });
           });
     }).then(() => {
-      
-      return line
-        .findByPk(req.body.line_id, {
+
+      return process
+        .findByPk(processID, {
+          attributes: [['id', 'process_id'],['name','process_name']],
           include: [{
-            model: sector,
-          }, {
-            model: productCategory,
-          },
-          {
-            model: process,
-            attributes: [['id', 'process_id'],['name','process_name']],
-            include: [{
-              model: machine,
-              attributes: [['id', 'machine_id'],['name', 'machine_name']],
-              through: {
-                model: processMachine
-              }
-            }]
+            model: machine,
+            attributes: [
+              ['id', 'machine_id'],
+              ['name', 'machine_name'],
+              ['image','image'],
+              ['manufacturer','manufacturer'],
+              ['build_year','build_year'],
+              ['asset_number','asset_number'],
+              ['cycle_time','cycle_time'],
+              ['delta_t_tg','delta_t_tg'],
+              ['delta_t_tr','delta_t_tr'],
+              ['sensor_total_status','sensor_total_status'],
+              ['sensor_reject_status','sensor_reject_status'],
+              ['sensor_good_status','sensor_good_status'],
+            ],
+            through: {
+              model: processMachine
+            },
           }],
         })
-        .then(lineResult => {
-          if (!lineResult) {
-            resp.ok(false, "Line not found.", null, res.status(400));
+        .then(process => {
+          if (!process) {
+            resp.ok(false, "Process not found.", null, res.status(400));
           }
-          resp.ok(true, "Success create process, machine, process_machine and get data line.", lineResult, res);
+          
+          resp.ok(true, "Success create process, machine and process_machine.", process, res);
+
         })
         .catch((error) => {
-          resp.ok(false, "Failed get data line.", null, res.status(400));
+          resp.ok(false, "Failed get data process.", null, res.status(400));
           console.log(error);
         });
 
@@ -74,49 +86,72 @@ module.exports =  {
   },
 
   createMachine(req, res){
+    let processMachineID;
+    let machineID;
+
     return db.transaction(t => { 
       return machine
         .create({
           name: req.body.machine_name,
           }, {transaction: t})
         .then(machine => {
-          
+          machineID = machine.dataValues.id;
+
           return processMachine
             .create({
               process_id: req.body.process_id,
               machine_id: machine.dataValues.id,
               from_machine_id: req.body.from_machine_id,
-            }, {transaction: t});
+            }, {transaction: t})
+            .then(processMachine => {
+              processMachineID = processMachine.id
+            });
           });
     }).then(() => {
 
-      return line
-        .findByPk(req.body.line_id, {
+      let newResponseMachine = {}
+      let newProcessMachine = {}
+
+      return machine
+        .findByPk(machineID, {
+          attributes: [
+            ['id', 'machine_id'],
+            ['name', 'machine_name'],
+            ['image','image'],
+            ['manufacturer','manufacturer'],
+            ['build_year','build_year'],
+            ['asset_number','asset_number'],
+            ['cycle_time','cycle_time'],
+            ['delta_t_tg','delta_t_tg'],
+            ['delta_t_tr','delta_t_tr'],
+            ['sensor_total_status','sensor_total_status'],
+            ['sensor_reject_status','sensor_reject_status'],
+            ['sensor_good_status','sensor_good_status'],
+          ],
           include: [{
-            model: sector,
-          }, {
-            model: productCategory,
-          },
-          {
-            model: process,
-            attributes: [['id', 'process_id'],['name','process_name']],
-            include: [{
-              model: machine,
-              attributes: [['id', 'machine_id'],['name', 'machine_name']],
-              through: {
-                model: processMachine
-              }
-            }]
+            model: processMachine,
+            where: { id: processMachineID },
           }],
         })
-        .then(lineResult => {
-          if (!lineResult) {
-            resp.ok(false, "Line not found.", null, res.status(400));
+        .then(machine => {
+          if (!machine) {
+            resp.ok(false, "Machine not found.", null, res.status(400));
           }
-          resp.ok(true, "Success create machine, process_machine and get data line.", lineResult, res);
+
+          if (machine.process_machines != 'undefined' && machine.process_machines.length > 0) {
+            newProcessMachine = machine.process_machines[0];
+            newResponseMachine.machine_id = machine.dataValues.machine_id;
+            newResponseMachine.machine_name = machine.dataValues.machine_name;
+            newResponseMachine.process_machine = newProcessMachine;
+
+            resp.ok(true, "Success create machine and process_machine.", newResponseMachine, res);
+          
+          } else {
+            resp.ok(true, "Success create machine and process_machine.", machine, res);
+          }
         })
         .catch((error) => {
-          resp.ok(false, "Failed get data line.", null, res.status(400));
+          resp.ok(false, "Failed get data machine.", null, res.status(400));
           console.log(error);
         });
 
@@ -252,80 +287,175 @@ module.exports =  {
       });
   },
 
-  update(req, res) {
-    return processMachine
-      .findByPk(req.params.id)
-      .then(processMachine => {
-        if (!processMachine) {
-          resp.ok(false, "Process machine not found.", null, res.status(400));
+  updateProcess(req, res) {
+    return process
+      .findByPk(req.params.process_id)
+      .then(process => {
+        if (!process) {
+          resp.ok(false, "Process not found.", null, res.status(400));
         }
 
-        return processMachine
+        return process
           .update({
-            machine_id: req.body.machine_id || processMachine.machine_id,
+            name: req.body.process_name || process.name,
           })
-          .then(processMachine => {
-            return process
-              .findByPk(processMachine.process_id)
-              .then(process => {
-                if (!process) {
-                  resp.ok(false, "Process machine not found.", null, res.status(400));
-                }
+          .then(() => {
 
-                return process
-                  .update({
-                    name: req.body.process_name || process.name,
-                  })
-                  .then(process => {
-                    let result = {
-                      process: process,
-                      process_machine: processMachine
-                    }
-        
-                    data = result;
-                    resp.ok(true, "Success update process and process machine.", data, res);
-                  })
-                  .catch((error) => {
-                    resp.ok(false, "Failed update process.", null, res.status(400));
-                    console.log(error);
-                  })
-                })
-              .catch((error) => {
-                resp.ok(false, "Failed get process.", null, res.status(400));
-                console.log(error);
+            return process2
+              .findByPk(req.params.process_id, {
+                attributes: [['id', 'process_id'],['name','process_name']],
+                include: [{
+                  model: machine,
+                  attributes: [
+                    ['id', 'machine_id'],
+                    ['name', 'machine_name'],
+                    ['image','image'],
+                    ['manufacturer','manufacturer'],
+                    ['build_year','build_year'],
+                    ['asset_number','asset_number'],
+                    ['cycle_time','cycle_time'],
+                    ['delta_t_tg','delta_t_tg'],
+                    ['delta_t_tr','delta_t_tr'],
+                    ['sensor_total_status','sensor_total_status'],
+                    ['sensor_reject_status','sensor_reject_status'],
+                    ['sensor_good_status','sensor_good_status'],
+                  ],
+                  through: {
+                    model: processMachine,
+                  },
+                }],
               })
+              .then(processResult => {
+                if (!processResult) {
+                  resp.ok(false, "Process not found.", null, res.status(400));
+                }
+                
+                resp.ok(true, "Success update process.", processResult, res);
+
+              })
+              .catch((error) => {
+                resp.ok(false, "Failed get data process.", null, res.status(400));
+                console.log(error);
+              });
+
           })
           .catch((error) => {
-            resp.ok(false, "Failed update process machine.", null, res.status(400));
+            resp.ok(false, "Failed update process.", null, res.status(400));
             console.log(error);
           });
       })
       .catch((error) => {
-        resp.ok(false, "Failed update process machine.", null, res.status(400));
+        resp.ok(false, "Failed get process.", null, res.status(400));
         console.log(error);
       });
   },
 
-  delete(req, res) {
-    return processMachine
-      .findByPk(req.params.id)
-      .then(processMachine => {
-        if (!processMachine) {
-          resp.ok(false, "Process machine not found.", null, res.status(400));
+  updateMachine(req, res) {
+    let machineID;
+
+    return db.transaction(t => { 
+      return processMachine
+        .findByPk(req.params.process_machine_id)
+        .then(processMachine => {
+          if (!processMachine) {
+            resp.ok(false, "Process machine not found.", null, res.status(400));
+          }
+          machineID = processMachine.machine_id;
+
+          return processMachine
+            .update({
+              from_machine_id: req.body.from_machine_id || processMachine.from_machine_id,
+            }, {transaction: t})
+            .then(() => {
+
+              return machine
+                .findByPk(machineID)
+                .then(machine => {
+                  if (!machine) {
+                    resp.ok(false, "Machine not found.", null, res.status(400));
+                  }
+                  
+                  return machine
+                    .update({
+                      name: req.body.machine_name || machine.name,
+                    }, {transaction: t});
+                });
+            });
+        });
+    })
+    .then(() => {
+      let newResponseMachine = {}
+      let newProcessMachine = {}
+
+      return machine
+        .findByPk(machineID, {
+          attributes: [
+            ['id', 'machine_id'],
+            ['name', 'machine_name'],
+            ['image','image'],
+            ['manufacturer','manufacturer'],
+            ['build_year','build_year'],
+            ['asset_number','asset_number'],
+            ['cycle_time','cycle_time'],
+            ['delta_t_tg','delta_t_tg'],
+            ['delta_t_tr','delta_t_tr'],
+            ['sensor_total_status','sensor_total_status'],
+            ['sensor_reject_status','sensor_reject_status'],
+            ['sensor_good_status','sensor_good_status'],
+          ],
+          include: [{
+            model: processMachine,
+            where: { id: req.params.process_machine_id },
+          }],
+        })
+        .then(machine => {
+          if (!machine) {
+            resp.ok(false, "Machine not found.", null, res.status(400));
+          }
+
+          if (machine.process_machines != 'undefined' && machine.process_machines.length > 0) {
+            newProcessMachine = machine.process_machines[0];
+            newResponseMachine.machine_id = machine.dataValues.machine_id;
+            newResponseMachine.machine_name = machine.dataValues.machine_name;
+            newResponseMachine.process_machine = newProcessMachine;
+
+            resp.ok(true, "Success update machine and process_machine.", newResponseMachine, res);
+          
+          } else {
+            resp.ok(true, "Success update machine and process_machine.", machine, res);
+          }
+        })
+        .catch((error) => {
+          resp.ok(false, "Failed get data machine.", null, res.status(400));
+          console.log(error);
+        });
+    })
+    .catch(error => {
+      resp.ok(false, "Failed get machine", null, res.status(400));
+      console.log(error);
+    });
+  },
+
+  deleteProcess(req, res) {
+    return process
+      .findByPk(req.params.process_id)
+      .then(process => {
+        if (!process) {
+          resp.ok(false, "Process not found.", null, res.status(400));
         }
 
-        return processMachine
+        return process
           .destroy()
-          .then(processMachine => {
-            resp.ok(true, "Success delete process machine.", processMachine.dataValues, res);
+          .then(process => {
+            resp.ok(true, "Success delete process.", process.dataValues, res);
           })
           .catch((error) => {
-            resp.ok(false, "Failed delete process machine.", null, res.status(400));
+            resp.ok(false, "Failed delete process.", null, res.status(400));
             console.log(error);
           });
       })
       .catch((error) => {
-        resp.ok(false, "Failed delete process machine.", null, res.status(400));
+        resp.ok(false, "Failed delete process.", null, res.status(400));
         console.log(error);
       });
   }
