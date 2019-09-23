@@ -74,10 +74,6 @@ module.exports = {
   listAll(req, res) {
     return team
       .findAll({
-        include: [{
-          model: user,
-          as: 'users',
-        }],
         where: {
           name: {
             [Op.like]: (req.query.name) ? '%' + req.query.name + '%' : '%'
