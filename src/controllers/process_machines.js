@@ -57,6 +57,7 @@ module.exports =  {
               ['cycle_time','cycle_time'],
               ['delta_t_tg','delta_t_tg'],
               ['delta_t_tr','delta_t_tr'],
+              ['delta_t_gr','delta_t_gr'],
               ['sensor_total_status','sensor_total_status'],
               ['sensor_reject_status','sensor_reject_status'],
               ['sensor_good_status','sensor_good_status'],
@@ -124,6 +125,7 @@ module.exports =  {
             ['cycle_time','cycle_time'],
             ['delta_t_tg','delta_t_tg'],
             ['delta_t_tr','delta_t_tr'],
+            ['delta_t_gr','delta_t_gr'],
             ['sensor_total_status','sensor_total_status'],
             ['sensor_reject_status','sensor_reject_status'],
             ['sensor_good_status','sensor_good_status'],
@@ -140,8 +142,8 @@ module.exports =  {
 
           if (machine.process_machines != 'undefined' && machine.process_machines.length > 0) {
             newProcessMachine = machine.process_machines[0];
-            newResponseMachine.machine_id = machine.dataValues.machine_id;
-            newResponseMachine.machine_name = machine.dataValues.machine_name;
+            newResponseMachine = machine.dataValues;
+            delete newResponseMachine.process_machines;
             newResponseMachine.process_machine = newProcessMachine;
 
             resp.ok(true, "Success create machine and process_machine.", newResponseMachine, res);
@@ -316,6 +318,7 @@ module.exports =  {
                     ['cycle_time','cycle_time'],
                     ['delta_t_tg','delta_t_tg'],
                     ['delta_t_tr','delta_t_tr'],
+                    ['delta_t_gr','delta_t_gr'],
                     ['sensor_total_status','sensor_total_status'],
                     ['sensor_reject_status','sensor_reject_status'],
                     ['sensor_good_status','sensor_good_status'],
@@ -399,6 +402,7 @@ module.exports =  {
             ['cycle_time','cycle_time'],
             ['delta_t_tg','delta_t_tg'],
             ['delta_t_tr','delta_t_tr'],
+            ['delta_t_gr','delta_t_gr'],
             ['sensor_total_status','sensor_total_status'],
             ['sensor_reject_status','sensor_reject_status'],
             ['sensor_good_status','sensor_good_status'],
@@ -415,8 +419,8 @@ module.exports =  {
 
           if (machine.process_machines != 'undefined' && machine.process_machines.length > 0) {
             newProcessMachine = machine.process_machines[0];
-            newResponseMachine.machine_id = machine.dataValues.machine_id;
-            newResponseMachine.machine_name = machine.dataValues.machine_name;
+            newResponseMachine = machine.dataValues;
+            delete newResponseMachine.process_machines;
             newResponseMachine.process_machine = newProcessMachine;
 
             resp.ok(true, "Success update machine and process_machine.", newResponseMachine, res);
