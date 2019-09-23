@@ -12,10 +12,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       start:{
-        type: Sequelize.Date
+        type: Sequelize.DATE
       },
       end:{
-        type: Sequelize.Date
+        type: Sequelize.DATE
       },
       formula_xml: {
         type: Sequelize.TEXT

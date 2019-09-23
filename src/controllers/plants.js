@@ -2,6 +2,7 @@ const plant = require('../models').plant;
 const sector = require('../models').sector;
 const line = require('../models').line;
 const team = require('../models').team;
+const machine = require('../models').machine;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
@@ -82,7 +83,53 @@ module.exports = {
     return plant
       .findOne()
       .then(plantResult => {
-        resp.ok(true, "Get all data plant.", plantResult, res);
+
+        return sector
+          .count()
+          .then(resultSector => {
+
+            return line
+              .count()
+              .then(resultLine => {
+
+                return team
+                  .count()
+                  .then(resultTeam => {
+
+                    return machine
+                      .count()
+                      .then(resultMachine => {
+                        plantResult.total_sector = resultSector;
+                        plantResult.total_line  = resultLine;
+                        plantResult.total_team = resultTeam;
+                        plantResult.total_machine  = resultMachine;
+
+                        resp.ok(true, "Get all data plant.", plantResult, res);
+
+                      })
+                      .catch((error) => {
+                        resp.ok(false, "Failed count machine.", null, res.status(400));
+                        console.log(error);
+                      });
+
+                  })
+                  .catch((error) => {
+                    resp.ok(false, "Failed count team.", null, res.status(400));
+                    console.log(error);
+                  });
+
+              })
+              .catch((error) => {
+                resp.ok(false, "Failed count line.", null, res.status(400));
+                console.log(error);
+              });
+
+          })
+          .catch((error) => {
+            resp.ok(false, "Failed count sector.", null, res.status(400));
+            console.log(error);
+          });
+
       })
       .catch((error) => {
         resp.ok(false, "Failed get all data plant.", null, res.status(400));
@@ -109,11 +156,23 @@ module.exports = {
                 return team
                   .count()
                   .then(teamCount => {
-                    plantResult.total_sector = sectorCount;
-                    plantResult.total_line = lineCount;
-                    plantResult.total_team = teamCount;
 
-                    resp.ok(true, "Get data plant.", plantResult, res);
+                    return machine
+                      .count()
+                      .then(machineCount => {
+                        plantResult.total_sector = sectorCount;
+                        plantResult.total_line = lineCount;
+                        plantResult.total_team = teamCount;
+                        plantResult.total_machine  = machineCount;
+
+                        resp.ok(true, "Get all data plant.", plantResult, res);
+
+                      })
+                      .catch((error) => {
+                        resp.ok(false, "Failed count machine.", null, res.status(400));
+                        console.log(error);
+                      });
+
                   })
                   .catch((error) => {
                     resp.ok(false, "Failed count team.", null, res.status(400));
