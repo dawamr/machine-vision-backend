@@ -69,8 +69,15 @@ module.exports = {
                 is_required: data[index].is_required,
                 order: data[index].order
             }))
-            
         }
+        if(req.body.is_template == 'true'){
+            let form_update = FormForm.update({
+                is_template: req.body.is_template,
+                updatedAt :new Date(),
+            })
+        }
+        
+
         Promise.all(data_field)
         .then(result => res.status(201).send(result))
         .catch(error => res.status(400).send(error));

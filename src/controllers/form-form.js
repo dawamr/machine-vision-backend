@@ -75,6 +75,69 @@ module.exports = {
 
     },
 
+    listTemplate(req, res){
+        let orderBy = 'createdAt'
+        let sortBy = 'Asc'
+        let page = 1;
+        let perPage = 10;
+        let type = ['widget','non-widget']
+        if(req.query.order_by != undefined){
+            orderBy = req.query.order_by
+        }
+        if(req.query.sort_by != undefined){
+            sortBy = req.query.sort_by
+        }
+        if(req.query.page != undefined){
+            page = req.query.page
+        }
+        if(req.query.per_page != undefined){
+            perPage = req.query.per_page
+        }
+        let skip = (page - 1) * perPage
+        if(req.query.type != undefined){
+            type = req.query.type
+        }
+
+        ////////// filter by category
+        var cat = {
+            model: FormCategory,
+            as: 'category',
+            attributes: ['name'],
+        }
+        if (req.query.filter_cat != undefined) {
+            cat.where = {
+                id: req.query.filter_cat
+            }
+        }
+        /////////// filter by sub category
+        var subCat = {
+            model: FormSubCategory,
+            as: 'sub_category',
+            attributes: ['name'],
+            include: [cat]
+        }
+        if (req.query.filter_sub_cat != undefined) {
+            subCat.where = {
+                'id': req.query.filter_sub_cat
+            }
+        }
+        
+        return  FormForm
+        .findAll({
+        include: [subCat],
+        attributes : ['id','name','sub_category_id','types','is_template','createdAt','updatedAt'],
+        order: [
+            [orderBy, sortBy]
+        ],
+        limit: perPage,
+        offset :skip,
+        where: {'types': type, 'is_template': 'true'}
+        })
+        .then(data => res.status(200).send(data))
+        .catch(error => res.status(400).send(error));
+
+    },
+
     show(req, res){
         var form_field =  FormField.findAll({
                             attributes: ['id','form_id','types','configuration','is_required','order'],

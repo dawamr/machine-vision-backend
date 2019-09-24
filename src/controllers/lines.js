@@ -136,6 +136,16 @@ module.exports = {
   },
 
   detail(req, res) {
+    let options = {};
+    let required = false;
+
+    if ((req.query.process_id != undefined) && (req.query.process_id.length > 0)) {
+      options.process_id = sequelize.where(sequelize.col('processes.id'), '=', req.query.process_id );
+      required = true;
+    }
+
+    console.log(options)
+
     return line
       .findByPk(req.params.id, {
         include: [{
@@ -145,6 +155,8 @@ module.exports = {
         },
         {
           model: process,
+          where: options,
+          required: required,
           attributes: [['id', 'process_id'],['name','process_name']],
           include: [{
             model: machine,
@@ -158,6 +170,7 @@ module.exports = {
               ['cycle_time','cycle_time'],
               ['delta_t_tg','delta_t_tg'],
               ['delta_t_tr','delta_t_tr'],
+              ['delta_t_gr','delta_t_gr'],
               ['sensor_total_status','sensor_total_status'],
               ['sensor_reject_status','sensor_reject_status'],
               ['sensor_good_status','sensor_good_status'],
@@ -166,7 +179,7 @@ module.exports = {
               model: process_machine
             }
           }]
-        }],
+        }]
       })
       .then(lineResult => {
         if (!lineResult) {

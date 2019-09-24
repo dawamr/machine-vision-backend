@@ -28,7 +28,27 @@ module.exports = {
     },
 
     listAll(req, res, next) {
-        if (req.query != undefined) {
+        if ((req.query.category_id != null) && (req.query.impact != undefined)) {
+            return Reason
+                .findAll({
+                    where: {
+                        category_id: req.query.category_id,
+                        impact: {
+                            [Op.like]: (req.query.impact) ? '%' + req.query.impact + '%' : '%'
+                        }
+                    },
+                    include: [{
+                        model: Category,
+                    }]
+                })
+                .then(result => {
+                    req.data = result;
+                    next();
+                }, (err) => {
+                    next(err);
+                })
+        }
+        if (req.query.impact != undefined) {
             return Reason
                 .findAll({
                     where: {
@@ -38,9 +58,6 @@ module.exports = {
                     },
                     include: [{
                         model: Category,
-                        attributes: [
-                            ['name', 'category_name']
-                        ]
                     }]
                 })
                 .then(result => {
@@ -58,9 +75,6 @@ module.exports = {
                     },
                     include: [{
                         model: Category,
-                        attributes: [
-                            ['name', 'category_name']
-                        ]
                     }]
                 })
                 .then(result => {
@@ -70,31 +84,11 @@ module.exports = {
                     next(err);
                 })
         }
-        if ((req.query.category_id != null) && (req.query != undefined)) {
+         else {
             return Reason
-                .findAll({
-                    where: {
-                        category_id: req.query.category_id,
-                        impact: {
-                            [Op.like]: (req.query.impact) ? '%' + req.query.impact + '%' : '%'
-                        }
-                    },
-                    include: [{
-                        model: Category,
-                        attributes: [
-                            ['name', 'category_name']
-                        ]
-                    }]
-                })
-                .then(result => {
-                    req.data = result;
-                    next();
-                }, (err) => {
-                    next(err);
-                })
-        } else {
-            return Reason
-                .findAll()
+                .findAll({ include: [{
+                    model: Category,
+                }]})
                 .then(result => {
                     req.data = result;
                     next();
