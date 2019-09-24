@@ -80,6 +80,8 @@ module.exports = (express) => {
   app.get('/api/form/create',formCreateController.list)
   app.post('/api/form/create',formCreateController.store)
 
+  app.get('/api/form/template', formFormController.listTemplate)
+
   // (Form Builder) Form list
   app.post('/api/form', formFormController.create)
   app.get('/api/form', formFormController.list)
