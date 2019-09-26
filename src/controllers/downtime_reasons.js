@@ -39,6 +39,9 @@ module.exports = {
                     },
                     include: [{
                         model: Category,
+                        attributes: [
+                            ['name', 'category_name']
+                        ],
                     }]
                 })
                 .then(result => {
