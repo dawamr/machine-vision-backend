@@ -191,6 +191,15 @@ function UserController() {
     if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
       sortBy = req.query.sort_by;
     }
+    if ((req.query.sector_id != undefined) && (req.query.sector_id.length > 0)) {
+      options.sector_id = sequelize.where(sequelize.col('user.sector_id'), '=', req.query.sector_id );
+    }
+    if ((req.query.line_id != undefined) && (req.query.line_id.length > 0)) {
+      options.line_id = sequelize.where(sequelize.col('user.line_id'), '=', req.query.line_id );
+    }
+    if ((req.query.machine_id != undefined) && (req.query.machine_id.length > 0)) {
+      options.machine_id = sequelize.where(sequelize.col('user.machine_id'), '=', req.query.machine_id );
+    }
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('user.name')), 'LIKE', '%' + req.query.search.toLowerCase() + '%');
     }
@@ -245,8 +254,17 @@ function UserController() {
     if ((req.query.per_page != undefined) && (req.query.per_page.length > 0)) {
       perPage = req.query.per_page;
     }
+    if ((req.query.sector_id != undefined) && (req.query.sector_id.length > 0)) {
+      options.sector_id = sequelize.where(sequelize.col('sector_id'), '=', req.query.sector_id );
+    }
+    if ((req.query.line_id != undefined) && (req.query.line_id.length > 0)) {
+      options.line_id = sequelize.where(sequelize.col('line_id'), '=', req.query.line_id );
+    }
+    if ((req.query.machine_id != undefined) && (req.query.machine_id.length > 0)) {
+      options.machine_id = sequelize.where(sequelize.col('machine_id'), '=', req.query.machine_id );
+    }
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('user.name')), 'LIKE', '%' + req.query.search + '%');
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('user.name')), 'LIKE', '%' + req.query.search.toLowerCase() + '%');
     }
 
     let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);

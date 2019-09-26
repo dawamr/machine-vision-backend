@@ -1,6 +1,12 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const process_machine = sequelize.define('process_machine', {
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
     process_id: DataTypes.INTEGER,
     machine_id: DataTypes.INTEGER,
     from_machine_id: DataTypes.INTEGER,
