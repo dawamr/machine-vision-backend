@@ -37,8 +37,6 @@ module.exports = {
     let page = 1;
     let perPage = 10;
     let options = {};
-    let lineOptions = {};
-    let required = false;
 
     if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
       orderBy = req.query.order_by;
