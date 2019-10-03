@@ -144,8 +144,6 @@ module.exports = {
       required = true;
     }
 
-    console.log(options)
-
     return line
       .findByPk(req.params.id, {
         include: [{
@@ -176,10 +174,13 @@ module.exports = {
               ['sensor_good_status','sensor_good_status'],
             ],
             through: {
-              model: process_machine
+              model: process_machine,
             }
           }]
-        }]
+        }],
+        order: [
+          [process, 'id', 'asc']
+        ],
       })
       .then(lineResult => {
         if (!lineResult) {
