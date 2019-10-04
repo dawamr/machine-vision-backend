@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('calculator_formulas  ', {
+    return queryInterface.createTable('calculator_formulas', {
       id: {
         allowNull: false,
         autoIncrement: true,

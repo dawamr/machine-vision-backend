@@ -28,17 +28,22 @@ module.exports = {
     },
 
     listAll(req, res, next) {
-        if ((req.query.category_id != null) && (req.query.impact != undefined)) {
+        if ((req.query.category_id != null) && (req.query.impact != undefined) && (req.query.line_id != null) && (req.query.process_id != null)) {
             return Reason
                 .findAll({
                     where: {
+                        line_id: req.query.line_id,
+                        process_id: req.query.process_id,
                         category_id: req.query.category_id,
                         impact: {
                             [Op.like]: (req.query.impact) ? '%' + req.query.impact + '%' : '%'
-                        }
+                        },
                     },
                     include: [{
                         model: Category,
+                        attributes: [
+                            ['name', 'category_name']
+                        ],
                     }]
                 })
                 .then(result => {
@@ -72,6 +77,40 @@ module.exports = {
                 .findAll({
                     where: {
                         category_id: req.query.category_id
+                    },
+                    include: [{
+                        model: Category,
+                    }]
+                })
+                .then(result => {
+                    req.data = result;
+                    next();
+                }, (err) => {
+                    next(err);
+                })
+        }
+        if (req.query.line_id != null) {
+            return Reason
+                .findAll({
+                    where: {
+                        line_id: req.query.line_id
+                    },
+                    include: [{
+                        model: Category,
+                    }]
+                })
+                .then(result => {
+                    req.data = result;
+                    next();
+                }, (err) => {
+                    next(err);
+                })
+        }
+        if (req.query.process_id != null) {
+            return Reason
+                .findAll({
+                    where: {
+                        process_id: req.query.process_id
                     },
                     include: [{
                         model: Category,
