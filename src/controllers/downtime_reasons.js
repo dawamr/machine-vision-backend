@@ -1,8 +1,10 @@
 const Reason = require('../models').downtime_reason;
 const reason = require('../models').downtime_reason;
 const Category = require('../models').downtime_category;
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
+const resp = require('../views/response');
+const pagination = require('../utils/pagination');
+const sequelize = require('sequelize');
+const Op = sequelize.Op;
 
 module.exports = {
     create(req, res, next) {
@@ -13,9 +15,6 @@ module.exports = {
                 return Reason.findByPk(result.dataValues.id, {
                         include: [{
                             model: Category,
-                            attributes: [
-                                ['name', 'category_name']
-                            ]
                         }]
                     })
                     .then(newData => {
@@ -28,162 +27,105 @@ module.exports = {
     },
 
     listAll(req, res, next) {
-        if ((req.query.category_id != null) && (req.query.impact != undefined) && (req.query.line_id != null) && (req.query.process_id != null)) {
-            return Reason
-                .findAll({
-                    where: {
-                        line_id: req.query.line_id,
-                        process_id: req.query.process_id,
-                        category_id: req.query.category_id,
-                        impact: {
-                            [Op.like]: (req.query.impact) ? '%' + req.query.impact + '%' : '%'
-                        },
-                    },
-                    include: [{
-                        model: Category,
-                        attributes: [
-                            ['name', 'category_name']
-                        ],
-                    }]
-                })
-                .then(result => {
-                    req.data = result;
-                    next();
-                }, (err) => {
-                    next(err);
-                })
-        }
-        if (req.query.impact != undefined) {
-            return Reason
-                .findAll({
-                    where: {
-                        impact: {
-                            [Op.like]: (req.query.impact) ? '%' + req.query.impact + '%' : '%'
-                        }
-                    },
-                    include: [{
-                        model: Category,
-                    }]
-                })
-                .then(result => {
-                    req.data = result;
-                    next();
-                }, (err) => {
-                    next(err);
-                })
-        }
-        if (req.query.category_id != null) {
-            return Reason
-                .findAll({
-                    where: {
-                        category_id: req.query.category_id
-                    },
-                    include: [{
-                        model: Category,
-                    }]
-                })
-                .then(result => {
-                    req.data = result;
-                    next();
-                }, (err) => {
-                    next(err);
-                })
-        }
-        if (req.query.line_id != null) {
-            return Reason
-                .findAll({
-                    where: {
-                        line_id: req.query.line_id
-                    },
-                    include: [{
-                        model: Category,
-                    }]
-                })
-                .then(result => {
-                    req.data = result;
-                    next();
-                }, (err) => {
-                    next(err);
-                })
-        }
-        if (req.query.process_id != null) {
-            return Reason
-                .findAll({
-                    where: {
-                        process_id: req.query.process_id
-                    },
-                    include: [{
-                        model: Category,
-                    }]
-                })
-                .then(result => {
-                    req.data = result;
-                    next();
-                }, (err) => {
-                    next(err);
-                })
-        }
-         else {
-            return Reason
-                .findAll({ include: [{
-                    model: Category,
-                }]})
-                .then(result => {
-                    req.data = result;
-                    next();
-                }, (err) => {
-                    next(err);
-                })
-        }
+      let orderBy = 'created_at';
+      let sortBy = 'desc';
+      let options = {};
 
+      if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
+        orderBy = req.query.order_by;
+      }
+      if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
+        sortBy = req.query.sort_by;
+      }
+      if ((req.query.line_id != undefined) && (req.query.line_id.length > 0)){
+        options.line_id = sequelize.where(sequelize.col('line_id'), '=', req.query.line_id);
+      }
+      if ((req.query.process_id != undefined) && (req.query.process_id.length > 0)) {
+        options.process_id = sequelize.where(sequelize.col('process_id'), '=', req.query.process_id);
+      }
+      if ((req.query.category_id != undefined) && (req.query.category_id.length > 0)) {
+        options.category_id = sequelize.where(sequelize.col('category_id'), '=', req.query.category_id);
+      }
+      if ((req.query.impact != undefined) && (req.query.impact.length > 0)){
+        options.impact = sequelize.where(sequelize.fn('LOWER', sequelize.col('impact')), 'LIKE', '%' + req.query.impact.toLowerCase() + '%');
+      }
+
+      return Reason
+        .findAll({
+            where: options,
+            include: [{
+                model: Category,
+            }],
+            order: [
+              [orderBy, sortBy]
+            ],
+        })
+        .then(result => {
+            resp.ok(true, "Get list data downtime reason.", result, res);
+
+        }, (err) => {
+            resp.ok(false, "Failed get list data downtime reason..", null, res.status(400));
+            console.log(error);        
+        })
     },
 
     list(req, res, next) {
-
         let orderBy = 'created_at';
         let sortBy = 'desc';
-
-        let paramsObj = {
-            query: req.query,
-            impact: req.body.impact,
-            pageSize: req.query.limit,
-            page: req.query.page,
-            sort: req.query.sort,
-        };
-
-        if ((paramsObj.sort != undefined) && (paramsObj.sort.length > 0)) {
-            sortType = paramsObj.sort;
+        let page = 1;
+        let perPage = 10;
+        let options = {};
+  
+        if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
+            orderBy = req.query.order_by;
+          }
+        if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
+          sortBy = req.query.sort_by;
         }
-        let queryParams = paramsObj.query;
+        if ((req.query.page != undefined) && (req.query.page.length > 0)) {
+            page = req.query.page;
+          }
+        if ((req.query.per_page != undefined) && (req.query.per_page.length > 0)) {
+          perPage = req.query.per_page;
+        }
+        if ((req.query.line_id != undefined) && (req.query.line_id.length > 0)){
+          options.line_id = sequelize.where(sequelize.col('line_id'), '=', req.query.line_id);
+        }
+        if ((req.query.process_id != undefined) && (req.query.process_id.length > 0)) {
+          options.process_id = sequelize.where(sequelize.col('process_id'), '=', req.query.process_id);
+        }
+        if ((req.query.category_id != undefined) && (req.query.category_id.length > 0)) {
+          options.category_id = sequelize.where(sequelize.col('category_id'), '=', req.query.category_id);
+        }
+        if ((req.query.impact != undefined) && (req.query.impact.length > 0)){
+          options.impact = sequelize.where(sequelize.fn('LOWER', sequelize.col('impact')), 'LIKE', '%' + req.query.impact.toLowerCase() + '%');
+        }
+
+        let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
 
         return Reason
-            .findAndCountAll({
-                where: {
-                    impact: {
-                        [Op.like]: (queryParams.impact) ? '%' + queryParams.impact + '%' : '%'
-                    }
-                },
-                include: [{
-                    model: Category,
-                    attributes: [
-                        ['name', 'category_name']
-                    ]
-                }],
-                order: [
-                    [orderBy, sortBy]
-                ],
-                offset: (paramsObj.page - 1) * paramsObj.pageSize,
-                limit: paramsObj.pageSize
-            })
-            .then((result) => {
-                if (result) {
-                    req.data = result.rows;
-                    next();
-                }
-            })
-            .catch(err => {
-                next(err)
-            });
+        .findAndCountAll({
+            where: options,
+            include: [{
+                model: Category,
+            }],
+            order: [
+                [orderBy, sortBy]
+            ],
+            limit:  perPageResult,
+            offset: offsetResult,
+        })
+        .then(Reason => {
+            let totalPage = Math.ceil(Reason.count / perPage);
+            let data = resp.paging(Reason.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, Reason.count);
+
+            resp.ok(true, "Get list data downtime reason.", data, res);
+        })
+        .catch((error) => {
+            resp.ok(false, "Failed get list data downtime reason..", null, res.status(400));
+            console.log(error);
+        });
+    
     },
 
     detail(req, res, next) {
@@ -194,9 +136,6 @@ module.exports = {
                 },
                 include: [{
                     model: Category,
-                    attributes: [
-                        ['name', 'category_name']
-                    ]
                 }]
             }).then(result => {
                 if (result) {
@@ -229,9 +168,6 @@ module.exports = {
                         return reason.findByPk(Result.dataValues.id, {
                                 include: [{
                                     model: Category,
-                                    attributes: [
-                                        ['name', 'category_name']
-                                    ]
                                 }]
                             })
                             .then(newData => {
