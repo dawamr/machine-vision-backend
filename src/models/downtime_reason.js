@@ -4,6 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     impact: DataTypes.STRING,
     category_id: DataTypes.INTEGER,
+    line_id: DataTypes.INTEGER,
+    process_id: DataTypes.INTEGER,
     deleted_at: DataTypes.DATE
   }, {
     createdAt: 'created_at',
