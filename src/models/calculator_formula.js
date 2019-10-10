@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     level: DataTypes.ENUM('plant', 'sector', 'line', 'machine'),
     level_reference_id: DataTypes.ENUM('plant', 'sector', 'line', 'machine'),
     formula_script: DataTypes.TEXT,
-    formula_xml: DataTypes.TEXT
+    formula_xml: DataTypes.TEXT,
+    is_active: DataTypes.BOOLEAN
   }, {
     paranoid: true
   });
