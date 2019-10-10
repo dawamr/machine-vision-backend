@@ -21,7 +21,6 @@ module.exports = {
         .then(result => res.status(201).send(result))
         .catch(error => res.status(400).send(error));
 
-
         // Promise.all([sensors,lines])
         // .then(result => res.status(201).send(result))
         // .catch(error => res.status(400).send(error));
