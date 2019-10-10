@@ -18,6 +18,12 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   });
   process_machine.associate = function (models) {
+    process_machine.belongsTo(models.process, {
+      foreignKey: 'process_id'
+    });
+    process_machine.belongsTo(models.machine, {
+      foreignKey: 'machine_id'
+    });
   };
   return process_machine;
 };
