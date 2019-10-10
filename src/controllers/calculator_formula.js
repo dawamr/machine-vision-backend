@@ -11,8 +11,6 @@ const Op = Sequelize.Op
 module.exports = {
 
     listAll(req, res){
-        // .then(result => res.status(201).send(result))
-        // .catch(error => res.status(400).send(error));
         let new_result = [];
         let s = {
             model: sector,
