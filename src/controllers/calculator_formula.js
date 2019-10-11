@@ -63,10 +63,6 @@ module.exports = {
                         "messege" : "The code is not set"
                     })
                 })
-                // data.dataValues.process.map(data2=>{
-                //     console.log(data2)
-                //    
-                // })
             })
             
             res.json(new_result)
