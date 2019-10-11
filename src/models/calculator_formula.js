@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     formula_xml: DataTypes.TEXT,
     is_active: DataTypes.BOOLEAN
   }, {
+    deletedAt: 'deleteAt',
     paranoid: true
   });
   calculator_formula.associate = function(models) {

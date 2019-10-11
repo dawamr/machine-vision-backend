@@ -111,6 +111,7 @@ module.exports = {
         .then(result => res.status(201).send(result))
         .catch(error => res.status(400).send(error));
     },
+
     script(req,res){
         let var_formula = {
             model: formula,
@@ -119,8 +120,9 @@ module.exports = {
         }
         formula_parameter.findAll({
             attributes:['id','parameter_id','formula_id'],
+            include:[var_formula]
         })
-        .then(result => res.status(201).send(result))
+        .then(result => res.status(200).send(result))
         .catch(error => res.status(400).send(error));
     }
 
