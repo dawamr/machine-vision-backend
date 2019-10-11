@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'process_id',
       otherKey: 'machine_id'
     });
+    // process.hasMany(models.process_machine, {as: 'process_machine'})
     process.belongsTo(models.line, {
       foreignKey: 'line_id'
     });

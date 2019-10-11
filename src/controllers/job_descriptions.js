@@ -104,16 +104,22 @@ module.exports = {
   },
 
   listAll(req, res) {
+    let orderBy = 'created_at';
+    let sortBy = 'desc';
     let options = {};
 
+    if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
+      orderBy = req.query.order_by;
+    }
+    if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
+      sortBy = req.query.sort_by;
+    }
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('job_description.name')), 'LIKE', '%' + req.query.search + '%');
     }
-
     if ((req.query.sector_id != undefined) && (req.query.sector_id.length > 0)) {
       options.sector_id = sequelize.where(sequelize.col('job_description.sector_id'), '=', req.query.sector_id);
     }
-
     if ((req.query.department_id != undefined) && (req.query.department_id.length > 0)) {
       options.department_id = sequelize.where(sequelize.col('job_description.department_id'), '=', req.query.department_id);
     }
@@ -125,7 +131,10 @@ module.exports = {
           model: department,
         }, {
           model: sector,
-        }]
+        }],
+        order: [
+          [orderBy, sortBy]
+        ],
       })
       .then(jobDescriptionResult => {
         resp.ok(true, "Get all data job description.", jobDescriptionResult, res);
