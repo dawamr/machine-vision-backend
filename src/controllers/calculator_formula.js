@@ -14,6 +14,7 @@ module.exports = {
         // .then(result => res.status(201).send(result))
         // .catch(error => res.status(400).send(error));
         let new_result = [];
+        let new_result2 = [];
         let s = {
             model: sector,
             attributes: [['id','id_sector'],['name','sector_name']],
@@ -21,6 +22,7 @@ module.exports = {
         let l = {
             model: line,
             attributes: [['id','id_line'],['name','line_name'],['sector_id','line_sector_id']],
+            include:[s]
         }
         let p = {
             model: process,
@@ -44,10 +46,23 @@ module.exports = {
             //     test[index].push({"cal_name": `Calculator Machine ${result[0].dataValues.id_machine}`})
             // }
             result.map(data =>{
-                console.log(data.dataValues)
-                new_result.push({"machine_id" : data.dataValues.id_machine,"machine_name" : data.dataValues.machine_name})
+                data.dataValues.process_machines.map(data2 =>{
+                    console.log(data2.dataValues.process.line.dataValues.line_name)
+                    new_result.push({
+                        "machine_id" : data.dataValues.id_machine,
+                        "machine_name" : data.dataValues.machine_name,
+                        "line_name" : data2.dataValues.process.line.dataValues.line_name,
+                        "sector_name" :data2.dataValues.process.line.dataValues.sector.dataValues.sector_name,
+                        "status": "not-active",
+                        "messege" : "The code is not set"
+                    })
+                })
+                // data.dataValues.process.map(data2=>{
+                //     console.log(data2)
+                //    
+                // })
             })
-            return res.json(result)
+            
             res.json(new_result)
         })
         .catch(error => res.status(400).send(error));
