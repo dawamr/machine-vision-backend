@@ -5,6 +5,7 @@ const line = require('../models').line;
 const process_machine = require('../models').process_machine;
 const process = require('../models').process;
 const machine = require('../models').machine;
+const parameter = require('../models').parameter;
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
@@ -117,6 +118,11 @@ module.exports = {
             model: formula,
             as: 'formula',
             attributes: [['id','formula_id'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],
+        }
+        let var_param = {
+            model: parameter,
+            as: 'formula',
+            attributes: [['id','parameter_id'],'name','createdAt','updatedAt'],
         }
         formula_parameter.findAll({
             attributes:['id','parameter_id','formula_id'],
