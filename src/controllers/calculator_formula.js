@@ -1,4 +1,5 @@
 const formula = require('../models').calculator_formula;
+const formula_parameter = require('../models').calculator_formula_parameter;
 const sector = require('../models').sector;
 const line = require('../models').line;
 const process_machine = require('../models').process_machine;
@@ -10,9 +11,10 @@ const Op = Sequelize.Op
 
 module.exports = {
 
-    listAll(req, res){
+    listCalculator(req, res){
         let new_result = [];
         let new_result2 = [];
+
         let s = {
             model: sector,
             attributes: [['id','id_sector'],['name','sector_name']],
@@ -34,7 +36,11 @@ module.exports = {
         }
         machine.findAll({
             attributes:[['id','id_machine'],['name','machine_name']],
-            include: [pm]
+            include: [pm],
+            order:{
+                'machine_name':'Asc'
+            },
+            
         })
         .then(result => {
             // var test = Object.keys(result).map((key)=>{
@@ -45,20 +51,44 @@ module.exports = {
             // }
             result.map(data =>{
                 data.dataValues.process_machines.map(data2 =>{
-                    console.log(data2.dataValues.process.line.dataValues.line_name)
-                    new_result.push({
-                        "machine_id" : data.dataValues.id_machine,
-                        "machine_name" : data.dataValues.machine_name,
-                        "line_name" : data2.dataValues.process.line.dataValues.line_name,
-                        "sector_name" :data2.dataValues.process.line.dataValues.sector.dataValues.sector_name,
-                        "status": "not-active",
-                        "messege" : "The code is not set"
-                    })
+                    if(req.query.calculator == 'machine'){
+                        new_result.push({
+                            "machine_id" : data.dataValues.id_machine,
+                            "machine_name" : data.dataValues.machine_name,
+                            // "line_id" : data2.dataValues.process.line.dataValues.id_line,
+                            "line_name" : data2.dataValues.process.line.dataValues.line_name,
+                            // "sector_id" :data2.dataValues.process.line.dataValues.sector.dataValues.id_sector,
+                            "sector_name" :data2.dataValues.process.line.dataValues.sector.dataValues.sector_name,
+                            "status": "not-active",
+                            "messege" : "The code is not set"
+                        })
+                    }
+                    if(req.query.calculator == 'sector'){
+                        new_result.push({
+                            // "machine_id" : data.dataValues.id_machine,
+                            "sector_id" :data2.dataValues.process.line.dataValues.sector.dataValues.id_sector,
+                            "sector_name" :data2.dataValues.process.line.dataValues.sector.dataValues.sector_name,
+                            "machine_name" : data.dataValues.machine_name,
+                            // "line_id" : data2.dataValues.process.line.dataValues.id_line,
+                            "line_name" : data2.dataValues.process.line.dataValues.line_name,
+                            "status": "not-active",
+                            "messege" : "The code is not set"
+                        })
+                    }
+                    if(req.query.calculator == 'line'){
+                        new_result.push({
+                            // "machine_id" : data.dataValues.id_machine,
+                            "line_id" : data2.dataValues.process.line.dataValues.id_line,
+                            "line_name" : data2.dataValues.process.line.dataValues.line_name,
+                            "machine_name" : data.dataValues.machine_name,
+                            // "sector_id" :data2.dataValues.process.line.dataValues.sector.dataValues.id_sector,
+                            "sector_name" :data2.dataValues.process.line.dataValues.sector.dataValues.sector_name,
+                            "status": "not-active",
+                            "messege" : "The code is not set"
+                        })
+                    }
+                    
                 })
-                // data.dataValues.process.map(data2=>{
-                //     console.log(data2)
-                //    
-                // })
             })
             
             res.json(new_result)
@@ -73,8 +103,6 @@ module.exports = {
         let perPage = 10;
         let options = {};
         let required = false;
-        // let sensors = sensor.findAll({})
-        // let lines = line.findAll({})
         if ((req.query.page != undefined) && (req.query.page.length > 0)) {
             page = req.query.page;
         }
@@ -109,9 +137,20 @@ module.exports = {
         })
         .then(result => res.status(201).send(result))
         .catch(error => res.status(400).send(error));
-        // Promise.all([sensors,lines])
-        // .then(result => res.status(201).send(result))
-        // .catch(error => res.status(400).send(error));
+    },
+
+    script(req,res){
+        let var_formula = {
+            model: formula,
+            as: 'formula',
+            attributes: [['id','formula_id'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],
+        }
+        formula_parameter.findAll({
+            attributes:['id','parameter_id','formula_id'],
+            include:[var_formula]
+        })
+        .then(result => res.status(200).send(result))
+        .catch(error => res.status(400).send(error));
     }
 
 }
