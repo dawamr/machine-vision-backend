@@ -10,17 +10,10 @@ const Op = Sequelize.Op
 
 module.exports = {
 
-    listAll(req, res){
-        // line.findAll({
-        //     attributes:[['id','line_id'],['name','line_name']],
-        //     include: [{
-        //         model: sector,
-        //       }]
-        // })
-        // .then(result => res.status(201).send(result))
-        // .catch(error => res.status(400).send(error));
+    listCalculator(req, res){
         let new_result = [];
         let new_result2 = [];
+
         let s = {
             model: sector,
             attributes: [['id','id_sector'],['name','sector_name']],
@@ -42,7 +35,11 @@ module.exports = {
         }
         machine.findAll({
             attributes:[['id','id_machine'],['name','machine_name']],
-            include: [pm]
+            include: [pm],
+            order:{
+                'machine_name':'Asc'
+            },
+            
         })
         .then(result => {
             // var test = Object.keys(result).map((key)=>{
@@ -53,15 +50,43 @@ module.exports = {
             // }
             result.map(data =>{
                 data.dataValues.process_machines.map(data2 =>{
-                    console.log(data2.dataValues.process.line.dataValues.line_name)
-                    new_result.push({
-                        "machine_id" : data.dataValues.id_machine,
-                        "machine_name" : data.dataValues.machine_name,
-                        "line_name" : data2.dataValues.process.line.dataValues.line_name,
-                        "sector_name" :data2.dataValues.process.line.dataValues.sector.dataValues.sector_name,
-                        "status": "not-active",
-                        "messege" : "The code is not set"
-                    })
+                    if(req.query.calculator == 'machine'){
+                        new_result.push({
+                            "machine_id" : data.dataValues.id_machine,
+                            "machine_name" : data.dataValues.machine_name,
+                            // "line_id" : data2.dataValues.process.line.dataValues.id_line,
+                            "line_name" : data2.dataValues.process.line.dataValues.line_name,
+                            // "sector_id" :data2.dataValues.process.line.dataValues.sector.dataValues.id_sector,
+                            "sector_name" :data2.dataValues.process.line.dataValues.sector.dataValues.sector_name,
+                            "status": "not-active",
+                            "messege" : "The code is not set"
+                        })
+                    }
+                    if(req.query.calculator == 'sector'){
+                        new_result.push({
+                            // "machine_id" : data.dataValues.id_machine,
+                            "sector_id" :data2.dataValues.process.line.dataValues.sector.dataValues.id_sector,
+                            "sector_name" :data2.dataValues.process.line.dataValues.sector.dataValues.sector_name,
+                            "machine_name" : data.dataValues.machine_name,
+                            // "line_id" : data2.dataValues.process.line.dataValues.id_line,
+                            "line_name" : data2.dataValues.process.line.dataValues.line_name,
+                            "status": "not-active",
+                            "messege" : "The code is not set"
+                        })
+                    }
+                    if(req.query.calculator == 'line'){
+                        new_result.push({
+                            // "machine_id" : data.dataValues.id_machine,
+                            "line_id" : data2.dataValues.process.line.dataValues.id_line,
+                            "line_name" : data2.dataValues.process.line.dataValues.line_name,
+                            "machine_name" : data.dataValues.machine_name,
+                            // "sector_id" :data2.dataValues.process.line.dataValues.sector.dataValues.id_sector,
+                            "sector_name" :data2.dataValues.process.line.dataValues.sector.dataValues.sector_name,
+                            "status": "not-active",
+                            "messege" : "The code is not set"
+                        })
+                    }
+                    
                 })
             })
             
