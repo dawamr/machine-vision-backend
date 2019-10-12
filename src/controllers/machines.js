@@ -1,5 +1,5 @@
 const machine = require('../models').machine;
-const line = require('../models').line;
+const process = require('../models').process;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
@@ -37,6 +37,8 @@ module.exports = {
     let page = 1;
     let perPage = 10;
     let options = {};
+    let lineOptions = {};
+    let required = false;
 
     if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
       orderBy = req.query.order_by;
@@ -53,12 +55,22 @@ module.exports = {
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
     }
-
+    if ((req.query.line_id != undefined) && (req.query.line_id.length > 0)){
+      lineOptions.id = sequelize.where(sequelize.col('line_id'), '=', req.query.line_id );
+      required = true;
+    }
+    
     let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
 
     return machine
       .findAndCountAll({
         where: options,
+        include: [{
+          model: process,
+          where: lineOptions,
+          required: required,
+          attributes: [],
+        }],
         order: [
           [orderBy, sortBy]
         ],
@@ -81,6 +93,8 @@ module.exports = {
     let orderBy = 'created_at';
     let sortBy = 'desc';
     let options = {};
+    let lineOptions = {};
+    let required = false;
 
     if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
       orderBy = req.query.order_by;
@@ -91,10 +105,20 @@ module.exports = {
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
     }
+    if ((req.query.line_id != undefined) && (req.query.line_id.length > 0)){
+      lineOptions.id = sequelize.where(sequelize.col('line_id'), '=', req.query.line_id );
+      required = true;
+    }
 
     return machine
       .findAll({
         where: options,
+        include: [{
+          model: process,
+          where: lineOptions,
+          required: required,
+          attributes: [],
+        }],
         order: [
           [orderBy, sortBy]
         ],
