@@ -1,4 +1,5 @@
 const formula = require('../models').calculator_formula;
+const formula_parameter = require('../models').calculator_formula_parameter;
 const sector = require('../models').sector;
 const line = require('../models').line;
 const process_machine = require('../models').process_machine;
@@ -102,8 +103,6 @@ module.exports = {
         let perPage = 10;
         let options = {};
         let required = false;
-        // let sensors = sensor.findAll({})
-        // let lines = line.findAll({})
         if ((req.query.page != undefined) && (req.query.page.length > 0)) {
             page = req.query.page;
         }
@@ -138,9 +137,20 @@ module.exports = {
         })
         .then(result => res.status(201).send(result))
         .catch(error => res.status(400).send(error));
-        // Promise.all([sensors,lines])
-        // .then(result => res.status(201).send(result))
-        // .catch(error => res.status(400).send(error));
+    },
+
+    script(req,res){
+        let var_formula = {
+            model: formula,
+            as: 'formula',
+            attributes: [['id','formula_id'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],
+        }
+        formula_parameter.findAll({
+            attributes:['id','parameter_id','formula_id'],
+            include:[var_formula]
+        })
+        .then(result => res.status(200).send(result))
+        .catch(error => res.status(400).send(error));
     }
 
 }

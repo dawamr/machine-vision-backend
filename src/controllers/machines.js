@@ -1,5 +1,5 @@
 const machine = require('../models').machine;
-const line = require('../models').line;
+const process = require('../models').process;
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
@@ -36,7 +36,6 @@ module.exports = {
     let sortBy = 'desc';
     let page = 1;
     let perPage = 10;
-    let searchQuery = [];
     let options = {};
     let lineOptions = {};
     let required = false;
@@ -54,30 +53,23 @@ module.exports = {
       perPage = req.query.per_page;
     }
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
-      searchQuery.push(sequelize.where(sequelize.fn('LOWER', sequelize.col('machine.name')), 'LIKE', '%' + req.query.search + '%'));
-      searchQuery.push(sequelize.where(sequelize.fn('LOWER', sequelize.col('code')), 'LIKE', '%' + req.query.search + '%'));
-    }
-    if (searchQuery.length > 0) {
-      options = { [op.or]: searchQuery };
+      options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
     }
     if ((req.query.line_id != undefined) && (req.query.line_id.length > 0)){
       lineOptions.id = sequelize.where(sequelize.col('line_id'), '=', req.query.line_id );
       required = true;
     }
-    if ((req.query.sector_id != undefined) && (req.query.sector_id.length > 0)){
-      lineOptions.sector_id = sequelize.where(sequelize.col('sector_id'), '=', req.query.sector_id );
-      required = true;
-    }
-
+    
     let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
 
     return machine
       .findAndCountAll({
         where: options,
         include: [{
-          model: line,
+          model: process,
           where: lineOptions,
           required: required,
+          attributes: [],
         }],
         order: [
           [orderBy, sortBy]
@@ -101,6 +93,8 @@ module.exports = {
     let orderBy = 'created_at';
     let sortBy = 'desc';
     let options = {};
+    let lineOptions = {};
+    let required = false;
 
     if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
       orderBy = req.query.order_by;
@@ -111,10 +105,20 @@ module.exports = {
     if ((req.query.search != undefined) && (req.query.search.length > 0)){
       options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
     }
+    if ((req.query.line_id != undefined) && (req.query.line_id.length > 0)){
+      lineOptions.id = sequelize.where(sequelize.col('line_id'), '=', req.query.line_id );
+      required = true;
+    }
 
     return machine
       .findAll({
         where: options,
+        include: [{
+          model: process,
+          where: lineOptions,
+          required: required,
+          attributes: [],
+        }],
         order: [
           [orderBy, sortBy]
         ],
