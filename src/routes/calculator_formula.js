@@ -3,7 +3,7 @@ const express = require('express')
 const calFormula = express.Router();
 
 // calFormula.post('/', calFormulaController.create)
-calFormula.get('/listAll', calFormulaController.listCalculator);
+calFormula.get('/list_all', calFormulaController.listCalculator);
 
 // query => ?calculator=machine&where1=sector1&where2=line1&key=hallo
 // calFormula.get('/list', calFormulaController.list);
