@@ -136,23 +136,4 @@ module.exports = {
         .catch(error => res.status(400).send(error));
     },
 
-    script(req,res){
-        let var_formula = {
-            model: formula,
-            as: 'formula',
-            attributes: [['id','formula_id'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],
-        }
-        let var_param = {
-            model: parameter,
-            as: 'formula',
-            attributes: [['id','parameter_id'],'name','createdAt','updatedAt'],
-        }
-        formula_parameter.findAll({
-            attributes:['id','parameter_id','formula_id'],
-            include:[var_formula]
-        })
-        .then(result => res.status(200).send(result))
-        .catch(error => res.status(400).send(error));
-    }
-
 }
