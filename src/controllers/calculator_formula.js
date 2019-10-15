@@ -5,16 +5,22 @@ const line = require('../models').line;
 const process_machine = require('../models').process_machine;
 const process = require('../models').process;
 const machine = require('../models').machine;
+const parameter = require('../models').parameter;
 
+const resp = require('../views/response');
 const Sequelize = require('sequelize');
-const Op = Sequelize.Op
+const Op = Sequelize.Op;
+const model = require('../models');
+const db = model.sequelize;
 
 module.exports = {
 
     listCalculator(req, res){
+        // const before = Date.now();
         let new_result = [];
-        let new_result2 = [];
-
+        let orderBy = 'createdAt';
+        let sortBy = 'desc';
+        // let options = {};
         let s = {
             model: sector,
             attributes: [['id','id_sector'],['name','sector_name']],
@@ -27,73 +33,64 @@ module.exports = {
         let p = {
             model: process,
             attributes: [['id','id_process'],['name','name_process'],['line_id','process_line_id']],
-            include: [l]
+            include:[l]
         }
-        let pm = {
-            model: process_machine,
-            include:[p],
-            attributes: [['id','id_process_machine'],['process_id','pm_process_id'],['machine_id','pm_machine_id']],
-        }
-        machine.findAll({
+        let m = {
+            model: machine,
             attributes:[['id','id_machine'],['name','machine_name']],
-            include: [pm],
-            order:{
-                'machine_name':'Asc'
-            },
-            
+        }
+        process_machine.findAll({
+            attributes: [],
+            include:[p,m]
         })
         .then(result => {
-            // var test = Object.keys(result).map((key)=>{
-            //     return [Number(key), result[key]]
-            // })
-            // for (let index = 0; index < test.length; index++) {
-            //     test[index].push({"cal_name": `Calculator Machine ${result[0].dataValues.id_machine}`})
-            // }
             result.map(data =>{
-                data.dataValues.process_machines.map(data2 =>{
-                    if(req.query.calculator == 'machine'){
-                        new_result.push({
-                            "machine_id" : data.dataValues.id_machine,
-                            "machine_name" : data.dataValues.machine_name,
-                            // "line_id" : data2.dataValues.process.line.dataValues.id_line,
-                            "line_name" : data2.dataValues.process.line.dataValues.line_name,
-                            // "sector_id" :data2.dataValues.process.line.dataValues.sector.dataValues.id_sector,
-                            "sector_name" :data2.dataValues.process.line.dataValues.sector.dataValues.sector_name,
-                            "status": "not-active",
-                            "messege" : "The code is not set"
-                        })
-                    }
-                    if(req.query.calculator == 'sector'){
-                        new_result.push({
-                            // "machine_id" : data.dataValues.id_machine,
-                            "sector_id" :data2.dataValues.process.line.dataValues.sector.dataValues.id_sector,
-                            "sector_name" :data2.dataValues.process.line.dataValues.sector.dataValues.sector_name,
-                            "machine_name" : data.dataValues.machine_name,
-                            // "line_id" : data2.dataValues.process.line.dataValues.id_line,
-                            "line_name" : data2.dataValues.process.line.dataValues.line_name,
-                            "status": "not-active",
-                            "messege" : "The code is not set"
-                        })
-                    }
-                    if(req.query.calculator == 'line'){
-                        new_result.push({
-                            // "machine_id" : data.dataValues.id_machine,
-                            "line_id" : data2.dataValues.process.line.dataValues.id_line,
-                            "line_name" : data2.dataValues.process.line.dataValues.line_name,
-                            "machine_name" : data.dataValues.machine_name,
-                            // "sector_id" :data2.dataValues.process.line.dataValues.sector.dataValues.id_sector,
-                            "sector_name" :data2.dataValues.process.line.dataValues.sector.dataValues.sector_name,
-                            "status": "not-active",
-                            "messege" : "The code is not set"
-                        })
-                    }
-                    
-                })
+                console.log(data.process.line.dataValues.id_line)
+                
+                if(req.query.calculator == 'machine'){
+                    new_result.push({
+                        "machine_id" : data.machine.dataValues.id_machine,
+                        "machine_name" : data.machine.dataValues.machine_name,
+                        // "line_id" : data.process.line.dataValues.id_line,
+                        "line_name" : data.process.line.dataValues.line_name,
+                        // "sector_id" :data.process.line.dataValues.sector.dataValues.id_sector,
+                        "sector_name" :data.process.line.dataValues.sector.dataValues.sector_name,
+                        "status": "not-active",
+                        "messege" : "The code is not set"
+                    })
+                }
+                if(req.query.calculator == 'sector'){
+                    new_result.push({
+                        // "machine_id" : data.machine.dataValues.id_machine,
+                        "sector_id" :data.process.line.dataValues.sector.dataValues.id_sector,
+                        "sector_name" :data.process.line.dataValues.sector.dataValues.sector_name,
+                        "machine_name" : data.machine.dataValues.machine_name,
+                        // "line_id" : data.process.line.dataValues.id_line,
+                        "line_name" : data.process.line.dataValues.line_name,
+                        "status": "not-active",
+                        "messege" : "The code is not set"
+                    })
+                }
+                if(req.query.calculator == 'line'){
+                    new_result.push({
+                        // "machine_id" : data.machine.dataValues.id_machine,
+                        "line_id" : data.process.line.dataValues.id_line,
+                        "line_name" : data.process.line.dataValues.line_name,
+                        "machine_name" : data.machine.dataValues.machine_name,
+                        // "sector_id" :data.process.line.dataValues.sector.dataValues.id_sector,
+                        "sector_name" :data.process.line.dataValues.sector.dataValues.sector_name,
+                        "status": "not-active",
+                        "messege" : "The code is not set"
+                    })
+                }
             })
-            
-            res.json(new_result)
+            // let execut =(Date.now() - before)
+            resp.ok(true, `Get all data calculator ${req.query.calculator} list.`, new_result, res);
         })
-        .catch(error => res.status(400).send(error));
+        .catch((error) => {
+          resp.ok(false, `Failed get all data calculator ${req.query.calculator} list.`, null, res.status(400));
+          console.log(error);
+        });
     },
 
     list(req, res){
@@ -138,19 +135,5 @@ module.exports = {
         .then(result => res.status(201).send(result))
         .catch(error => res.status(400).send(error));
     },
-
-    script(req,res){
-        let var_formula = {
-            model: formula,
-            as: 'formula',
-            attributes: [['id','formula_id'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],
-        }
-        formula_parameter.findAll({
-            attributes:['id','parameter_id','formula_id'],
-            include:[var_formula]
-        })
-        .then(result => res.status(200).send(result))
-        .catch(error => res.status(400).send(error));
-    }
 
 }

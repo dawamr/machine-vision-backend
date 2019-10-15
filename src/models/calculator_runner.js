@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     formula_id: DataTypes.INTEGER,
     start: DataTypes.DATE,
     end: DataTypes.DATE,
+    execute_time: DataTypes.INTEGER,
     formula_xml: DataTypes.TEXT,
     formula_script: DataTypes.TEXT
   }, {

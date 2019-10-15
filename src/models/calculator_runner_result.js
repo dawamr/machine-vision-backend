@@ -2,7 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   const calculator_runner_result = sequelize.define('calculator_runner_result', {
     parameter_id: DataTypes.INTEGER,
-    name: DataTypes.STRING,
+    parameter_name: DataTypes.STRING,
     value: DataTypes.INTEGER
   }, {
     paranoid: true
