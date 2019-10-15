@@ -1,4 +1,6 @@
 const formula = require('../models').calculator_formula;
+const runner = require('../models').calculator_runner;
+const runner_result = require('../models').calculator_runner_result;
 const formula_parameter = require('../models').calculator_formula_parameter;
 const sector = require('../models').sector;
 const line = require('../models').line;
@@ -47,42 +49,62 @@ module.exports = {
         });
     },
 
-    Test(req, res){
+    async Test(req, res){
+        const before = Date.now();
         let qw = req.query
         let body = req.body
-
-        if(qw.calculator != 'plant' && qw.calculator != 'machine' && qw.calculator != 'line' && qw.calculator != 'sector'){
-            return res.json(`calculator ${qw.calculator} not defined`)
-        }
-        if(qw.calculator == undefined){
-            return res.json(`calcuator undefined`)
-        }
-        
-        return db.transaction(t => {
-            return formula
-            .create({
+        let formulaID
+        let _formula_parameter = []
+        let _runner_result = []
+        try {
+            
+            if(qw.calculator != 'plant' && qw.calculator != 'machine' && qw.calculator != 'line' && qw.calculator != 'sector'){
+                return res.json(`calculator ${qw.calculator} not defined`)
+            }
+            if(qw.calculator == undefined){
+                return res.json(`calcuator undefined`)
+            }
+            
+            // let _formula = await 
+            await formula.create({
                 level: qw.calculator,
                 level_reference_id: req.params.id,
                 formula_script: body.formula_script,
                 formula_xml: body.formula_xml
-            }, {transaction: t})
-            .then(result => {
-                body.calculator_input.map(data => {
-                    formula_parameter.create({
-                        formula_id : result.id,
-                        parameter_id: data.parameter_id
-                    },{transaction: t})
-
-                })
             })
-            
-        })
-        .then(() => {
-            res.json('suceess')
-        })
-        .catch(error =>{
-            transaction.rollback()
+            .then(result =>{
+                 formulaID = result.id
+            })
+                
+            await body.calculator_input.map(data => {
+                console.log(data.parameter_name)
+                _formula_parameter.push(formula_parameter.create({
+                    formula_id: formulaID,
+                    parameter_id: data.parameter_id
+                }))
+                _runner_result.push(runner_result.create({
+                    parameter_name: data.parameter_name,
+                    parameter_id: data.parameter_id,
+                    value: data.value
+                }))
+            })
+            let end = Date.now()
+            let execute =(end - before)
+            let _runner = await runner.create({
+                start: before,
+                end: end,
+                execute_time: execute,
+                formula_script: body.formula_script,
+                formula_xml: body.formula_xml,
+            })
+            await Promise.all([..._formula_parameter,..._runner_result,_runner])
+            .then(result => res.status(201).send(result))
+            .catch(error => res.status(400).send(error));
+        } catch (error) {
             res.status(400).send(error);
-        })
+        }
+
+        
+
     }
 }
