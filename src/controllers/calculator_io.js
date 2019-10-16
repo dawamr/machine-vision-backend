@@ -21,35 +21,30 @@ module.exports = {
         sensor.findAll({
             attributes: [['id','id_sensor'],['name','label'],'last_data','heartbeat']
         })
+        
+        let pv = parameter.findAll({
+            attributes:[['id','id_parameter'],['name','parameter_name'],'parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
+            where: {
+                level: req.query.calculator,
+                group: 'variable'
+            }
+        })
+
+        let po = parameter.findAll({
+            attributes:[['id','id_parameter'],['name','parameter_name'],'parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
+            where: {
+                level: req.query.calculator,
+                group: 'output'
+            }
+        })
+
+        Promise.all([s,pv,po])
         .then(result=>{
             resp.ok(true, `Get Caculator IO Editor ${req.query.calculator}`, result, res);
         }).catch(err=>{
             resp.ok(false, `Get Caculator IO Editor ${req.query.calculator}`, null, res.status(400));
             console.log(error);
         })
-        // let pv = parameter.findAll({
-        //     attributes:[['id','id_parameter'],['name','parameter_name'],'parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
-        //     where: {
-        //         level: req.query.calculator,
-        //         group: 'variable'
-        //     }
-        // })
-
-        // let po = parameter.findAll({
-        //     attributes:[['id','id_parameter'],['name','parameter_name'],'parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
-        //     where: {
-        //         level: req.query.calculator,
-        //         group: 'output'
-        //     }
-        // })
-
-        // Promise.all([s,pv,po])
-        // .then(result=>{
-        //     resp.ok(true, `Get Caculator IO Editor ${req.query.calculator}`, result, res);
-        // }).catch(err=>{
-        //     resp.ok(false, `Get Caculator IO Editor ${req.query.calculator}`, null, res.status(400));
-        //     console.log(error);
-        // })
 
     }
 }
