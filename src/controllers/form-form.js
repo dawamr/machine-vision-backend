@@ -5,7 +5,7 @@ const FormCategory = require('../models').form_category;
 const FormField = require('../models').form_field;
 const FormResponse = require('../models').form_response;
 const FormResponseField = require('../models').form_response_field;
-
+const resp = require('../views/response');
 // console.log(Object.keys(require('../models')));
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
@@ -16,7 +16,7 @@ module.exports = {
         let sortBy = 'Asc'
         let page = 1;
         let perPage = 10;
-        let type = ['widget','non-widget']
+        let type = ['non-widget','widget']
         if(req.query.order_by != undefined){
             orderBy = req.query.order_by
         }
@@ -68,7 +68,7 @@ module.exports = {
         ],
         limit: perPage,
         offset :skip,
-        where: {'types': type}
+        where: {types: type}
         })
         .then(data => res.status(200).send(data))
         .catch(error => res.status(400).send(error));
@@ -80,7 +80,7 @@ module.exports = {
         let sortBy = 'Asc'
         let page = 1;
         let perPage = 10;
-        let type = ['widget','non-widget']
+        let type = ['non-widget','widget']
         if(req.query.order_by != undefined){
             orderBy = req.query.order_by
         }
@@ -93,10 +93,10 @@ module.exports = {
         if(req.query.per_page != undefined){
             perPage = req.query.per_page
         }
-        let skip = (page - 1) * perPage
         if(req.query.type != undefined){
             type = req.query.type
         }
+        let skip = (page - 1) * perPage
 
         ////////// filter by category
         var cat = {
@@ -164,6 +164,9 @@ module.exports = {
 
     create(req,res){
         // console.log('ok')
+        if(req.body.type != 'non-widget' && req.body.type != 'widget' ){
+            resp.ok(false, `unknown type`, null, res.status(400));
+        }
         return FormForm
         .create({
             sub_category_id: req.body.sub_category,
