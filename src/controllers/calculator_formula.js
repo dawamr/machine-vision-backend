@@ -44,9 +44,7 @@ module.exports = {
             include:[p,m]
         })
         .then(result => {
-            result.map(data =>{
-                console.log(data.process.line.dataValues.id_line)
-                
+            result.map(data =>{   
                 if(req.query.calculator == 'machine'){
                     new_result.push({
                         "machine_id" : data.machine.dataValues.id_machine,
