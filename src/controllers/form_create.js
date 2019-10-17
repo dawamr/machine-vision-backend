@@ -5,7 +5,7 @@ const FormCategory = require('../models').form_category;
 const FormField = require('../models').form_field;
 const FormResponse = require('../models').form_response;
 const FormResponseField = require('../models').form_response_field;
-
+const resp = require('../views/response');
 // console.log(Object.keys(require('../models')));
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
@@ -57,30 +57,75 @@ module.exports = {
             // .catch(error => res.status(400).send(error));
         } 
     },
+
     store(req,res){
         let data = req.body.form_field
         let data_field = []
-        let form = req.body.form_id
-        for (let index = 0; index < data.length; index++) {
-            data_field.push(FormField.create({
-                form_id: form,
-                types: data[index].type,    
-                configuration: data[index].configuration,
-                is_required: data[index].is_required,
-                order: data[index].order
-            }))
-        }
-        if(req.body.is_template == 'true'){
-            let form_update = FormForm.update({
-                is_template: req.body.is_template,
-                updatedAt :new Date(),
+        let data_response = []
+        let formFieldCreate = []
+        try {
+            FormForm.findByPk(req.body.form_id,{
+                attributes:['name']
             })
+            .then(result=> {
+                if(!result){
+                    resp.ok(false, `unknown form`, null, res.status(400));
+                }
+                FormField.findAll({
+                    where: {
+                        form_id: req.body.form_id
+                    },
+                    attributes: ['id','form_id','types','configuration','is_required','order'],
+                }).then(result2=>{
+                    // return console.log(result.dataValues.name)
+                    // return res.json(result2)
+                    if(result2.length == 0){
+                        FormForm.update(
+                            {
+                                is_template: req.body.is_template,
+                                updatedAt :new Date(),
+                            },
+                            {where:{
+                                id: req.body.form_id
+                            }}
+                        )
+                        data.map(field =>{
+                            formFieldCreate.push(FormField.create({
+                                form_id: req.body.form_id,
+                                types: field.type,    
+                                configuration: field.configuration,
+                                is_required: field.is_required,
+                                order: field.order
+                            }))
+                        })
+
+                        Promise.all(...formFieldCreate)
+                        .then(resultPromise => {
+                            res.json('success')
+                        })
+                        .catch((error) => {
+                            res.json('failed')
+                        });
+                        
+                    }
+                    data_response.push({
+                        "info" : "In this form the fields are found !",
+                        "form" : result,
+                        "field" : result2
+                    })
+                    // res.json(data_response)
+                    return res.json(data_response)
+
+                }).catch(err=>res.json(err))
+            })
+        } catch (error) {
+            resp.ok(false, "Failed create form field.", error, res.status(400));
         }
         
 
-        Promise.all(data_field)
-        .then(result => res.status(201).send(result))
-        .catch(error => res.status(400).send(error));
+        // Promise.all(...data_field)
+        // .then(result => res.status(201).send(result))
+        // .catch(error => res.status(400).send(error));
     },
     
 }
