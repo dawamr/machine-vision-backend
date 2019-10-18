@@ -16,12 +16,13 @@ const Op = Sequelize.Op;
 const model = require('../models');
 const db = model.sequelize;
 
+
 module.exports = {
     Test(req, res){
         sensor.findAll({
             attributes: [['id','id_sensor'],['name','label'],'last_data','heartbeat']
         })
-        
+
         let pv = parameter.findAll({
             attributes:[['id','id_parameter'],['name','parameter_name'],'parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
             where: {
