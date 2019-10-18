@@ -2,7 +2,6 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    queryInterface.removeColumn('parameters', 'data_class');
     return queryInterface.addColumn('parameters', 'data_class', {
         type: Sequelize.STRING,
       });
