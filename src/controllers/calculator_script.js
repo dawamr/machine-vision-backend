@@ -17,6 +17,135 @@ const model = require('../models');
 const db = model.sequelize;
 
 module.exports = {
+
+    machineScript(req,res){
+        let p = {
+            model: parameter,
+            as: 'parameter',
+            attributes: [['id','id_parameter'],'name','group','level','type','configuration','createdAt','updatedAt'],
+        }
+        let f = {
+            model: formula,
+            as: 'formula',
+            attributes: [['id','id_formula'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],
+            where:{
+                'level': 'machine' ,
+                'level_reference_id' : req.params.id,
+                'is_active' : true
+            }
+        }
+        formula_parameter.findAll({
+            include:[f,p],
+            attributes:[],
+        })
+        .then(result => {
+            resp.ok(true, `Get Caculator Script Machine`, result, res);
+        })
+        .catch((error) => {
+            resp.ok(false, `Get Caculator Script Machine`, null, res.status(400));
+            console.log(error);
+        });
+    },
+
+    lineScript(req,res){
+        let qcaculator;
+        if(req.query.calculator != undefined){
+            qcaculator =req.query.calculator
+        }
+        let p = {
+            model: parameter,
+            as: 'parameter',
+            attributes: [['id','id_parameter'],'name','group','level','type','configuration','createdAt','updatedAt'],
+        }
+        let f = {
+            model: formula,
+            as: 'formula',
+            attributes: [['id','id_formula'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],
+            where:{
+                'level': 'line' ,
+                'level_reference_id' : req.params.id,
+                'is_active' : true
+            }
+        }
+        formula_parameter.findAll({
+            include:[f,p],
+            attributes:[],
+        })
+        .then(result => {
+            resp.ok(true, `Get Caculator Script Line`, result, res);
+        })
+        .catch((error) => {
+            resp.ok(false, `Get Caculator Script Line`, null, res.status(400));
+            console.log(error);
+        });
+    },
+    
+    sectorScript(req,res){
+        let qcaculator;
+        if(req.query.calculator != undefined){
+            qcaculator =req.query.calculator
+        }
+        let p = {
+            model: parameter,
+            as: 'parameter',
+            attributes: [['id','id_parameter'],'name','group','level','type','configuration','createdAt','updatedAt'],
+        }
+        let f = {
+            model: formula,
+            as: 'formula',
+            attributes: [['id','id_formula'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],
+            where:{
+                'level': 'sector' ,
+                'level_reference_id' : req.params.id,
+                'is_active' : true
+            }
+        }
+        formula_parameter.findAll({
+            include:[f,p],
+            attributes:[],
+        })
+        .then(result => {
+            resp.ok(true, `Get Caculator Script Sector`, result, res);
+        })
+        .catch((error) => {
+            resp.ok(false, `Get Caculator Script Sector`, null, res.status(400));
+            console.log(error);
+        });
+    },
+
+    plantScript(req,res){
+        let qcaculator;
+        if(req.query.calculator != undefined){
+            qcaculator =req.query.calculator
+        }
+        let p = {
+            model: parameter,
+            as: 'parameter',
+            attributes: [['id','id_parameter'],'name','group','level','type','configuration','createdAt','updatedAt'],
+        }
+        let f = {
+            model: formula,
+            as: 'formula',
+            attributes: [['id','id_formula'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],
+            where:{
+                'level': 'plant' ,
+                'level_reference_id' : req.params.id,
+                'is_active' : true
+            }
+        }
+        formula_parameter.findAll({
+            include:[f,p],
+            attributes:[],
+        })
+        .then(result => {
+            resp.ok(true, `Get Caculator Script Plant`, result, res);
+        })
+        .catch((error) => {
+            resp.ok(false, `Get Caculator Script Plant`, null, res.status(400));
+            console.log(error);
+        });
+    },
+
     ShowScript(req,res){
         let qcaculator;
         if(req.query.calculator != undefined){
