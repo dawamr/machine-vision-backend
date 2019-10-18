@@ -6,10 +6,10 @@ const Op = sequelize.Op;
 
 module.exports = {
     create(req,res){
-            let t =req.body.type
-            if(t !='initial' && t !='constant', t !='manufacture' ||t !='kpi'|| t !='predictive'|| t !='alarm'){
-                return res.status(400).res.send(`missing type : ${t}`)
-            }
+            // let t =req.body.type
+            // if(t !='initial' && t !='constant', t !='manufacture' ||t !='kpi'|| t !='predictive'|| t !='alarm'){
+            //     return res.status(400).res.send(`missing type : ${t}`)
+            // }
             let dc =req.body.data_class
             if(dc !='quality' && dc !='asset', dc !='maintance' ||dc !='human'|| dc !='productivity'|| dc !='finance'){
                 return res.status(400).res.send(`missing data class  : ${t}`)
