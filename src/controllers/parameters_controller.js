@@ -6,6 +6,14 @@ const Op = sequelize.Op;
 
 module.exports = {
     create(req,res){
+            let t =req.body.type
+            if(t !='initial' && t !='constant', t !='manufacture' ||t !='kpi'|| t !='predictive'|| t !='alarm'){
+                return res.status(400).res.send(`missing type : ${t}`)
+            }
+            let dc =req.body.data_class
+            if(dc !='quality' && dc !='asset', dc !='maintance' ||dc !='human'|| dc !='productivity'|| dc !='finance'){
+                return res.status(400).res.send(`missing data class  : ${t}`)
+            }
         return parameters_index
         .create({
             name : req.body.name, 
@@ -13,6 +21,7 @@ module.exports = {
             group : req.body.group, 
             level : req.body.level, 
             type : req.body.type, 
+            data_class: req.body.data_class,
             configuration : req.body.configuration
         })
         .then(data => res.status(201).send(data))
@@ -28,11 +37,20 @@ module.exports = {
             }
         })
         .then(resultParameter=>{
+            let t =req.body.type
+            if(t !='initial' && t !='constant', t !='manufacture' ||t !='kpi'|| t !='predictive'|| t !='alarm'){
+                return res.status(400).res.send(`missing type : ${t}`)
+            }
+            let dc =req.body.data_class
+            if(dc !='quality' && dc !='asset', dc !='maintance' ||dc !='human'|| dc !='productivity'|| dc !='finance'){
+                return res.status(400).res.send(`missing data class  : ${t}`)
+            }
             return resultParameter.update({
                 name : req.body.name || resultParameter.name,
                 parameter_category_id : req.body.parameter_category_id || resultParameter.parameter_category_id, 
                 group : req.body.group || resultParameter.group, 
-                level : req.body.level || resultParameter.level, 
+                level : req.body.level || resultParameter.level,
+                data_class: req.body.data_class|| resultParameter.data_class, 
                 type : req.body.type || resultParameter.type, 
                 configuration : req.body.configuration || resultParameter.configuration,
                 updatedAt: new Date()
