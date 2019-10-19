@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     parameter_category_id: DataTypes.INTEGER,
     group: DataTypes.ENUM('variable','output'),
     level: DataTypes.ENUM('plant','sector','line','machine'),
-    type: DataTypes.ENUM('constant','initial','manufacture','kpi','predictive'),
+    type: DataTypes.STRING,
+    data_class: DataTypes.STRING,
     configuration: DataTypes.JSON,
     deletedAt: DataTypes.DATE
 }, {
