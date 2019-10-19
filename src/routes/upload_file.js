@@ -10,7 +10,7 @@ router.post('/', upload.single('file'), function(req, res, next) {
     return next(!req.file);
   }
 
-  let fileUrl = 'http://' + config.development.host + ':8000/images/' + req.file.filename
+  let fileUrl = 'https://staging-app.machinevision.global/images/' + req.file.filename
   resp.ok(true, "Success upload file", fileUrl, res);
 });
 
