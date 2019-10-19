@@ -10,10 +10,11 @@ module.exports = {
             // if(t !='initial' && t !='constant', t !='manufacture' ||t !='kpi'|| t !='predictive'|| t !='alarm'){
             //     return res.status(400).res.send(`missing type : ${t}`)
             // }
-            let dc =req.body.data_class
-            if(dc !='quality' && dc !='asset', dc !='maintance' ||dc !='human'|| dc !='productivity'|| dc !='finance'){
-                return res.status(400).res.send(`missing data class  : ${t}`)
-            }
+        let dc = req.body.data_class
+        if(dc != 'quality' && dc !='asset' && dc !='maintance' && dc !='human' && dc !='productivity'&& dc !='finance'){
+            return res.status(400).send(`missing data class  : ${req.body.data_class}`)
+        }
+        console.log(req.body.data_class)
         return parameters_index
         .create({
             name : req.body.name, 
@@ -37,13 +38,13 @@ module.exports = {
             }
         })
         .then(resultParameter=>{
-            let t =req.body.type
-            if(t !='initial' && t !='constant', t !='manufacture' ||t !='kpi'|| t !='predictive'|| t !='alarm'){
-                return res.status(400).res.send(`missing type : ${t}`)
-            }
+            // let t =req.body.type
+            // if(t !='initial' && t !='constant' && t !='manufacture' &&t !='kpi'&& t !='predictive'&& t !='alarm'){
+            //     return res.status(400).res.send(`missing type : ${t}`)
+            // }
             let dc =req.body.data_class
-            if(dc !='quality' && dc !='asset', dc !='maintance' ||dc !='human'|| dc !='productivity'|| dc !='finance'){
-                return res.status(400).res.send(`missing data class  : ${t}`)
+            if(dc !='quality' && dc !='asset' && dc !='maintance' && dc !='human'&& dc !='productivity'&& dc !='finance'){
+                return res.status(400).res.send(`missing data class  : ${dc}`)
             }
             return resultParameter.update({
                 name : req.body.name || resultParameter.name,
