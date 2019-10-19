@@ -88,7 +88,7 @@ module.exports = {
     },
 
     update(req,res){
-        if(!req.body.name){return res.status(400).send(res.json({status:'name is required'}))}
+        // if(!req.body.name){return res.status(400).send(res.json({status:'name is required'}))}
         return FormCategory
         .findOne({
             where: {
