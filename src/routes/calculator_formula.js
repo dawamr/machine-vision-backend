@@ -11,22 +11,30 @@ calculator.get('/machine', calFormulaController.machineList)
 calculator.get('/sector',calFormulaController.sectorList)
 calculator.get('/line',calFormulaController.lineList)
 calculator.get('/plant',calFormulaController.plantList)
+
 //calculator List
 calculator.get('/machine/list',calFormulaController.machineList)
 calculator.get('/sector/list',calFormulaController.sectorList)
 calculator.get('/line/list',calFormulaController.lineList)
 calculator.get('/plant/list',calFormulaController.plantList)
 
+
+
 //calculator Editor
+calculator.get('/plant/script', calScript.plantScript)
 calculator.get('/machine/:id/script', calScript.machineScript)
 calculator.get('/sector/:id/script', calScript.sectorScript)
 calculator.get('/line/:id/script', calScript.lineScript)
-calculator.get('/plant/script', calScript.plantScript)
+
+calculator.post('/plant/script',calScript.plantRunner)
+calculator.post('/machine/:id/script',calScript.machineRunner)
+calculator.post('/sector/:id/script',calScript.sectorRunner)
+calculator.post('/line/:id/script',calScript.lineRunner)
 
 // calFormula.post('/', calFormulaController.create)
 // calculator.get('/list_all', calFormulaController.listCalculator);
 
-calculator.get('/code/:id',calScript.ShowScript)
+// calculator.get('/code/:id',calScript.ShowScript)
 calculator.post('/code/:id',calScript.Test)
 
 calculator.get('/editor/:id', calEditor.Test)
