@@ -21,7 +21,7 @@ module.exports = {
 
     FormulaList(req, res){
         formula.findAll({
-            attributes: ['id','level','is_active','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],      
+            attributes: ['id','level','name','is_active','level_reference_id','createdAt','updatedAt'],      
             where:{
                 'level':  req.params.level,
                 'level_reference_id': req.params.id
@@ -62,6 +62,7 @@ module.exports = {
 
         try {
             await formula.create({
+                name: req.body.name,
                 level: req.params.level,
                 level_reference_id: req.params.id,
                 formula_script: req.body.formula_script,
@@ -117,6 +118,7 @@ module.exports = {
                 }
             })
             await formula.update({
+                name: req.body.name,
                 level: req.params.level,
                 level_reference_id: req.params.id,
                 formula_script: req.body.formula_script,
