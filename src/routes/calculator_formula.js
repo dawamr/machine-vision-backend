@@ -28,6 +28,6 @@ calculator.delete('/:level/:id/formula/:id_formula',calScript.DeleteFormula)
 
 calculator.get('/:level/:id/formula/:id_formula/:type',calEditor.parameter)
 
-calculator.get('/:level/:id/parameter', calEditor.listSensor)
+calculator.get('/:level/:id/sensor', calEditor.listSensor)
 
 module.exports = calculator;
