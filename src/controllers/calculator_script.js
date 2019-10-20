@@ -20,25 +20,8 @@ const db = model.sequelize;
 module.exports = {
 
     FormulaList(req, res){
-        // let f = {
-        //     model: formula,
-        //     as: 'formula',
-        //     attributes: [['id','id_formula'],'level','level_reference_id','createdAt','updatedAt'],      
-        //     where:{
-        //         'level':  req.params.level ,
-        //         'is_active' : true
-        //     },
-        // }
-        // let p = {
-        //     model: parameter,
-        //     as: 'parameter',
-        //     attributes: [['id','id_parameter'],'name','group','level','type','configuration','createdAt','updatedAt'],
-        //     where:{
-        //         'level': req.params.level
-        //     },
-        // }
         formula.findAll({
-            attributes: [['id','id_formula'],'level','is_active','level_reference_id','createdAt','updatedAt'],      
+            attributes: ['id','level','is_active','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],      
             where:{
                 'level':  req.params.level,
                 'level_reference_id': req.params.id
@@ -54,33 +37,16 @@ module.exports = {
     },
 
     FormulaDetail(req, res){
-        // let p = {
-        //     model: parameter,
-        //     as: 'parameter',
-        //     attributes: [['id','id_parameter'],'name','group','level','type','configuration','createdAt','updatedAt'],
-        //     where:{
-        //         'level': req.params.level
-        //     },
-        // }
-        let f = {
-            model: formula,
-            as: 'formula',
-            attributes: [['id','id_formula'],'level','is_active','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],      
+        
+        formula.findAll({
+            // attributes: ['id','level','is_active','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],      
             where:{
                 'level': req.params.level,
-                'is_active' : true,
                 'id': req.params.id_formula
             },
-        }
-        formula_parameter.findAll({
-            include:[f],
-            attributes:[],
-            order: [
-                ['createdAt', 'Asc']
-            ],
         })
         .then(result => {
-            resp.ok(true, `Get Detail Caculator Script ${req.params.level}`, result, res);
+            resp.ok(true, `Get Detail Caculator Script ${req.params.level}`, result[0], res);
         })
         .catch((error) => {
             resp.ok(false, `Cannot Caculator Script ${req.params.level}`, null, res.status(400));
@@ -100,7 +66,7 @@ module.exports = {
                 level_reference_id: req.params.id,
                 formula_script: req.body.formula_script,
                 formula_xml: req.body.formula_xml,
-                is_active: true
+                is_active: false
             })
             .then(result =>{
                  formulaID = result.id
@@ -155,7 +121,7 @@ module.exports = {
                 level_reference_id: req.params.id,
                 formula_script: req.body.formula_script,
                 formula_xml: req.body.formula_xml,
-                is_active: true
+                is_active: false
             },{
                 where: {
                     id: req.params.id_formula
