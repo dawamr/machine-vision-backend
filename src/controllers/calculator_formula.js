@@ -38,7 +38,7 @@ module.exports = {
         }
         let m = {
             model: machine,
-            attributes:[['id','id_machine'],['name','machine_name']],
+            attributes:[['id','id_machine'],['name','machine_name'],'created_at','updated_at'],
         }
         process_machine.findAll({
             attributes: [],
@@ -46,22 +46,29 @@ module.exports = {
         })
         .then(result => {
             result.map(data =>{
+                console.log(data.machine.dataValues)
                 new_result.push({
                     "machine_id" : data.machine.dataValues.id_machine,
                     "machine_name" : data.machine.dataValues.machine_name,
-                    // "line_id" : data.process.line.dataValues.id_line,
-                    "line_name" : data.process.line.dataValues.line_name,
-                    // "sector_id" :data.process.line.dataValues.sector.dataValues.id_sector,
-                    "sector_name" :data.process.line.dataValues.sector.dataValues.sector_name,
+                    "createdAt":data.machine.dataValues.created_at,
+                    "updatedAt":data.machine.dataValues.updated_at,
+                        "line":{
+                            "line_id" : data.process.line.dataValues.id_line,
+                            "line_name" : data.process.line.dataValues.line_name,
+                            "sector" :{
+                                "sector_id" :data.process.line.dataValues.sector.dataValues.id_sector,
+                                "sector_name" :data.process.line.dataValues.sector.dataValues.sector_name,
+                            }
+                        },
                     "status": "not-active",
                     "messege" : "The code is not set"
                 })
             })
             // let execut =(Date.now() - before)
-            resp.ok(true, `Get all data calculator ${req.query.calculator} list.`, new_result, res);
+            resp.ok(true, `Get all data calculator machinelist.`, new_result, res);
         })
         .catch((error) => {
-          resp.ok(false, `Failed get all data calculator ${req.query.calculator} list.`, null, res.status(400));
+          resp.ok(false, `Failed get all data calculator machine list.`, null, res.status(400));
           console.log(error);
         });
     },
