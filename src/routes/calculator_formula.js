@@ -13,7 +13,7 @@ calculator.get('/line',calFormulaController.lineList)
 calculator.get('/plant',calFormulaController.plantList)
 
 //calculator List
-calculator.get('/machine/list',calFormulaController.machineList)
+calculator.get('/machine/list',calFormulaController.machineListTest)
 calculator.get('/sector/list',calFormulaController.sectorList)
 calculator.get('/line/list',calFormulaController.lineList)
 calculator.get('/plant/list',calFormulaController.plantList)
