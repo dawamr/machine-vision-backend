@@ -18,8 +18,6 @@ calculator.get('/sector/list',calFormulaController.sectorList)
 calculator.get('/line/list',calFormulaController.lineList)
 calculator.get('/plant/list',calFormulaController.plantList)
 
-
-
 //calculator Editor
 // calculator.get('/plant/script', calScript.plantScript)
 // calculator.get('/machine/:id/script', calScript.machineScript)
