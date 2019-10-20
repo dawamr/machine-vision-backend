@@ -11,7 +11,7 @@ module.exports = {
             //     return res.status(400).res.send(`missing type : ${t}`)
             // }
         let dc = req.body.data_class
-        if(dc != 'quality' && dc !='asset' && dc !='maintance' && dc !='human' && dc !='productivity'&& dc !='finance'){
+        if(dc != 'quality' && dc !='asset' && dc !='maintenance' && dc !='human' && dc !='productivity'&& dc !='finance'){
             return res.status(400).send(`missing data class  : ${req.body.data_class}`)
         }
         console.log(req.body.data_class)
@@ -43,7 +43,7 @@ module.exports = {
             //     return res.status(400).res.send(`missing type : ${t}`)
             // }
             let dc =req.body.data_class
-            if(dc !='quality' && dc !='asset' && dc !='maintance' && dc !='human'&& dc !='productivity'&& dc !='finance'){
+            if(dc !='quality' && dc !='asset' && dc !='maintenance' && dc !='human'&& dc !='productivity'&& dc !='finance'){
                 return res.status(400).res.send(`missing data class  : ${dc}`)
             }
             return resultParameter.update({
