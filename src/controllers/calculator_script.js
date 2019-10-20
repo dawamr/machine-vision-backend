@@ -19,194 +19,94 @@ const db = model.sequelize;
 
 module.exports = {
 
-    machineScript(req,res){
-        let p = {
-            model: parameter,
-            as: 'parameter',
-            attributes: [['id','id_parameter'],'name','group','level','type','configuration','createdAt','updatedAt'],
-        }
+    FormulaList(req, res){
         let f = {
             model: formula,
             as: 'formula',
-            attributes: [['id','id_formula'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],
+            attributes: [['id','id_formula'],'level','level_reference_id','createdAt','updatedAt'],      
             where:{
-                'level': 'machine' ,
-                'level_reference_id' : req.params.id,
+                'level':  req.params.level ,
                 'is_active' : true
             },
-            order: [
-            ['createdAt', 'Asc']
-            ],
-        }
-        formula_parameter.findAll({
-            include:[f,p],
-            attributes:[],
-        })
-        .then(result => {
-            resp.ok(true, `Get Caculator Script Machine`, result, res);
-        })
-        .catch((error) => {
-            resp.ok(false, `Get Caculator Script Machine`, null, res.status(400));
-            console.log(error);
-        });
-    },
-
-    lineScript(req,res){
-        let qcaculator;
-        if(req.query.calculator != undefined){
-            qcaculator =req.query.calculator
         }
         let p = {
             model: parameter,
             as: 'parameter',
             attributes: [['id','id_parameter'],'name','group','level','type','configuration','createdAt','updatedAt'],
-        }
-        let f = {
-            model: formula,
-            as: 'formula',
-            attributes: [['id','id_formula'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],
             where:{
-                'level': 'line' ,
-                'level_reference_id' : req.params.id,
-                'is_active' : true
+                'level': req.params.level
             },
-            order: [
-            ['createdAt', 'Asc']
-            ],
         }
-        formula_parameter.findAll({
-            include:[f,p],
-            attributes:[],
-        })
-        .then(result => {
-            resp.ok(true, `Get Caculator Script Line`, result, res);
-        })
-        .catch((error) => {
-            resp.ok(false, `Get Caculator Script Line`, null, res.status(400));
-            console.log(error);
-        });
-    },
-    
-    sectorScript(req,res){
-        let qcaculator;
-        if(req.query.calculator != undefined){
-            qcaculator =req.query.calculator
-        }
-        let p = {
-            model: parameter,
-            as: 'parameter',
-            attributes: [['id','id_parameter'],'name','group','level','type','configuration','createdAt','updatedAt'],
-        }
-        let f = {
-            model: formula,
-            as: 'formula',
-            attributes: [['id','id_formula'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],
-            where:{
-                'level': 'sector' ,
-                'level_reference_id' : req.params.id,
-                'is_active' : true
-            },
-            order: [
-            ['createdAt', 'Asc']
-            ],
-        }
-        formula_parameter.findAll({
-            include:[f,p],
-            attributes:[],
-        })
-        .then(result => {
-            resp.ok(true, `Get Caculator Script Sector`, result, res);
-        })
-        .catch((error) => {
-            resp.ok(false, `Get Caculator Script Sector`, null, res.status(400));
-            console.log(error);
-        });
-    },
-
-    plantScript(req,res){
-        let page = 1;
-        let perPage = 100;
-        if(req.query.version != undefined && (req.query.version.length > 0)){
-            perPage = req.query.version
-        }
-        if(req.query.calculator != undefined){
-            qcaculator =req.query.calculator
-        }
-        let p = {
-            model: parameter,
-            as: 'parameter',
-            attributes: [['id','id_parameter'],'name','group','level','type','configuration','createdAt','updatedAt'],
-        }
-        let f = {
-            model: formula,
-            as: 'formula',
-            attributes: [['id','id_formula'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],      
-            where:{
-                'level': 'plant' ,
-                'is_active' : true
-            },
-            
-        }
-        let skip = (page - 1) * perPage
-        
         formula_parameter.findAll({
             include:[f,p],
             attributes:[],
             order: [
                 ['createdAt', 'Asc']
             ],
-            limit: perPage,
-            offset :skip,
         })
         .then(result => {
-            resp.ok(true, `Get Caculator Script Plant`, result, res);
+            resp.ok(true, `Get Caculator Script ${req.params.level}`, result, res);
         })
         .catch((error) => {
-            resp.ok(false, `Get Caculator Script Plant`, null, res.status(400));
+            resp.ok(false, `Get Caculator Script ${req.params.level}`, null, res.status(400));
             console.log(error);
         });
     },
 
-    machineRunner(req,res){
-        console.log('')
+    FormulaDetail(req, res){
+        // let p = {
+        //     model: parameter,
+        //     as: 'parameter',
+        //     attributes: [['id','id_parameter'],'name','group','level','type','configuration','createdAt','updatedAt'],
+        //     where:{
+        //         'level': req.params.level
+        //     },
+        // }
+        let f = {
+            model: formula,
+            as: 'formula',
+            attributes: [['id','id_formula'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],      
+            where:{
+                'level': req.params.level,
+                'is_active' : true,
+                'id': req.params.id_formula
+            },
+        }
+        formula_parameter.findAll({
+            include:[f],
+            attributes:[],
+            order: [
+                ['createdAt', 'Asc']
+            ],
+        })
+        .then(result => {
+            resp.ok(true, `Get Detail Caculator Script ${req.params.level}`, result, res);
+        })
+        .catch((error) => {
+            resp.ok(false, `Cannot Caculator Script ${req.params.level}`, null, res.status(400));
+            console.log(error);
+        });
     },
 
-    sectorRunner(req,res){
-        console.log('')
-    },
-
-    lineRunner(req,res){
-        console.log('')
-    },
-
-    async plantRunner(req,res){
+    async NewFormula(req,res){
         const before = Date.now();
-        let qw = req.query
-        let body = req.body
         let formulaID
-        let plantID = 1
         let _formula_parameter = []
         let _runner_result = []
-        let version
-        if(qw.type == 'save'){
-            version = true;
-        }
+
         try {
-            await plant.findOne({}).then(result=> plantID = result.id)
-            // let _formula = await 
             await formula.create({
-                level: 'plant',
-                level_reference_id: plantID,
-                formula_script: body.formula_script,
-                formula_xml: body.formula_xml,
-                is_active: version
+                level: req.params.level,
+                level_reference_id: req.params.id,
+                formula_script: req.body.formula_script,
+                formula_xml: req.body.formula_xml,
+                is_active: true
             })
             .then(result =>{
                  formulaID = result.id
             })
                 
-            await body.calculator_input.map(data => {
-                console.log(formulaID)
+            await req.body.calculator_input.map(data => {
                 _formula_parameter.push(formula_parameter.create({
                     formula_id: formulaID,
                     parameter_id: data.parameter_id
@@ -224,8 +124,8 @@ module.exports = {
                 start: before,
                 end: end,
                 execute_time: execute,
-                formula_script: body.formula_script,
-                formula_xml: body.formula_xml,
+                formula_script: req.body.formula_script,
+                formula_xml: req.body.formula_xml,
             })
             await Promise.all([..._formula_parameter,..._runner_result,_runner])
             .then(result => res.status(201).send(result))
@@ -235,36 +135,36 @@ module.exports = {
         }
     },
 
-    async Test(req, res){
+    async UpdateFormula(req,res){
         const before = Date.now();
-        let qw = req.query
-        let body = req.body
         let formulaID
         let _formula_parameter = []
         let _runner_result = []
 
-
         try {
-            if(qw.calculator != 'plant' && qw.calculator != 'machine' && qw.calculator != 'line' && qw.calculator != 'sector'){
-                return res.json(`calculator ${qw.calculator} not defined`)
-            }
-            if(qw.calculator == undefined){
-                return res.json(`calcuator undefined`)
-            }
-            
-            // let _formula = await 
-            await formula.creversionate({
-                level: qw.calculator,
-                level_reference_id: req.params.id,
-                formula_script: body.formula_script,
-                formula_xml: body.formula_xml,
-                is_active: version
+            await formula.update({
+                name: req.body.name,
+                updatedAt :new Date(),
+            }, {
+                where: {
+                id: req.params.id
+                }
             })
-            .then(result =>formulaID = result.id)
+            await formula.update({
+                level: req.params.level,
+                level_reference_id: req.params.id,
+                formula_script: req.body.formula_script,
+                formula_xml: req.body.formula_xml,
+                is_active: true
+            },{
+                where: {
+                    id: req.params.id_formula
+                }
+            })
                 
-            await body.calculator_input.map(data => {
+            await req.body.calculator_input.map(data => {
                 _formula_parameter.push(formula_parameter.create({
-                    formula_id: formulaID,
+                    formula_id: req.params.id_formula,
                     parameter_id: data.parameter_id
                 }))
                 _runner_result.push(runner_result.create({
@@ -276,11 +176,12 @@ module.exports = {
             let end = Date.now()
             let execute =(end - before)
             let _runner = await runner.create({
+                formula_id: req.params.id_formula,
                 start: before,
                 end: end,
                 execute_time: execute,
-                formula_script: body.formula_script,
-                formula_xml: body.formula_xml,
+                formula_script: req.body.formula_script,
+                formula_xml: req.body.formula_xml,
             })
             await Promise.all([..._formula_parameter,..._runner_result,_runner])
             .then(result => res.status(201).send(result))
@@ -288,8 +189,32 @@ module.exports = {
         } catch (error) {
             res.status(400).send(error);
         }
+    },
 
-        
-
+    DeleteFormula(req, res){
+        try {
+            let f = formula.destroy({
+                where :{
+                    id: req.params.id_formula
+                }
+            })
+            let fp = formula_parameter.destroy({
+                where :{
+                    formula_id: req.params.id_formula
+                }
+            })
+            Promise.all([f,fp])
+            .then(result => {
+                resp.ok(true, `Success Delete Calculator Formula  ${req.params.level}`, result, res);
+            })
+            .catch((error) => {
+                resp.ok(false, `Cannot Delete Calculator Formula  ${req.params.level}`, null, res.status(400));
+                console.log(error);
+            });
+        } catch (error) {
+            resp.ok(false, `Cannot Delete Calculator Formula  ${req.params.level}`, null, res.status(400));
+            console.log(error);
+        }
     }
+    
 }
