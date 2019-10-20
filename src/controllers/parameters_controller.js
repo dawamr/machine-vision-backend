@@ -20,7 +20,6 @@ module.exports = {
             name : req.body.name, 
             parameter_category_id : req.body.parameter_category_id, 
             group : req.body.group, 
-            group : req.body.group, 
             level : req.body.level, 
             type : req.body.type, 
             data_class: req.body.data_class,
@@ -33,7 +32,7 @@ module.exports = {
     update(req,res){
         return parameters_index
         .findOne({
-            attributes:['id','name','parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
+            attributes:['id','name','parameter_category_id','group','data_class','level','configuration','type','createdAt','updatedAt'],
             where : {
                 id : req.params.id
             }
@@ -64,7 +63,7 @@ module.exports = {
     destroy(req,res){
         return parameters_index
         .findOne({
-            attributes:['id','name','group','level','configuration','type'],
+            attributes:['id','name','parameter_category_id','group','data_class','level','configuration','type','createdAt','updatedAt'],
             where : {
                 id : req.params.id
             }
@@ -114,7 +113,7 @@ module.exports = {
         let skip = (page - 1) * perPage
         if(req.query.category_id != undefined){
             return parameters_index.findAll({
-                attributes:['id','name','parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
+                attributes:['id','name','parameter_category_id','group','data_class','level','configuration','type','createdAt','updatedAt'],
                 order: [
                     [orderBy, sortBy]
                 ],
@@ -140,7 +139,7 @@ module.exports = {
     search(req,res){
     return parameters_index
     .findOne({
-        attributes:['id','name','group','level','configuration','type'],
+        attributes:['id','name','parameter_category_id','group','data_class','level','configuration','type','createdAt','updatedAt'],
         where : {
             id : req.params.id,
         }
