@@ -20,29 +20,29 @@ const db = model.sequelize;
 module.exports = {
 
     FormulaList(req, res){
-        let f = {
-            model: formula,
-            as: 'formula',
-            attributes: [['id','id_formula'],'level','level_reference_id','createdAt','updatedAt'],      
+        // let f = {
+        //     model: formula,
+        //     as: 'formula',
+        //     attributes: [['id','id_formula'],'level','level_reference_id','createdAt','updatedAt'],      
+        //     where:{
+        //         'level':  req.params.level ,
+        //         'is_active' : true
+        //     },
+        // }
+        // let p = {
+        //     model: parameter,
+        //     as: 'parameter',
+        //     attributes: [['id','id_parameter'],'name','group','level','type','configuration','createdAt','updatedAt'],
+        //     where:{
+        //         'level': req.params.level
+        //     },
+        // }
+        formula.findAll({
+            attributes: [['id','id_formula'],'level','is_active','level_reference_id','createdAt','updatedAt'],      
             where:{
-                'level':  req.params.level ,
-                'is_active' : true
+                'level':  req.params.level,
+                'level_reference_id': req.params.id
             },
-        }
-        let p = {
-            model: parameter,
-            as: 'parameter',
-            attributes: [['id','id_parameter'],'name','group','level','type','configuration','createdAt','updatedAt'],
-            where:{
-                'level': req.params.level
-            },
-        }
-        formula_parameter.findAll({
-            include:[f,p],
-            attributes:[],
-            order: [
-                ['createdAt', 'Asc']
-            ],
         })
         .then(result => {
             resp.ok(true, `Get Caculator Script ${req.params.level}`, result, res);
@@ -65,7 +65,7 @@ module.exports = {
         let f = {
             model: formula,
             as: 'formula',
-            attributes: [['id','id_formula'],'level','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],      
+            attributes: [['id','id_formula'],'level','is_active','level_reference_id','formula_script','formula_xml','createdAt','updatedAt'],      
             where:{
                 'level': req.params.level,
                 'is_active' : true,
