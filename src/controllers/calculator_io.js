@@ -49,7 +49,7 @@ module.exports = {
             attributes:[['id','id_parameter'],['name','parameter_name'],'data_class','parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
             where: {
                 level: req.params.level,
-                group: 'variable'
+                group: req.params.type
             }
         })
         .then(data => {
