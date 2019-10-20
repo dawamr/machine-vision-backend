@@ -2,6 +2,8 @@ const FormCategory = require('./../models/').form_category;
 const FormSubCategory = require('./../models/').form_sub_category;
 
 // console.log(Object.keys(require('../models')));
+const resp = require('../views/response');
+const pagination = require('../utils/pagination');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
 module.exports = {
@@ -78,7 +80,7 @@ module.exports = {
     },
     
     create(req,res){
-        if(req.body.name == null){res.status(400).send(res.json({status:'name is required'}))}
+        // if(req.body.name == null){res.status(400).send(res.json({status:'name is required'}))}
         return FormCategory
         .create({
           name: req.body.name,
@@ -89,20 +91,24 @@ module.exports = {
 
     update(req,res){
         // if(!req.body.name){return res.status(400).send(res.json({status:'name is required'}))}
-        return FormCategory
-        .findOne({
+        FormCategory.update({
+            name: req.body.name,
+            updatedAt :new Date(),
+        }, {
             where: {
-                id : req.params.id
-            },
+            id: req.params.id
+            }
         })
-        .then((FormCategory)=>{
-            return FormCategory.update({
-                name: req.body.name || FormCategory.name,
-                updatedAt :new Date(),
-            })
+
+        FormCategory.findByPk(req.params.id)
+        .then(result => {
+            resp.ok(true, `Success update form category`, result, res);
         })
-        .then(data => res.status(201).send(data))
-        .catch(error => res.status(400).send(error));
+        .catch((error) => {
+            resp.ok(false, `Cannot update form category`, null, res.status(400));
+            console.log(error);
+        });
+        
     },
 
     delete(req,res){
