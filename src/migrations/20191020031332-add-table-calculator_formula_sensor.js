@@ -1,7 +1,7 @@
 'use strict';
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    queryInterface.dropTable('calculator_sensors');
     return queryInterface.createTable('calculator_formula_sensors', {
       id: {
         allowNull: false,
@@ -22,12 +22,13 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      deleteAt: {
+      deletedAt: {
         allowNull: true,
         type: Sequelize.DATE
       }
     });
   },
+
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('calculator_formula_sensors');
   }

@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     sensor.belongsTo(models.sensor_category, {
       foreignKey: 'sensor_category_id'
     });
+    sensor.hasMany(models.calculator_formula_sensor, { as: 'formula_sensor' })
   };
   return sensor;
 };

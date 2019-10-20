@@ -117,7 +117,7 @@ module.exports = {
     
             resp.ok(true, "Get list data machine.", data, res);
             })
-            .catch((error) => {
+        .catch((error) => {
             resp.ok(false, "Failed get list data machine.", null, res.status(400));
             console.log(error);
         });
