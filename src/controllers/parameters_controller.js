@@ -20,6 +20,7 @@ module.exports = {
             name : req.body.name, 
             parameter_category_id : req.body.parameter_category_id, 
             group : req.body.group, 
+            group : req.body.group, 
             level : req.body.level, 
             type : req.body.type, 
             data_class: req.body.data_class,
@@ -101,6 +102,10 @@ module.exports = {
             options.group = sequelize.where(sequelize.col('group'), '=', req.query.group );
             required = true;
         }
+        if ((req.query.data_class != undefined) && (req.query.data_class.length > 0)){
+            options.data_class = sequelize.where(sequelize.col('data_class'), '=', req.query.data_class );
+            required = true;
+        }
         if ((req.query.level != undefined) && (req.query.level.length > 0)){
             options.level = sequelize.where(sequelize.col('level'), '=', req.query.level );
             required = true;
@@ -122,7 +127,7 @@ module.exports = {
             .catch(error => res.status(400).send(error));
         }
         return parameters_index.findAll({
-            attributes:['id','name','parameter_category_id','group','level','configuration','type','createdAt','updatedAt'],
+            attributes:['id','name','parameter_category_id','group','data_class','level','configuration','type','createdAt','updatedAt'],
             order: [
                 [orderBy, sortBy]
             ],
