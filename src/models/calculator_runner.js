@@ -13,6 +13,8 @@ module.exports = (sequelize, DataTypes) => {
   calculator_runner.associate = function(models) {
     // associations can be defined here
     calculator_runner.belongsTo(models.calculator_formula, {foreignKey: "formula_id", as: 'formula'})
+    calculator_runner.hasMany(models.calculator_formula_sensor, {as: 'formula_sensor'})
+    calculator_runner.hasMany(models.calculator_runner_log, {as: 'sensor_log'})
   };
   return calculator_runner;
 };
