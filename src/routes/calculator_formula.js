@@ -26,8 +26,11 @@ calculator.post('/:level/:id/formula',calScript.NewFormula)
 calculator.put('/:level/:id/formula/:id_formula',calScript.UpdateFormula)
 calculator.delete('/:level/:id/formula/:id_formula',calScript.DeleteFormula)
 
+calculator.get('/:level/:id/formula/:id_formula/sensor', calEditor.listSensor)
+calculator.post('/:level/:id/formula/:id_formula/sensor', calEditor.addSensor)
+calculator.put('/:level/:id/formula/:id_formula/sensor/:id_sensor', calEditor.updateSensor)
+calculator.delete('/:level/:id/formula/:id_formula/sensor/:id_sensor', calEditor.deleteSensor)
 calculator.get('/:level/:id/formula/:id_formula/:type',calEditor.parameter)
 
-calculator.get('/:level/:id/sensor', calEditor.listSensor)
 
 module.exports = calculator;

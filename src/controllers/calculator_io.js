@@ -30,13 +30,20 @@ module.exports = {
         f = {
             model: formula,
             as: 'formula',
+            where: {
+                level: req.params.level,
+                level_reference_id: req.params.id
+            }
         }
         sensor_calculator.findAll({
-            attributes: [['id','id_calculator_sensor'],'sensor_id','formula_id','sensor_label','createdAt','updatedAt'],
-            include: [tb_sensor,f]
+            attributes: ['id','sensor_id','formula_id','sensor_label','createdAt','updatedAt'],
+            include: [tb_sensor,f],
+            where:{
+                formula_id: req.params.id_formula
+            }
         })
         .then(data => {
-            resp.ok(true, `Get list sensoe ${req.params.type} ${req.params.level} `, data, res);
+            resp.ok(true, `Get list sensor ${req.params.type} ${req.params.level} `, data, res);
         })
         .catch(error =>{
             resp.ok(false, `Failed get list sensor ${req.params.type} ${req.params.level}`,null, res.status(400));
@@ -60,4 +67,100 @@ module.exports = {
             console.log(error);
         })
     },
+
+    addSensor(req,res){
+        formula.findOne({
+            where: {
+                level: req.params.level,
+                level_reference_id: req.params.id,
+                id: req.params.id_formula
+            }
+        })
+        .then(result =>{
+            console.log(result.id)
+            sensor_calculator.create({
+                formula_id: result.id,
+                sensor_id: req.body.sensor_id,
+                sensor_label:req.body.label
+            })
+            .then(data => {
+                resp.ok(true, `Seuccess add sensor variable.`, data, res);
+            })
+            .catch(error =>{
+                resp.ok(false, `Failed add sensor variable.`,null, res.status(400));
+                console.log(error);
+            })
+        })
+        .catch(error =>{
+            resp.ok(false, `Cannot add sensor variable.`,null, res.status(400));
+            console.log(error);
+        })
+    },
+
+    updateSensor(req,res){
+        formula.findOne({
+            where: {
+                level: req.params.level,
+                level_reference_id: req.params.id,
+                id: req.params.id_formula
+            }
+        })
+        .then(result =>{
+            try {
+                sensor_calculator.update({
+                    sensor_id: req.body.sensor_id,
+                    sensor_label:req.body.label
+                }, {
+                    where: {
+                        id: req.params.id_sensor,
+                        sensor_id: req.body.sensor_id,
+                    }
+                })
+                data = {
+                    "id": req.params.id_sensor,
+                    "sensor_id": req.body.sensor_id,
+                    "formula_id": req.params.id_formula,
+                    "sensor_label" : req.body.label,
+                }
+                resp.ok(true, `Success update sensor variable.`,data, res.status(400));
+            } catch (error) {
+                resp.ok(false, `Failed update sensor variable.`,null, res.status(400));
+                console.log(error);
+            }
+        })
+        .catch(error =>{
+            resp.ok(false, `Cannot update sensor variable.`,null, res.status(400));
+            console.log(error);
+        })
+    
+    },
+
+    deleteSensor(req, res){
+        formula.findOne({
+            where: {
+                level: req.params.level,
+                level_reference_id: req.params.id,
+                id: req.params.id_formula
+            }
+        })
+        .then(result =>{
+            try {
+                sensor_calculator.destroy({
+                    where: {
+                        id : req.params.id_sensor
+                    },
+                })
+                resp.ok(true, `Success delete sensor variable.`,null, res.status(400));
+            } catch (error) {
+                resp.ok(false, `Failed delete sensor variable.`,null, res.status(400));
+                console.log(error);
+            }
+        })
+        .catch(error =>{
+            resp.ok(false, `Cannot delete sensor variable.`,null, res.status(400));
+            console.log(error);
+        })
+        
+    }
+
 }
