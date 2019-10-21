@@ -17,22 +17,22 @@ module.exports = {
         let page = 1;
         let perPage = 10;
         let type = ['non-widget','widget']
-        if(req.query.order_by != undefined){
+        if(req.query.order_by != undefined && req.query.order_by.length >0 ){
             orderBy = req.query.order_by
         }
-        if(req.query.sort_by != undefined){
+        if(req.query.sort_by != undefined && req.query.sort_by .length >0){
             sortBy = req.query.sort_by
         }
-        if(req.query.page != undefined){
+        if(req.query.page != undefined && req.query.page .length >0){
             page = req.query.page
         }
-        if(req.query.per_page != undefined){
+        if(req.query.per_page != undefined && req.query.per_page .length >0){
             perPage = req.query.per_page
         }
-        let skip = (page - 1) * perPage
-        if(req.query.type != undefined){
+        if(req.query.type != undefined && req.query.type .length >0){
             type = req.query.type
         }
+        let skip = (page - 1) * perPage
 
         ////////// filter by category
         var cat = {
