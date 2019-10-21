@@ -60,7 +60,7 @@ module.exports = {
 
     store(req,res){
         let data = req.body.form_field
-        let data_field = []
+        var data_field = []
         let data_response = []
         let formFieldCreate = []
         try {
@@ -98,23 +98,28 @@ module.exports = {
                                 order: field.order
                             }))
                         })
+                        try {
+                            Promise.all(...formFieldCreate)
+                            var data3 = {
+                                "form":{
+                                    "name": result.name,
+                                    data
+                                }
+                            }
+                            console.log(data3)
+                            resp.ok(true, "Success create form field.", data3, res.status(400));
+                        } catch (error) {
+                            resp.ok(false, "Failed create form field.", error, res.status(400));
+                            console.log(error)
+                        }
 
-                        Promise.all(...formFieldCreate)
-                        .then(resultPromise => {
-                            res.json('success')
+                    }else{
+                        data_response.push({
+                            "form" : result,
+                            "field" : result2
                         })
-                        .catch((error) => {
-                            res.json('failed')
-                        });
-                        
+                        resp.ok(false, "In this form the fields are found !.", data_response   , res.status(400));
                     }
-                    data_response.push({
-                        "info" : "In this form the fields are found !",
-                        "form" : result,
-                        "field" : result2
-                    })
-                    // res.json(data_response)
-                    return res.json(data_response)
 
                 }).catch(err=>res.json(err))
             })
