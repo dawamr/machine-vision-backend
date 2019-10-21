@@ -75,7 +75,7 @@ module.exports = {
         .then(data => res.status(200).send(data))
         .catch(error => res.status(400).send(error));
     },
-
+    //ubah
     create(req,res){
         // console.log(req.body.length)
         let data = req.body.form_field
@@ -92,7 +92,7 @@ module.exports = {
         .then(result => {
             for(let index =0; index < result.length; index++){
                 data_field_response.push(FormResponseField.create({
-                    form_field_id : data[index].field_id,
+                    form_field_id : data[index].id,
                     form_response_id: result[index].id
                 }))
             }
