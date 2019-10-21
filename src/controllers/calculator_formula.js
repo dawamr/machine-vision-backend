@@ -17,7 +17,7 @@ const db = model.sequelize;
 
 module.exports = {
 
-    machineListTest(req,res){
+    machineList(req,res){
         let new_result = [];
         let orderBy = 'createdAt';
         let sortBy = 'desc';
@@ -45,8 +45,21 @@ module.exports = {
             include:[p,m]
         })
         .then(result => {
-            result.map(data =>{
-                console.log(data.machine.dataValues)
+             result.map(data =>{
+                var status = 'not-active'
+                var message= 'This code is not set'
+                let f = formula.findAll({
+                    where: {
+                        level: 'machine',
+                        level_reference_id: data.machine.dataValues.id_machine,
+                        is_active: true
+                    }
+                })
+                if (f.length >0){
+                    var status = 'active'
+                    var message= 'This code is set'
+                }
+
                 new_result.push({
                     "machine_id" : data.machine.dataValues.id_machine,
                     "machine_name" : data.machine.dataValues.machine_name,
@@ -60,73 +73,17 @@ module.exports = {
                                 "sector_name" :data.process.line.dataValues.sector.dataValues.sector_name,
                             }
                         },
-                    "status": "not-active",
-                    "messege" : "The code is not set"
+                    "status": status,
+                    "messege" : message
                 })
+                
             })
-            // let execut =(Date.now() - before)
             resp.ok(true, `Get all data calculator machinelist.`, new_result, res);
+            // let execut =(Date.now() - before)
         })
         .catch((error) => {
           resp.ok(false, `Failed get all data calculator machine list.`, null, res.status(400));
           console.log(error);
-        });
-    },
-    machineList(req, res){
-        let orderBy = 'created_at';
-        let sortBy = 'desc';
-        let page = 1;
-        let perPage = 10;
-        let options = {};
-        let lineOptions = {};
-        let required = false;
-    
-        if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
-            orderBy = req.query.order_by;
-        }
-        if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
-            sortBy = req.query.sort_by;
-        }
-        if ((req.query.page != undefined) && (req.query.page.length > 0)) {
-            page = req.query.page;
-        }
-        if ((req.query.per_page != undefined) && (req.query.per_page.length > 0)) {
-            perPage = req.query.per_page;
-        }
-        if ((req.query.search != undefined) && (req.query.search.length > 0)){
-            options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
-        }
-        if ((req.query.line_id != undefined) && (req.query.line_id.length > 0)){
-            lineOptions.id = sequelize.where(sequelize.col('line_id'), '=', req.query.line_id );
-            required = true;
-        }
-        
-        let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
-    
-        return machine
-            .findAndCountAll({
-            where: options,
-            include: [{
-                model: process,
-                where: lineOptions,
-                required: required,
-                attributes: [],
-            }],
-            order: [
-                [orderBy, sortBy]
-            ],
-            limit:  perPageResult,
-            offset: offsetResult,
-            })
-            .then(machineResult => {
-            let totalPage = Math.ceil(machineResult.count / perPage);
-            let data = resp.paging(machineResult.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, machineResult.count);
-    
-            resp.ok(true, "Get list data machine.", data, res);
-            })
-        .catch((error) => {
-            resp.ok(false, "Failed get list data machine.", null, res.status(400));
-            console.log(error);
         });
     },
     sectorList(req,res){
@@ -164,16 +121,25 @@ module.exports = {
             offset: offsetResult,
         })
         .then(sectorResult => {
-            let totalPage = Math.ceil(sectorResult.count / perPage);
-            let data = resp.paging(sectorResult.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, sectorResult.count);
-
-            resp.ok(true, "Get list data sector.", data, res);
+            var new_result = []
+            sectorResult.rows.map(data =>{
+                new_result.push({
+                    "id": data.if,
+                    "name": data.name,
+                    "created_at":data.created_at,
+                    "updated_at":data.updated_at,
+                    "status": 'not-active',
+                    "messege" :'This code is not set',
+                })
+            })
+            resp.ok(true, "Get list data sector.", sectorResult, res);
         })
         .catch((error) => {
             resp.ok(false, "Failed get list data sector.", null, res.status(400));
             console.log(error);
         });
     },
+
     lineList(req,res){
         let orderBy = 'created_at';
         let sortBy = 'desc';
@@ -215,10 +181,26 @@ module.exports = {
             offset: offsetResult,
         })
         .then(lineResult => {
-            let totalPage = Math.ceil(lineResult.count / perPage);
-            let data = resp.paging(lineResult.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, lineResult.count);
-
-            resp.ok(true, "Get list data line.", data, res);
+            var new_result =[]
+            lineResult.rows.map(data =>{
+                // console.log(data.dataValues.id)
+                new_result.push({
+                    "id": data.dataValues.id,
+                    "name": data.dataValues.name,
+                    "sector_id": data.dataValues.sector_id,
+                    "created_at": data.dataValues.created_at,
+                    "updated_at": data.dataValues.updated_at,
+                    "status": 'not-active',
+                    "messege" :'This code is not set',
+                    "sector": {
+                        "id": data.dataValues.sector.dataValues.id,
+                        "name": data.dataValues.sector.dataValues.name,
+                        "created_at": data.dataValues.sector.dataValues.created_at,
+                        "updated_at": data.dataValues.sector.dataValues.updated_at
+                    }
+                })
+            })
+            resp.ok(true, "Get list data line.", new_result, res);
         })
         .catch((error) => {
             resp.ok(false, "Failed get list data line.", null, res.status(400));
@@ -260,10 +242,18 @@ module.exports = {
             offset: offsetResult,
         })
         .then(plantResult => {
-            let totalPage = Math.ceil(plantResult.count / perPage);
-            let data = resp.paging(plantResult.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, plantResult.count);
-
-            resp.ok(true, "Get list data plant.", data, res);
+            var new_result= []
+            plantResult.rows.map(data => {
+                new_result.push({
+                    "id": data.id,
+                    "factory_name": data.factory_name,
+                    "created_at": data.created_at,
+                    "updated_at": data.updated_at,
+                    "status": 'active',
+                    "messege" :'This code is set',
+                })
+            })
+            resp.ok(true, "Get list data plant.", new_result, res);
         })
         .catch((error) => {
             resp.ok(false, "Failed get list data plant.", null, res.status(400));
