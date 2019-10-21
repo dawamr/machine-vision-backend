@@ -107,7 +107,7 @@ module.exports = {
                                 }
                             }
                             console.log(data3)
-                            resp.ok(true, "Success create form field.", data3, res.status(400));
+                            resp.ok(true, "Success create form field.", data3, res.status(200));
                         } catch (error) {
                             resp.ok(false, "Failed create form field.", error, res.status(400));
                             console.log(error)
