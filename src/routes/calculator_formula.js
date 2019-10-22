@@ -23,6 +23,8 @@ calculator.get('/plant/list',calFormulaController.plantList)
 calculator.get('/:level/:id/formula', calScript.FormulaList)
 calculator.get('/:level/:id/formula/:id_formula', calScript.FormulaDetail)
 calculator.post('/:level/:id/formula',calScript.NewFormula)
+calculator.post('/:level/:id/formula/:id_formula/active',calScript.formulaActive)
+calculator.post('/:level/:id/formula/:id_formula/sleep',calScript.formulaSleep)
 calculator.put('/:level/:id/formula/:id_formula',calScript.UpdateFormula)
 calculator.delete('/:level/:id/formula/:id_formula',calScript.DeleteFormula)
 

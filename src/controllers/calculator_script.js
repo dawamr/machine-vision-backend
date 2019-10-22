@@ -183,6 +183,49 @@ module.exports = {
             resp.ok(false, `Cannot Delete Calculator Formula  ${req.params.level}`, null, res.status(400));
             console.log(error);
         }
-    }
+    },
+
+    async formulaActive(req, res){
+        try {
+            await formula.update({
+                is_active: false
+            },{
+                where:{
+                    level: req.params.level,
+                    level_reference_id: req.params.id,
+                    is_active: [true,null]
+                }
+            })
+            await formula.update({
+                is_active: true
+            },{
+                where: {
+                    id: req.params.id_formula
+                }
+            })
+
+            resp.ok(true, `Success Actived Calculator Formula  ${req.params.level}`, null, res);
+            
+        } catch (error) {
+            resp.ok(true, `Failed Active Calculator Formula  ${req.params.level}`, null, res);
+        }
+    },
+
+    async formulaSleep(req, res){
+        try {
+            await formula.update({
+                is_active: false
+            },{
+                where: {
+                    id: req.params.id_formula
+                }
+            })
+
+            resp.ok(true, `Success Non Actived Calculator Formula  ${req.params.level}`, null, res);
+            
+        } catch (error) {
+            resp.ok(true, `Failed Non Active Calculator Formula  ${req.params.level}`, null, res);
+        }
+    },
     
 }
