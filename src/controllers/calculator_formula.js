@@ -18,23 +18,56 @@ const db = model.sequelize;
 module.exports = {
 
     machineList(req,res){
+        let orderBy = 'created_at';
+        let sortBy = 'desc';
+        let page = 1;
+        let perPage = 10;
+        // let options = {};
         var new_result = [];
         var new_result1 = [];
-        let orderBy = 'createdAt';
-        let sortBy = 'desc';
         let i =0
-        // let options = {};
+        let line_id = {}
+        let sector_id = {}
+
+        if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
+        orderBy = req.query.order_by;
+        }
+        if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
+        sortBy = req.query.sort_by;
+        }
+        if ((req.query.page != undefined) && (req.query.page.length > 0)) {
+        page = req.query.page;
+        }
+        if ((req.query.per_page != undefined) && (req.query.per_page.length > 0)) {
+        perPage = req.query.per_page;
+        }
+        if ((req.query.search != undefined) && (req.query.search.length > 0)){
+        options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('machines.name')), 'LIKE', '%' + req.query.search + '%');
+        }
+        if ((req.query.line_id != undefined) && (req.query.line_id.length > 0)) {
+            line_id = {
+                line_id: req.query.line_id
+            }
+        }
+        if ((req.query.sector_id != undefined) && (req.query.sector_id.length > 0)) {
+            sector_id = {
+                sector_id: req.query.sector_id
+            }
+        }
+        
         let s = {
             model: sector,
             attributes: [['id','id_sector'],['name','sector_name']],
         }
         let l = {
             model: line,
+            where: sector_id,
             attributes: [['id','id_line'],['name','line_name'],['sector_id','line_sector_id']],
             include:[s]
         }
         let p = {
             model: process,
+            where: line_id,
             attributes: [['id','id_process'],['name','name_process'],['line_id','process_line_id']],
             include:[l]
         }
@@ -70,6 +103,7 @@ module.exports = {
                         status = 'active'
                         message= 'This code is set'
                     }
+                    
                     new_result1.push({
                         "machine_id" : y.machine.dataValues.id_machine,
                         "machine_name" : y.machine.dataValues.machine_name,
@@ -124,7 +158,7 @@ module.exports = {
         perPage = req.query.per_page;
         }
         if ((req.query.search != undefined) && (req.query.search.length > 0)){
-        options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + req.query.search + '%');
+        options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('machines.name')), 'LIKE', '%' + req.query.search + '%');
         }
 
         let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
