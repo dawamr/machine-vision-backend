@@ -93,6 +93,12 @@ module.exports = {
         if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
             sortBy = req.query.sort_by;
         }
+        if(req.query.page != undefined && (req.query.page.length > 0)){
+            page = req.query.page
+        }
+        if(req.query.per_page != undefined && (req.query.per_page.length > 0)){
+            perPage = req.query.per_page
+        }
         if ((req.query.category_id != undefined) && (req.query.category_id.length > 0)){
             options.parameter_category_id = sequelize.where(sequelize.col('parameter_category_id'), '=', req.query.category_id );
             required = true;
