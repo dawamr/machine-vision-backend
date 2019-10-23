@@ -133,7 +133,10 @@ module.exports = {
         ],
         limit: perPage,
         offset :skip,
-        where: {types: type}
+        where: {
+            is_template: true,
+            types: type
+        }
         })
         .then(data => res.status(200).send(data))
         .catch(error => res.status(400).send(error));
