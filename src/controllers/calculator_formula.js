@@ -18,9 +18,11 @@ const db = model.sequelize;
 module.exports = {
 
     machineList(req,res){
-        let new_result = [];
+        var new_result = [];
+        var new_result1 = [];
         let orderBy = 'createdAt';
         let sortBy = 'desc';
+        let i =0
         // let options = {};
         let s = {
             model: sector,
@@ -45,53 +47,69 @@ module.exports = {
             include:[p,m]
         })
         .then(result => {
-             result.map(data =>{
-                var status = 'not-active'
-                var message= 'This code is not set'
-                let f = formula.findAll({
+            result.map(data =>{
+                new_result[i] = formula.findAll({
                     where: {
                         level: 'machine',
                         level_reference_id: data.machine.dataValues.id_machine,
-                        is_active: true
-                    }
+                        is_active : true
+                    },
+                    attributes:['is_active']
                 })
-                if (f.length >0){
-                    var status = 'active'
-                    var message= 'This code is set'
-                }
+                i+= 1 
 
-                new_result.push({
-                    "machine_id" : data.machine.dataValues.id_machine,
-                    "machine_name" : data.machine.dataValues.machine_name,
-                    "createdAt":data.machine.dataValues.created_at,
-                    "updatedAt":data.machine.dataValues.updated_at,
-                        "line":{
-                            "line_id" : data.process.line.dataValues.id_line,
-                            "line_name" : data.process.line.dataValues.line_name,
-                            "sector" :{
-                                "sector_id" :data.process.line.dataValues.sector.dataValues.id_sector,
-                                "sector_name" :data.process.line.dataValues.sector.dataValues.sector_name,
-                            }
-                        },
-                    "status": status,
-                    "messege" : message
-                })
-                
             })
-            resp.ok(true, `Get all data calculator machinelist.`, new_result, res);
-            // let execut =(Date.now() - before)
+            Promise.all(new_result)
+            .then(data =>{
+                let o = 0
+                result.map(y=>{
+                    var status = 'not-ctive'
+                    var message= 'This code is set'
+                    
+                    if (data[o].length >0){
+                        status = 'active'
+                        message= 'This code is set'
+                    }
+                    new_result1.push({
+                        "machine_id" : y.machine.dataValues.id_machine,
+                        "machine_name" : y.machine.dataValues.machine_name,
+                        "createdAt":y.machine.dataValues.created_at,
+                        "updatedAt":y.machine.dataValues.updated_at,
+                            "line":{
+                                "line_id" : y.process.line.dataValues.id_line,
+                                "line_name" : y.process.line.dataValues.line_name,
+                                "sector" :{
+                                    "sector_id" :y.process.line.dataValues.sector.dataValues.id_sector,
+                                    "sector_name" :y.process.line.dataValues.sector.dataValues.sector_name,
+                                }
+                            },
+                        
+                        "status": status,
+                        "messege" : message
+                    })
+                o+=1
+                })
+
+                resp.ok(true, `Get all data calculator machine list.`, new_result1, res);
+            })
+            // for (let y = 0; y < new_result.length; y++) {
+            // }
         })
         .catch((error) => {
-          resp.ok(false, `Failed get all data calculator machine list.`, null, res.status(400));
-          console.log(error);
+            resp.ok(false, `Failed get all data calculator machine list.`, null, res.status(400));
+            console.log(error);
         });
     },
+
     sectorList(req,res){
         let orderBy = 'created_at';
         let sortBy = 'desc';
         let page = 1;
         let perPage = 10;
         let options = {};
+        var new_result = [];
+        var new_result1 = [];
+        let i =0
 
         if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
         orderBy = req.query.order_by;
@@ -120,19 +138,48 @@ module.exports = {
             limit:  perPageResult,
             offset: offsetResult,
         })
-        .then(sectorResult => {
-            var new_result = []
-            sectorResult.rows.map(data =>{
-                new_result.push({
-                    "id": data.if,
-                    "name": data.name,
-                    "created_at":data.created_at,
-                    "updated_at":data.updated_at,
-                    "status": 'not-active',
-                    "messege" :'This code is not set',
+        .then(result => {
+            // res.json(result)
+            // console.log(result.rows.length)
+            result.rows.map(data =>{
+                new_result[i] = formula.findOne({
+                    where: {
+                        level: 'sector',
+                        is_active : true,
+                        level_reference_id: data.id
+                    },
+                    attributes:['is_active']
                 })
+                i+= 1 
+            }) 
+            
+
+            Promise.all(new_result)
+            .then(data =>{
+                let o = 0
+                result.rows.map(y =>{
+                    var status = 'not-ctive'
+                    var message= 'This code is not set'
+
+                    if (data[o] == null ){
+                        status = 'not-active'
+                        message= 'This code is not set'
+                    }else if (data[0].length > 0){
+                     status = 'active'
+                        message= 'This code is set'
+                    }
+                    new_result1.push({
+                        "id": y.id,
+                        "name": y.name,
+                        "created_at":y.created_at,
+                        "updated_at":y.updated_at,
+                        "status": status,
+                        "messege" : message,
+                    })
+                    o+=1
+                })
+                resp.ok(true, "Get list data sector.", new_result1, res);
             })
-            resp.ok(true, "Get list data sector.", sectorResult, res);
         })
         .catch((error) => {
             resp.ok(false, "Failed get list data sector.", null, res.status(400));
@@ -146,6 +193,9 @@ module.exports = {
         let page = 1;
         let perPage = 10;
         let options = {};
+        var new_result = [];
+        var new_result1 = [];
+        let i =0
 
         if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
         orderBy = req.query.order_by;
@@ -180,27 +230,56 @@ module.exports = {
             limit:  perPageResult,
             offset: offsetResult,
         })
-        .then(lineResult => {
-            var new_result =[]
-            lineResult.rows.map(data =>{
-                // console.log(data.dataValues.id)
-                new_result.push({
-                    "id": data.dataValues.id,
-                    "name": data.dataValues.name,
-                    "sector_id": data.dataValues.sector_id,
-                    "created_at": data.dataValues.created_at,
-                    "updated_at": data.dataValues.updated_at,
-                    "status": 'not-active',
-                    "messege" :'This code is not set',
-                    "sector": {
-                        "id": data.dataValues.sector.dataValues.id,
-                        "name": data.dataValues.sector.dataValues.name,
-                        "created_at": data.dataValues.sector.dataValues.created_at,
-                        "updated_at": data.dataValues.sector.dataValues.updated_at
-                    }
-                })
+        .then(result => {
+            // return res.json(result)
+            result.rows.map(data =>{
+                // return res.json(data)
+                new_result.push(formula.findAll({
+                    where: {
+                        level: 'line',
+                        level_reference_id: data.id,
+                        is_active : true
+                    },
+                    attributes:['is_active']
+                }))
+                // i+= 1 
             })
-            resp.ok(true, "Get list data line.", new_result, res);
+            // return res.json(new_result.length)
+            Promise.all(new_result)
+            .then(data =>{
+                // return res.json(data)
+                let o = 0
+                result.rows.map(y =>{
+                    var status = 'not-ctive'
+                    var message= 'This code is not set'
+
+                    if (data[o] == null ){
+                        status = 'not-active'
+                        message= 'This code is not set'
+                    }else if (data[0].length > 0){
+                         status = 'active'
+                        message= 'This code is set'
+                    }
+                    new_result1.push({
+                        "id": data.id,
+                        "name": data.name,
+                        "sector_id": data.sector_id,
+                        "created_at": data.created_at,
+                        "updated_at": data.updated_at,
+                        "status": status,
+                        "messege" : message,
+                        "sector": {
+                            "id": data.sector.dataValues.id,
+                            "name": data.sector.dataValues.name,
+                            "created_at": data.sector.dataValues.created_at,
+                            "updated_at": data.sector.dataValues.updated_at
+                        }
+                    })
+                })
+                o+=1
+            })
+            
+            resp.ok(true, "Get list data line.", new_result1, res);
         })
         .catch((error) => {
             resp.ok(false, "Failed get list data line.", null, res.status(400));
