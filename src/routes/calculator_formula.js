@@ -7,10 +7,10 @@ const calculator = express.Router();
 
 
 //calculator Filter
-// calculator.get('/machine', calFormulaController.machineList)
-// calculator.get('/sector',calFormulaController.sectorList)
-// calculator.get('/line',calFormulaController.lineList)
-// calculator.get('/plant',calFormulaController.plantList)
+calculator.get('/machine', calFormulaController.machineList)
+calculator.get('/sector',calFormulaController.sectorList)
+calculator.get('/line',calFormulaController.lineList)
+calculator.get('/plant',calFormulaController.plantList)
 
 //calculator List
 calculator.get('/machine/list',calFormulaController.machineList)
