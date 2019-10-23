@@ -195,7 +195,6 @@ module.exports = {
         let options = {};
         var new_result = [];
         var new_result1 = [];
-        let i =0
 
         if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
         orderBy = req.query.order_by;
@@ -231,9 +230,7 @@ module.exports = {
             offset: offsetResult,
         })
         .then(result => {
-            // return res.json(result)
             result.rows.map(data =>{
-                // return res.json(data)
                 new_result.push(formula.findAll({
                     where: {
                         level: 'line',
@@ -242,44 +239,44 @@ module.exports = {
                     },
                     attributes:['is_active']
                 }))
-                // i+= 1 
             })
-            // return res.json(new_result.length)
             Promise.all(new_result)
             .then(data =>{
-                // return res.json(data)
+                // return console.log(data[1].length)
                 let o = 0
                 result.rows.map(y =>{
                     var status = 'not-ctive'
                     var message= 'This code is not set'
 
-                    if (data[o] == null ){
+                    if (data[o].length == 0 ){
                         status = 'not-active'
                         message= 'This code is not set'
                     }else if (data[0].length > 0){
-                         status = 'active'
+                        status = 'active'
                         message= 'This code is set'
                     }
                     new_result1.push({
-                        "id": data.id,
-                        "name": data.name,
-                        "sector_id": data.sector_id,
-                        "created_at": data.created_at,
-                        "updated_at": data.updated_at,
+                        "id": y.id,
+                        "name": y.name,
+                        "sector_id": y.sector_id,
+                        "created_at": y.created_at,
+                        "updated_at": y.updated_at,
                         "status": status,
                         "messege" : message,
                         "sector": {
-                            "id": data.sector.dataValues.id,
-                            "name": data.sector.dataValues.name,
-                            "created_at": data.sector.dataValues.created_at,
-                            "updated_at": data.sector.dataValues.updated_at
+                            "id": y.sector.dataValues.id,
+                            "name": y.sector.dataValues.name,
+                            "created_at": y.sector.dataValues.created_at,
+                            "updated_at": y.sector.dataValues.updated_at
                         }
                     })
+                    o+=1
                 })
-                o+=1
+                // return res.json(new_result1)
+                resp.ok(true, "Get list data line.", new_result1, res);
             })
             
-            resp.ok(true, "Get list data line.", new_result1, res);
+            
         })
         .catch((error) => {
             resp.ok(false, "Failed get list data line.", null, res.status(400));
@@ -292,6 +289,8 @@ module.exports = {
         let page = 1;
         let perPage = 10;
         let options = {};
+        var new_result = [];
+        var new_result1 = [];
 
         if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
         orderBy = req.query.order_by;
@@ -320,19 +319,44 @@ module.exports = {
             limit:  perPageResult,
             offset: offsetResult,
         })
-        .then(plantResult => {
-            var new_result= []
-            plantResult.rows.map(data => {
-                new_result.push({
-                    "id": data.id,
-                    "factory_name": data.factory_name,
-                    "created_at": data.created_at,
-                    "updated_at": data.updated_at,
-                    "status": 'active',
-                    "messege" :'This code is set',
-                })
+        .then(result => {
+            result.rows.map(data =>{
+                new_result.push(formula.findAll({
+                    where: {
+                        level: 'plant',
+                        level_reference_id: data.id,
+                        is_active : true
+                    },
+                    attributes:['is_active']
+                }))
             })
-            resp.ok(true, "Get list data plant.", new_result, res);
+            Promise.all(new_result)
+            .then(data =>{
+                // return res.json(data)
+                let o = 0
+                result.rows.map(y =>{
+                    var status = 'not-ctive'
+                    var message= 'This code is not set'
+
+                    if (data[o].length == 0 ){
+                        status = 'not-active'
+                        message= 'This code is not set'
+                    }else if (data[0].length > 0){
+                        status = 'active'
+                        message= 'This code is set'
+                    }
+                    new_result1.push({
+                        "id": y.id,
+                        "factory_name": y.factory_name,
+                        "created_at": y.created_at,
+                        "updated_at": y.updated_at,
+                        "status": status,
+                        "messege" :message,
+                    })
+                    o+=1
+                })
+                resp.ok(true, "Get list data plant.", new_result1, res);
+            })
         })
         .catch((error) => {
             resp.ok(false, "Failed get list data plant.", null, res.status(400));
