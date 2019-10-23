@@ -17,6 +17,7 @@ module.exports = {
         let page = 1;
         let perPage = 10;
         let type = ['non-widget','widget']
+        let options = {};
         if(req.query.order_by != undefined && req.query.order_by.length >0 ){
             orderBy = req.query.order_by
         }
@@ -32,30 +33,27 @@ module.exports = {
         if(req.query.type != undefined && req.query.type .length >0){
             type = req.query.type
         }
+        if ((req.query.sub_category != undefined) && (req.query.sub_category.length > 0)) {
+            options.sub_category = Sequelize.where(Sequelize.col('sub_category.id'), '=', req.query.sub_category);
+        }
+        if ((req.query.category != undefined) && (req.query.category.length > 0)) {
+            options.category = Sequelize.where(Sequelize.col('sub_category.form_category_id'), '=', req.query.category);
+        }
         let skip = (page - 1) * perPage
 
         ////////// filter by category
         var cat = {
             model: FormCategory,
             as: 'category',
-            attributes: ['name'],
-        }
-        if (req.query.filter_cat != undefined) {
-            cat.where = {
-                id: req.query.filter_cat
-            }
+            attributes: ['id','name'],
         }
         /////////// filter by sub category
         var subCat = {
             model: FormSubCategory,
             as: 'sub_category',
-            attributes: ['name'],
+            where: options,
+            attributes: ['id','name'],
             include: [cat]
-        }
-        if (req.query.filter_sub_cat != undefined) {
-            subCat.where = {
-                'id': req.query.filter_sub_cat
-            }
         }
         
         
@@ -80,6 +78,7 @@ module.exports = {
         let sortBy = 'Asc'
         let page = 1;
         let perPage = 10;
+        let options = {};
         let type = ['non-widget','widget']
         if(req.query.order_by != undefined){
             orderBy = req.query.order_by
@@ -87,39 +86,42 @@ module.exports = {
         if(req.query.sort_by != undefined){
             sortBy = req.query.sort_by
         }
-        if(req.query.page != undefined){
+        if(req.query.page != undefined && (req.query.page.length > 0)){
             page = req.query.page
         }
-        if(req.query.per_page != undefined){
+        if(req.query.per_page != undefined && (req.query.per_page.length > 0)){
             perPage = req.query.per_page
         }
         if(req.query.type != undefined){
             type = req.query.type
         }
+        // if ((req.query.type != undefined) && (req.query.type.length > 0)) {
+        //     options.type = Sequelize.where(Sequelize.col('form_forms.types'), '=', req.query.type);
+        // }
+        if ((req.query.sub_category != undefined) && (req.query.sub_category.length > 0)) {
+            options.sub_category = Sequelize.where(Sequelize.col('sub_category.id'), '=', req.query.sub_category);
+        }
+        if ((req.query.category != undefined) && (req.query.category.length > 0)) {
+            options.category = Sequelize.where(Sequelize.col('sub_category.form_category_id'), '=', req.query.category);
+        }
+
         let skip = (page - 1) * perPage
 
         ////////// filter by category
         var cat = {
             model: FormCategory,
             as: 'category',
-            attributes: ['name'],
+            attributes: ['id','name'],
         }
-        if (req.query.filter_cat != undefined) {
-            cat.where = {
-                id: req.query.filter_cat
-            }
-        }
+        
         /////////// filter by sub category
         var subCat = {
             model: FormSubCategory,
             as: 'sub_category',
-            attributes: ['name'],
-            include: [cat]
-        }
-        if (req.query.filter_sub_cat != undefined) {
-            subCat.where = {
-                'id': req.query.filter_sub_cat
-            }
+            where: options,
+            attributes: ['id','name'],
+            include: [cat],
+            
         }
         
         return  FormForm
@@ -131,7 +133,7 @@ module.exports = {
         ],
         limit: perPage,
         offset :skip,
-        where: {'types': type, 'is_template': 'true'}
+        where: {types: type}
         })
         .then(data => res.status(200).send(data))
         .catch(error => res.status(400).send(error));
