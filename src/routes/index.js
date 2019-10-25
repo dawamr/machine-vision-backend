@@ -96,6 +96,9 @@ module.exports = (express) => {
   app.get('/api/action/form/', formAction.list)
   app.put('/api/form/action/:id', formAction.update)
   app.delete('/api/form/action/:id', formAction.delete)
+
+  // form response update
+  app.get('/api/form/:id/response', formAction.showResponse)
   
   app.use('/api/calculator', calFormula);
   app.use('/api/user', user);
