@@ -10,6 +10,14 @@ exports.ok = function(success, message, data, res) {
   res.end();
 };
 
+exports.ok2 = function(data, res) {
+  let response = {
+    'data': data,
+  };
+  res.json(response);
+  res.end();
+};
+
 exports.paging = function(rows, page, perPage, totalPage, totalData, options) {
   let responsePaging = {
     ...options,
