@@ -26,19 +26,25 @@ module.exports = {
         if(req.query.per_page != undefined){
             perPage = req.query.per_page
         }
-        let skip = (page - 1) * perPage
+        let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
+
         return FormCategory
-        .findAll({
+        .findAndCountAll({
         order: [
             [orderBy, sortBy]
         ],
-        limit: perPage,
-        offset :skip
+        limit: perPageResult,
+        offset :offsetResult
         })
-        .then(data => {
-            res.json(data)
+        .then(result => {
+            let totalPage = Math.ceil(result.count / perPage);
+            let data = resp.paging(result.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
+            resp.ok2(data, res)
         })
-        .catch(error => res.status(400).send(error));
+        .catch((error) => {
+            resp.ok(false, "Failed get list data form category.", null, res.status(400));
+            console.log(error);
+        });
     },
 
     list(req, res) {

@@ -27,18 +27,25 @@ module.exports = {
       if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
           sortBy = req.query.sort_by;
       }
-      let skip = (page - 1) * perPage
+      let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
   
       return parameter_category
-      .findAll({
+      .findA({
       order: [
           [orderBy, sortBy]
       ],
-      limit: perPage,
-      offset :skip
+      limit: perPageResult,
+      offset :offsetResult
       })
-      .then(parameter_categories => res.status(200).send(parameter_categories))
-      .catch(error => res.status(400).send(error));
+      .then(result => {
+        let totalPage = Math.ceil(result.count / perPage);
+        let data = resp.paging(result.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
+        resp.ok2(data, res);
+    })
+    .catch((error) => {
+        resp.ok(false, `Failed get list data parameter ${req.query.level}.`, null, res.status(400));
+        console.log(error);
+    });
   },
   update(req, res) {
       return parameter_category
