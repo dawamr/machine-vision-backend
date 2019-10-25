@@ -30,7 +30,7 @@ module.exports = {
       let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
   
       return parameter_category
-      .findA({
+      .findAndCountAll({
       order: [
           [orderBy, sortBy]
       ],
