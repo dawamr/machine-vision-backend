@@ -115,21 +115,28 @@ module.exports = {
             options.level = sequelize.where(sequelize.col('level'), '=', req.query.level );
             required = true;
         }
+        let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
         // console.log(req.query.category_id)
-        let skip = (page - 1) * perPage
+        // let skip = (page - 1) * perPage
         if(req.query.category_id != undefined){
-            return parameters_index.findAll({
+            return parameters_index.findAndCountAll({
                 attributes:['id','name','parameter_category_id','group','data_class','level','configuration','type','createdAt','updatedAt'],
                 order: [
                     [orderBy, sortBy]
                 ],
                 where : options,
-                limit: perPage,
-                offset :skip
-            }).then(result_parameter => {
-                res.json(result_parameter)
+                limit: perPageResult,
+                offset :offsetResult
             })
-            .catch(error => res.status(400).send(error));
+            .then(result => {
+                let totalPage = Math.ceil(result.count / perPage);
+                let data = resp.paging(result.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
+                resp.ok2(data, res);
+            })
+            .catch((error) => {
+                resp.ok(false, `Failed get list data parameter ${req.query.level}.`, null, res.status(400));
+                console.log(error);
+            });
         }
         return parameters_index.findAll({
             attributes:['id','name','parameter_category_id','group','data_class','level','configuration','type','createdAt','updatedAt'],

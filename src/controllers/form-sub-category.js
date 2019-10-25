@@ -1,53 +1,59 @@
 const FormSubCategory = require('./../models/').form_sub_category;
 const FormCategory = require('./../models/').form_category;
 const Sequelize = require('sequelize');
+const resp = require('../views/response');
+const pagination = require('../utils/pagination');
 const Op = Sequelize.Op
 module.exports = {
 
     list(req, res) {
         let orderBy = 'createdAt'
         let sortBy = 'Asc'
-        let limits = 10
-        let offset  = 0
+        let page = 1;
+        let perPage = 10;
+        let options = {};
         // let category_id
-        if(req.query.order_by != undefined){ 
+        if(req.query.order_by != undefined && req.query.order_by.length >0 ){
             orderBy = req.query.order_by
         }
-        if(req.query.sort_by != undefined){
+        if(req.query.sort_by != undefined && req.query.sort_by .length >0){
             sortBy = req.query.sort_by
         }
-        if(req.query.limit != undefined){
-            limits = req.query.limit
+        if(req.query.page != undefined && req.query.page .length >0){
+            page = req.query.page
         }
-        if(req.query.offset != undefined){
-            offset = req.query.offset
+        if(req.query.per_page != undefined && req.query.per_page .length >0){
+            perPage = req.query.per_page
         }
-        if(req.query.category_id != undefined){
-            category_id = req.query.category_id
+        if ((req.query.category_id != undefined) && (req.query.category_id.length > 0)) {
+            options.category_id = Sequelize.where(Sequelize.col('category.id'), '=', req.query.category_id);
         }
         var cat = {
             model: FormCategory,
             as: 'category',
+            where: options,
             attributes : ['id','name','createdAt','updatedAt'],
         }
-        if(req.query.filter != undefined){
-            cat.where = {
-                'id': req.query.filter
-            }
-        }
-        
+        let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
         return FormSubCategory
-        .findAll({
+        .findAndCountAll({
         include: [cat],
         attributes : ['id','form_category_id' ,'name','createdAt','updatedAt'],
         order: [
             [orderBy, sortBy]
         ],  
-        limit: limits,
-        offset :offset
+        limit: perPageResult,
+        offset :offsetResult
         })
-        .then(data => res.status(200).send(data))
-        .catch(error => res.status(400).send(error));
+        .then(result => {
+            let totalPage = Math.ceil(result.count / perPage);
+            let data = resp.paging(result.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
+            resp.ok2(data, res)
+        })
+        .catch((error) => {
+            resp.ok(false, "Failed get list data form sub category.", null, res.status(400));
+            console.log(error);
+        });
     },
 
     create(req,res){
