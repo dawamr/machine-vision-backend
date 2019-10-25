@@ -6,6 +6,8 @@ const FormField = require('../models').form_field;
 const FormResponse = require('../models').form_response;
 const FormResponseField = require('../models').form_response_field;
 const resp = require('../views/response');
+const pagination = require('../utils/pagination');
+// const pagination = require('../utils/pagination')//
 // console.log(Object.keys(require('../models')));
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
@@ -39,7 +41,8 @@ module.exports = {
         if ((req.query.category != undefined) && (req.query.category.length > 0)) {
             options.category = Sequelize.where(Sequelize.col('sub_category.form_category_id'), '=', req.query.category);
         }
-        let skip = (page - 1) * perPage
+        
+        let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
 
         ////////// filter by category
         var cat = {
@@ -56,20 +59,26 @@ module.exports = {
             include: [cat]
         }
         
-        
         return  FormForm
-        .findAll({
+        .findAndCountAll({
         include: [subCat],
         attributes : ['id','name','sub_category_id','types','is_template','createdAt','updatedAt'],
         order: [
             [orderBy, sortBy]
         ],
-        limit: perPage,
-        offset :skip,
+        limit: perPageResult,
+        offset :offsetResult,
         where: {types: type}
         })
-        .then(data => res.status(200).send(data))
-        .catch(error => res.status(400).send(error));
+        .then(result => {
+            let totalPage = Math.ceil(result.count / perPage);
+            let data = resp.paging(result.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
+            resp.ok2(data, res)
+        })
+        .catch((error) => {
+            resp.ok(false, "Failed get list data form.", null, res.status(400));
+            console.log(error);
+        });
 
     },
 
@@ -104,8 +113,7 @@ module.exports = {
         if ((req.query.category != undefined) && (req.query.category.length > 0)) {
             options.category = Sequelize.where(Sequelize.col('sub_category.form_category_id'), '=', req.query.category);
         }
-
-        let skip = (page - 1) * perPage
+        let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
 
         ////////// filter by category
         var cat = {
@@ -113,19 +121,16 @@ module.exports = {
             as: 'category',
             attributes: ['id','name'],
         }
-        
         /////////// filter by sub category
         var subCat = {
             model: FormSubCategory,
             as: 'sub_category',
             where: options,
             attributes: ['id','name'],
-            include: [cat],
-            
+            include: [cat],    
         }
-        
         return  FormForm
-        .findAll({
+        .findAndCountAll({
         include: [subCat],
         attributes : ['id','name','sub_category_id','types','is_template','createdAt','updatedAt'],
         order: [
@@ -138,8 +143,15 @@ module.exports = {
             types: type
         }
         })
-        .then(data => res.status(200).send(data))
-        .catch(error => res.status(400).send(error));
+        .then(result => {
+            let totalPage = Math.ceil(result.count / perPage);
+            let data = resp.paging(result.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
+            resp.ok2(true, "Get list data form template.", data, res);
+        })
+        .catch((error) => {
+            resp.ok(false, "Failed get list data form template.", null, res.status(400));
+            console.log(error);
+        });
 
     },
 
