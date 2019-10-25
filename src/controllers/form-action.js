@@ -7,6 +7,8 @@ const FormResponse = require('../models').form_response;
 const FormResponseField = require('../models').form_response_field;
 
 // console.log(Object.keys(require('../models')));
+const resp = require('../views/response');
+const pagination = require('../utils/pagination');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
 module.exports = {
@@ -74,6 +76,72 @@ module.exports = {
         })
         .then(data => res.status(200).send(data))
         .catch(error => res.status(400).send(error));
+    },
+
+    showResponse(req, res){
+        let orderBy = 'updatedAt';
+        let sortBy = 'desc';
+        let page = 1;
+        let perPage = 10;
+        
+        if(req.query.order_by != undefined){
+            orderBy = req.query.order_by
+        }
+        if(req.query.sort_by != undefined){
+            sortBy = req.query.sort_by
+        }
+        if(req.query.page != undefined){
+            page = req.query.page
+        }
+        if(req.query.per_page != undefined){
+            perPage = req.query.per_page
+        }
+        let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
+
+        // var formInclude = FormForm.findByPk(req.params.id)
+
+        /////////// Model Form Field
+        var form_field = {
+            model: FormField,
+            as: 'form_field',
+            where: {
+                form_id: req.params.id
+            },
+            attributes: ['id','form_id','types','configuration','is_required','order'],
+            // include: [form_list]
+        }
+
+        /////////// Model Form Response
+        var form_response = {
+            model: FormResponse,
+            as: 'form_response',
+            where: {
+                form_id: req.params.id
+            },
+            attributes: ['id','form_id','response','user_id','createdAt','updatedAt'],
+            // include: [pegawai, form_list]
+        }
+
+        FormResponseField.findAndCountAll({
+            attributes : [],
+            include: [form_field, form_response],
+            order: [
+                [orderBy, sortBy]
+            ],
+            limit: perPageResult,
+            offset :offsetResult
+        })
+        .then(result => {
+            // formInclude.then(formResult=>{
+                let totalPage = Math.ceil(result.count / perPage);
+                let data = resp.paging(result.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
+                resp.ok2(data, res)
+            // })
+        })
+        .catch((error) => {
+            resp.ok(false, "Failed get list response.", null, res.status(400));
+            console.log(error);
+        });
     },
     //ubah
     create(req,res){
