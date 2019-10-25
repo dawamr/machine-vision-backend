@@ -27,6 +27,12 @@ module.exports = {
       if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
           sortBy = req.query.sort_by;
       }
+      if(req.query.page != undefined && req.query.page .length >0){
+          page = req.query.page
+      }
+      if(req.query.per_page != undefined && req.query.per_page .length >0){
+          perPage = req.query.per_page
+      }
       let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
   
       return parameter_category
