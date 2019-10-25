@@ -136,8 +136,8 @@ module.exports = {
         order: [
             [orderBy, sortBy]
         ],
-        limit: perPage,
-        offset :skip,
+        limit: perPageResult,
+        offset :offsetResult,
         where: {
             is_template: true,
             types: type
@@ -146,7 +146,7 @@ module.exports = {
         .then(result => {
             let totalPage = Math.ceil(result.count / perPage);
             let data = resp.paging(result.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
-            resp.ok2(true, "Get list data form template.", data, res);
+            resp.ok2(data, res);
         })
         .catch((error) => {
             resp.ok(false, "Failed get list data form template.", null, res.status(400));
