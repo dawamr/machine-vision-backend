@@ -149,13 +149,15 @@ module.exports = {
         let data = req.body.form_field
         let data_response = []
         let data_field_response =[]
+        // return res.json(data.length)
         for (let index = 0; index < data.length; index++) {
             data_response.push(FormResponse.create({
-                form_id: data[index].form_id,
+                form_id: req.body.form_id,
                 user_id: req.body.user_id,
-                response: data[index].configuration
+                response: data[index].value
             }))
         }
+        
         Promise.all(data_response)
         .then(result => {
             for(let index =0; index < result.length; index++){
