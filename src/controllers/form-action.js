@@ -83,18 +83,25 @@ module.exports = {
         let sortBy = 'desc';
         let page = 1;
         let perPage = 10;
+        let options = {}
         
-        if(req.query.order_by != undefined){
+        if(req.query.order_by != undefined && req.query.order_by.length > 0){
             orderBy = req.query.order_by
         }
-        if(req.query.sort_by != undefined){
+        if(req.query.sort_by != undefined && req.query.sort_by.length >0){
             sortBy = req.query.sort_by
         }
-        if(req.query.page != undefined){
+        if(req.query.page != undefined && req.query.page.length >0){
             page = req.query.page
         }
-        if(req.query.per_page != undefined){
+        if(req.query.per_page != undefined && req.query.per_page.length >0){
             perPage = req.query.per_page
+        }
+        if ((req.query.field_id != undefined) && (req.query.field_id.length > 0)) {
+            options.field_id = Sequelize.where(Sequelize.col('form_field.id'), '=', req.query.field_id);
+        }
+        if ((req.params.id != undefined) && (req.params.id.length > 0)) {
+            options.form_id = Sequelize.where(Sequelize.col('form_field.form_id'), '=', req.params.id);
         }
         let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
 
@@ -104,9 +111,7 @@ module.exports = {
         var form_field = {
             model: FormField,
             as: 'form_field',
-            where: {
-                form_id: req.params.id
-            },
+            where: options,
             attributes: ['id','form_id','types','configuration','is_required','order'],
             // include: [form_list]
         }
