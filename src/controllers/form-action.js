@@ -127,21 +127,45 @@ module.exports = {
             // include: [pegawai, form_list]
         }
 
-        FormResponseField.findAndCountAll({
-            attributes : [],
-            include: [form_field, form_response],
-            order: [
-                [orderBy, sortBy]
-            ],
-            limit: perPageResult,
-            offset :offsetResult
+        FormField.findAndCountAll({
+            where: options,
+            attributes: ['id','form_id','types','configuration','is_required','order'],
+            order:[
+                ['order', 'asc']
+            ]
         })
         .then(result => {
-            // formInclude.then(formResult=>{
-                let totalPage = Math.ceil(result.count / perPage);
-                let data = resp.paging(result.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
-                resp.ok2(data, res)
-            // })
+            // return console.log(result.rows.length)
+            
+            var tampung =[]
+            result.rows.map(map1 =>{
+                tampung.push(FormResponseField.findAll({
+                    attributes: [],
+                    include: form_response,
+                    where: {
+                        form_field_id: map1.id
+                    }
+                }))
+            })
+            Promise.all(tampung)
+            .then(result1=>{
+                // console.log(<...result.rows[index])
+                try {
+                    var hasil = []
+                    index=0
+                    result1.map(result2=>{
+                        // res.json(])
+                        hasil[index] = {
+                            "form_field" : result.rows[index],
+                            "data": result2
+                        }
+                        index+=1
+                    })
+                    res.json(hasil)
+                } catch (error) {
+                    console.log(error)
+                }
+            })
         })
         .catch((error) => {
             resp.ok(false, "Failed get list response.", null, res.status(400));
