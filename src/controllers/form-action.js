@@ -127,27 +127,6 @@ module.exports = {
             // include: [pegawai, form_list]
         }
 
-        // FormResponseField.findAndCountAll({
-        //     attributes : [],
-        //     include: [form_field, form_response],
-        //     order: [
-        //         [orderBy, sortBy]
-        //     ],
-        //     limit: perPageResult,
-        //     offset :offsetResult
-        // })
-        // .then(result => {
-        //     // formInclude.then(formResult=>{
-        //         let totalPage = Math.ceil(result.count / perPage);
-        //         let data = resp.paging(result.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
-        //         resp.ok2(data, res)
-        //     // })
-        // })
-        // .catch((error) => {
-        //     resp.ok(false, "Failed get list response.", null, res.status(400));
-        //     console.log(error);
-        // });
-
         FormField.findAndCountAll({
             where: options,
             attributes: ['id','form_id','types','configuration','is_required','order'],
