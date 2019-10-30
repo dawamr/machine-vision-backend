@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
     parameter_name: DataTypes.STRING,
     value: DataTypes.INTEGER
   }, {
-    paranoid: true
+    paranoid: true,
+    deletedAt: 'deleteAt',
   });
   calculator_runner_result.associate = function(models) {
     // associations can be defined here
