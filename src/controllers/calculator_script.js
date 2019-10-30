@@ -56,7 +56,9 @@ module.exports = {
 
     async NewFormula(req,res){
         const before = Date.now();
-        let formulaID
+        var formulaID
+        var runnerID
+        var runnerData
         let _formula_parameter = []
         let _runner_result = []
 
@@ -72,18 +74,6 @@ module.exports = {
             .then(result =>{
                  formulaID = result.id
             })
-                
-            await req.body.calculator_input.map(data => {
-                _formula_parameter.push(formula_parameter.create({
-                    formula_id: formulaID,
-                    parameter_id: data.parameter_id
-                }))
-                _runner_result.push(runner_result.create({
-                    parameter_name: data.parameter_name,
-                    parameter_id: data.parameter_id,
-                    value: data.value
-                }))
-            })
             let end = Date.now()
             let execute =(end - before)
             let _runner = await runner.create({
@@ -94,7 +84,24 @@ module.exports = {
                 formula_script: req.body.formula_script,
                 formula_xml: req.body.formula_xml,
             })
-            await Promise.all([..._formula_parameter,..._runner_result,_runner])
+            .then(result =>{
+                runnerData = result
+                runnerID = result.id
+           })
+            await req.body.calculator_input.map(data => {
+                _formula_parameter.push(formula_parameter.create({
+                    formula_id: formulaID,
+                    parameter_id: data.parameter_id
+                }))
+                _runner_result.push(runner_result.create({
+                    parameter_name: data.parameter_name,
+                    parameter_id: data.parameter_id,
+                    value: data.value,
+                    runner_id:runnerID
+                }))
+            })
+           
+            await Promise.all([..._formula_parameter,runnerData,..._runner_result])
             .then(result => res.status(201).send(result))
             .catch(error => res.status(400).send(error));
         } catch (error) {
@@ -105,6 +112,8 @@ module.exports = {
     async UpdateFormula(req,res){
         const before = Date.now();
         let formulaID
+        var runnerID
+        var runnerData
         let _formula_parameter = []
         let _runner_result = []
 
@@ -129,18 +138,7 @@ module.exports = {
                     id: req.params.id_formula
                 }
             })
-                
-            await req.body.calculator_input.map(data => {
-                _formula_parameter.push(formula_parameter.create({
-                    formula_id: req.params.id_formula,
-                    parameter_id: data.parameter_id
-                }))
-                _runner_result.push(runner_result.create({
-                    parameter_name: data.parameter_name,
-                    parameter_id: data.parameter_id,
-                    value: data.value
-                }))
-            })
+
             let end = Date.now()
             let execute =(end - before)
             let _runner = await runner.create({
@@ -151,7 +149,24 @@ module.exports = {
                 formula_script: req.body.formula_script,
                 formula_xml: req.body.formula_xml,
             })
-            await Promise.all([..._formula_parameter,..._runner_result,_runner])
+            .then(result =>{
+                runnerData = result
+                runnerID = result.id
+           })  
+            await req.body.calculator_input.map(data => {
+                _formula_parameter.push(formula_parameter.create({
+                    formula_id: req.params.id_formula,
+                    parameter_id: data.parameter_id
+                }))
+                _runner_result.push(runner_result.create({
+                    parameter_name: data.parameter_name,
+                    parameter_id: data.parameter_id,
+                    value: data.value,
+                    runner_id: runnerID
+                }))
+            })
+            
+            await Promise.all([..._formula_parameter,runnerData,..._runner_result])
             .then(result => res.status(201).send(result))
             .catch(error => res.status(400).send(error));
         } catch (error) {
