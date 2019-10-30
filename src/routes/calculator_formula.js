@@ -1,6 +1,7 @@
 const calFormulaController = require('../controllers').cal_formula;
 const calScript = require('../controllers').cal_script;
 const calEditor = require('../controllers').cal_io;
+const calResult = require('../controllers').cal_result;
 const express = require('express')
 const calculator = express.Router();
 
@@ -27,6 +28,8 @@ calculator.post('/:level/:id/formula/:id_formula/active',calScript.formulaActive
 calculator.post('/:level/:id/formula/:id_formula/sleep',calScript.formulaSleep)
 calculator.put('/:level/:id/formula/:id_formula',calScript.UpdateFormula)
 calculator.delete('/:level/:id/formula/:id_formula',calScript.DeleteFormula)
+
+calculator.get('/:level/:id/result',calResult.calculateResult)
 
 calculator.get('/:level/:id/formula/:id_formula/sensor', calEditor.listSensor)
 calculator.post('/:level/:id/formula/:id_formula/sensor', calEditor.addSensor)

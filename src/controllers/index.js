@@ -24,6 +24,7 @@ const data_sensors = require('./data_sensors');
 const cal_formula = require('./calculator_formula');
 const cal_script = require('./calculator_script');
 const cal_io = require('./calculator_io');
+const cal_result = require('./calculator_result');
 
 
 module.exports = {
@@ -53,5 +54,6 @@ module.exports = {
   data_sensors,
   cal_formula,
   cal_script,
-  cal_io
+  cal_io,
+  cal_result
 };
