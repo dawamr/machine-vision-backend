@@ -115,6 +115,10 @@ module.exports = {
             options.level = sequelize.where(sequelize.col('level'), '=', req.query.level );
             required = true;
         }
+        if ((req.query.type != undefined) && (req.query.type.length > 0)){
+            options.type = sequelize.where(sequelize.col('type'), '=', req.query.type );
+            required = true;
+        }
         let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
         // console.log(req.query.category_id)
         // let skip = (page - 1) * perPage
