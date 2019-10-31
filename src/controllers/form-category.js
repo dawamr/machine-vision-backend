@@ -13,18 +13,22 @@ module.exports = {
         let sortBy = 'desc';
         let page = 1;
         let perPage = 10;
+        let options = {}
         
-        if(req.query.order_by != undefined){
+        if(req.query.order_by != undefined && req.query.order_by.length >0){
             orderBy = req.query.order_by
         }
-        if(req.query.sort_by != undefined){
+        if(req.query.sort_by != undefined && req.query.sort_by.length >0){
             sortBy = req.query.sort_by
         }
-        if(req.query.page != undefined){
+        if(req.query.page != undefined && req.query.page.length >0){
             page = req.query.page
         }
-        if(req.query.per_page != undefined){
+        if(req.query.per_page != undefined && req.query.per_page.length >0){
             perPage = req.query.per_page
+        }
+        if ((req.query.search != undefined) && (req.query.search.length > 0)){
+            options.name = Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('form_category.name')), 'LIKE', '%' + req.query.search.toLowerCase() + '%');
         }
         let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
 
@@ -33,6 +37,7 @@ module.exports = {
         order: [
             [orderBy, sortBy]
         ],
+        where: options,
         limit: perPageResult,
         offset :offsetResult
         })
