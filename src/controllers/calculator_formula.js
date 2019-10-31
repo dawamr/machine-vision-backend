@@ -10,8 +10,8 @@ const parameter = require('../models').parameter;
 
 const resp = require('../views/response');
 const pagination = require('../utils/pagination');
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
+const sequelize = require('sequelize');
+const Op = sequelize.Op;
 const model = require('../models');
 const db = model.sequelize;
 
@@ -42,7 +42,7 @@ module.exports = {
         perPage = req.query.per_page;
         }
         if ((req.query.search != undefined) && (req.query.search.length > 0)){
-        options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('machines.name')), 'LIKE', '%' + req.query.search + '%');
+            options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('machines.name')), 'LIKE', '%' + req.query.search + '%');
         }
         if ((req.query.line_id != undefined) && (req.query.line_id.length > 0)) {
             line_id = {
@@ -74,13 +74,21 @@ module.exports = {
         let m = {
             model: machine,
             attributes:[['id','id_machine'],['name','machine_name'],'created_at','updated_at'],
+            order: [
+                [orderBy, sortBy]
+            ],
         }
-        process_machine.findAll({
+
+        let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
+
+        process_machine.findAndCountAll({
             attributes: [],
-            include:[p,m]
+            include:[p,m],
+            limit:  perPageResult,
+            offset: offsetResult,
         })
         .then(result => {
-            result.map(data =>{
+            result.rows.map(data =>{
                 new_result[i] = formula.findAll({
                     where: {
                         level: 'machine',
@@ -95,7 +103,7 @@ module.exports = {
             Promise.all(new_result)
             .then(data =>{
                 let o = 0
-                result.map(y=>{
+                result.rows.map(y=>{
                     var status = 'not-ctive'
                     var message= 'This code is set'
                     
@@ -124,7 +132,9 @@ module.exports = {
                 o+=1
                 })
 
-                resp.ok(true, `Get all data calculator machine list.`, new_result1, res);
+                let totalPage = Math.ceil(result.count / perPage);
+                let dataResult = resp.paging(new_result1, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
+                resp.ok(true, "Get list data machine.", dataResult, res);
             })
             // for (let y = 0; y < new_result.length; y++) {
             // }
@@ -146,19 +156,19 @@ module.exports = {
         let i =0
 
         if ((req.query.order_by != undefined) && (req.query.order_by.length > 0)) {
-        orderBy = req.query.order_by;
+            orderBy = req.query.order_by;
         }
         if ((req.query.sort_by != undefined) && (req.query.sort_by.length > 0)) {
-        sortBy = req.query.sort_by;
+            sortBy = req.query.sort_by;
         }
         if ((req.query.page != undefined) && (req.query.page.length > 0)) {
-        page = req.query.page;
+            page = req.query.page;
         }
         if ((req.query.per_page != undefined) && (req.query.per_page.length > 0)) {
-        perPage = req.query.per_page;
+            perPage = req.query.per_page;
         }
         if ((req.query.search != undefined) && (req.query.search.length > 0)){
-        options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('machines.name')), 'LIKE', '%' + req.query.search + '%');
+            options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('sector.name')), 'LIKE', '%' + req.query.search + '%');
         }
 
         let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
@@ -205,14 +215,16 @@ module.exports = {
                     new_result1.push({
                         "id": y.id,
                         "name": y.name,
-                        "created_at":y.created_at,
-                        "updated_at":y.updated_at,
                         "status": status,
                         "messege" : message,
+                        "created_at":y.created_at,
+                        "updated_at":y.updated_at,
                     })
                     o+=1
                 })
-                resp.ok(true, "Get list data sector.", new_result1, res);
+                let totalPage = Math.ceil(result.count / perPage);
+                let dataResult = resp.paging(new_result1, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
+                resp.ok(true, "Get list data sector.", dataResult, res);
             })
         })
         .catch((error) => {
@@ -307,7 +319,9 @@ module.exports = {
                     o+=1
                 })
                 // return res.json(new_result1)
-                resp.ok(true, "Get list data line.", new_result1, res);
+                let totalPage = Math.ceil(result.count / perPage);
+                let dataResult = resp.paging(new_result1, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
+                resp.ok(true, "Get list data line.", dataResult, res);
             })
             
             
@@ -339,7 +353,7 @@ module.exports = {
         perPage = req.query.per_page;
         }
         if ((req.query.search != undefined) && (req.query.search.length > 0)){
-        options.factory_name = sequelize.where(sequelize.fn('LOWER', sequelize.col('factory_name')), 'LIKE', '%' + req.query.search + '%');
+            options.factory_name = sequelize.where(sequelize.fn('LOWER', sequelize.col('factory_name')), 'LIKE', '%' + req.query.search + '%');
         }
 
         let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
@@ -354,12 +368,13 @@ module.exports = {
             offset: offsetResult,
         })
         .then(result => {
+            // return res.json(result)
             result.rows.map(data =>{
                 new_result.push(formula.findAll({
                     where: {
                         level: 'plant',
                         level_reference_id: data.id,
-                        is_active : true
+                        is_active : true,
                     },
                     attributes:['is_active']
                 }))
@@ -389,7 +404,9 @@ module.exports = {
                     })
                     o+=1
                 })
-                resp.ok(true, "Get list data plant.", new_result1, res);
+                let totalPage = Math.ceil(result.count / perPage);
+                let dataResult = resp.paging(new_result1, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
+                resp.ok(true, "Get list data plant.", dataResult, res);
             })
         })
         .catch((error) => {
