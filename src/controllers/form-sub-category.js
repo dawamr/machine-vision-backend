@@ -28,6 +28,9 @@ module.exports = {
         if ((req.query.category_id != undefined) && (req.query.category_id.length > 0)) {
             options.category_id = Sequelize.where(Sequelize.col('category.id'), '=', req.query.category_id);
         }
+        if ((req.query.search != undefined) && (req.query.search.length > 0)){
+            options.name = Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('form_sub_category.name')), 'LIKE', '%' + req.query.search.toLowerCase() + '%');
+        }
         var cat = {
             model: FormCategory,
             as: 'category',

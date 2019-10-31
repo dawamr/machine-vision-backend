@@ -64,7 +64,7 @@ module.exports = (express) => {
   app.get('/api/category/sub', formSubCategoryController.list)
   app.put('/api/category/sub/:id', formSubCategoryController.update)
   app.delete('/api/category/sub/:id', formSubCategoryController.delete)
-  app.get('/api/category/sub/search', formSubCategoryController.search)
+  // app.get('/api/category/sub/search', formSubCategoryController.search)
 
   // (Form Builder) Category 
   app.post('/api/category', formCategoryController.create)
@@ -72,7 +72,7 @@ module.exports = (express) => {
   app.get('/api/category/:id', formCategoryController.list)
   app.put('/api/category/:id', formCategoryController.update)
   app.delete('/api/category/:id', formCategoryController.delete)
-  app.get('/api/category/search', formCategoryController.search)
+  // app.get('/api/category/search', formCategoryController.search)
 
   // app.patch('/api/category/:id', formCategoryController.restore)
 
