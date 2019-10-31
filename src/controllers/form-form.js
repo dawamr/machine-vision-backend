@@ -101,7 +101,7 @@ module.exports = {
         if(req.query.per_page != undefined && (req.query.per_page.length > 0)){
             perPage = req.query.per_page
         }
-        if(req.query.type != undefined){
+        if(req.query.type != undefined && req.query.type .length >0){
             type = req.query.type
         }
         // if ((req.query.type != undefined) && (req.query.type.length > 0)) {
