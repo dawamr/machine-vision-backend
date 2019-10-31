@@ -19,6 +19,7 @@ module.exports = {
         let page = 1;
         let perPage = 10;
         let type = ['non-widget','widget']
+        let filForm ={};
         let options = {};
         if(req.query.order_by != undefined && req.query.order_by.length >0 ){
             orderBy = req.query.order_by
@@ -32,16 +33,21 @@ module.exports = {
         if(req.query.per_page != undefined && req.query.per_page .length >0){
             perPage = req.query.per_page
         }
-        if(req.query.type != undefined && req.query.type .length >0){
-            type = req.query.type
-        }
         if ((req.query.sub_category != undefined) && (req.query.sub_category.length > 0)) {
             options.sub_category = Sequelize.where(Sequelize.col('sub_category.id'), '=', req.query.sub_category);
         }
         if ((req.query.category != undefined) && (req.query.category.length > 0)) {
             options.category = Sequelize.where(Sequelize.col('sub_category.form_category_id'), '=', req.query.category);
         }
-        
+        if ((req.query.search != undefined) && (req.query.search.length > 0)){
+            filForm.name = Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('form_form.name')), 'LIKE', '%' + req.query.search.toLowerCase() + '%');
+        }
+        if(req.query.type != undefined && req.query.type .length >0){
+            type = req.query.type
+            filForm.type = Sequelize.where(Sequelize.col('types'), '=', type);
+        }
+        filForm.is_template = Sequelize.where(Sequelize.col('is_template'), '=', 'false');
+
         let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
 
         ////////// filter by category
@@ -68,7 +74,7 @@ module.exports = {
         ],
         limit: perPageResult,
         offset :offsetResult,
-        where: {types: type}
+        where: filForm
         })
         .then(result => {
             let totalPage = Math.ceil(result.count / perPage);
@@ -88,6 +94,7 @@ module.exports = {
         let page = 1;
         let perPage = 10;
         let options = {};
+        let filForm ={};
         let type = ['non-widget','widget']
         if(req.query.order_by != undefined){
             orderBy = req.query.order_by
@@ -101,9 +108,7 @@ module.exports = {
         if(req.query.per_page != undefined && (req.query.per_page.length > 0)){
             perPage = req.query.per_page
         }
-        if(req.query.type != undefined && req.query.type .length >0){
-            type = req.query.type
-        }
+        
         // if ((req.query.type != undefined) && (req.query.type.length > 0)) {
         //     options.type = Sequelize.where(Sequelize.col('form_forms.types'), '=', req.query.type);
         // }
@@ -113,6 +118,16 @@ module.exports = {
         if ((req.query.category != undefined) && (req.query.category.length > 0)) {
             options.category = Sequelize.where(Sequelize.col('sub_category.form_category_id'), '=', req.query.category);
         }
+        if ((req.query.search != undefined) && (req.query.search.length > 0)){
+            filForm.name = Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('form_form.name')), 'LIKE', '%' + req.query.search.toLowerCase() + '%');
+        }
+        if(req.query.type != undefined && req.query.type .length >0){
+            type = req.query.type
+            filForm.type = Sequelize.where(Sequelize.col('types'), '=', type);
+        }
+        filForm.is_template = Sequelize.where(Sequelize.col('is_template'), '=', 'true');
+        
+
         let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
 
         ////////// filter by category
@@ -138,10 +153,7 @@ module.exports = {
         ],
         limit: perPageResult,
         offset :offsetResult,
-        where: {
-            is_template: true,
-            types: type
-        }
+        where: filForm
         })
         .then(result => {
             let totalPage = Math.ceil(result.count / perPage);
