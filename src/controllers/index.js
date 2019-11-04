@@ -25,6 +25,7 @@ const cal_formula = require('./calculator_formula');
 const cal_script = require('./calculator_script');
 const cal_io = require('./calculator_io');
 const cal_result = require('./calculator_result');
+const cal_runner = require('./calculator_runner');
 
 
 module.exports = {
@@ -55,5 +56,6 @@ module.exports = {
   cal_formula,
   cal_script,
   cal_io,
-  cal_result
+  cal_result,
+  cal_runner,
 };
