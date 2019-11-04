@@ -80,7 +80,7 @@ module.exports = {
         .then((FormSubCategory)=>{
             return FormSubCategory.update({
                 name: req.body.name || FormSubCategory.name,
-                category_id : req.body.category_id || FormSubCategory.category_id,
+                form_category_id : req.body.category_id || FormSubCategory.form_category_id,
                 updatedAt :new Date(),
             })
         })
