@@ -63,7 +63,7 @@ module.exports = {
         return FormSubCategory
         .create({
           name: req.body.name,
-          form_category_id: req.body.category_id,
+          form_category_id: req.body.form_category_id,
         })
         .then(data => res.status(201).send(data))
         .catch(error => res.status(400).send(error));
@@ -80,7 +80,7 @@ module.exports = {
         .then((FormSubCategory)=>{
             return FormSubCategory.update({
                 name: req.body.name || FormSubCategory.name,
-                form_category_id : req.body.category_id || FormSubCategory.form_category_id,
+                form_category_id : req.body.form_category_id || FormSubCategory.form_category_id,
                 updatedAt :new Date(),
             })
         })
