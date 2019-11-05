@@ -169,26 +169,37 @@ module.exports = {
 
     show(req, res){
         var form_field =  FormField.findAll({
-                            attributes: ['id','form_id','types','configuration','is_required','order'],
+                            attributes: ['id','form_id',['types','type'],'configuration','is_required','order'],
                             where: {
                                 'form_id' : req.params.id
                             }
                         })
 
-        var form_list =  FormForm.findOne({
-                            attributes:['id','name','types','is_template'],
-                            where: {
-                                'id' : req.params.id
-                            }
-                        })
-        
-        Promise.all([form_list,form_field])
-        .then(function(values) {
-            res.json(values)
+        FormForm.findByPk(req.params.id,{
+            attributes:['id','name','types','is_template'],
+        })
+        .then(result=>{
+            form_field.then(result2=>{
+
+                let data = {
+                    'form': result,
+                    'form_field' : result2
+                }
+
+                res.json(data)
+            })
         })
         .catch(err =>{
             res.status(400).send(err);
         })
+        
+        // Promise.all([form_list,form_field])
+        // .then(function(values) {
+        //     res.json(values)
+        // })
+        // .catch(err =>{
+        //     res.status(400).send(err);
+        // })
     },
 
     create(req,res){
