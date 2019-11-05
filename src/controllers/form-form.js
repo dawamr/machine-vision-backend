@@ -175,31 +175,17 @@ module.exports = {
                             }
                         })
 
-        FormForm.findByPk(req.params.id,{
+        var form_list = FormForm.findByPk(req.params.id,{
             attributes:['id','name','types','is_template'],
         })
-        .then(result=>{
-            form_field.then(result2=>{
 
-                let data = {
-                    'form': result,
-                    'form_field' : result2
-                }
-
-                res.json(data)
-            })
+        Promise.all([form_list,form_field])
+        .then(function(values) {
+            res.json(values)
         })
         .catch(err =>{
             res.status(400).send(err);
         })
-        
-        // Promise.all([form_list,form_field])
-        // .then(function(values) {
-        //     res.json(values)
-        // })
-        // .catch(err =>{
-        //     res.status(400).send(err);
-        // })
     },
 
     create(req,res){
