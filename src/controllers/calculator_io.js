@@ -22,6 +22,14 @@ const db = model.sequelize;
 module.exports = {
 
     listSensor(req, res){ 
+        
+        let level= {}
+        if ((req.params.id != undefined) && (req.params.id.length > 0)){
+            level.id = sequelize.where(sequelize.col('level_reference_id'), '=', req.params.id);
+        }
+        if ((req.params.level != undefined) && (req.params.level.length > 0)){
+            level.level = sequelize.where(sequelize.col('level'), '=', req.params.level);
+        }
 
         tb_sensor = {
             model: sensor,
@@ -30,11 +38,9 @@ module.exports = {
         f = {
             model: formula,
             as: 'formula',
-            where: {
-                level: req.params.level,
-                level_reference_id: req.params.id
-            }
+            where: level
         }
+        
         sensor_calculator.findAll({
             attributes: ['id','sensor_id','formula_id','sensor_label','createdAt','updatedAt'],
             include: [tb_sensor,f],
@@ -69,15 +75,14 @@ module.exports = {
     },
 
     addSensor(req,res){
-        formula.findOne({
+        formula.findByPk(req.params.id_formula,{
             where: {
                 level: req.params.level,
                 level_reference_id: req.params.id,
-                id: req.params.id_formula
             }
         })
         .then(result =>{
-            console.log(result.id)
+            console.log(result)
             sensor_calculator.create({
                 formula_id: result.id,
                 sensor_id: req.body.sensor_id,
