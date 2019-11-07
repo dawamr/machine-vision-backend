@@ -56,14 +56,14 @@ module.exports = {
 
     async NewFormula(req,res){
         const before = Date.now();
-        var formulaID
-        var runnerID
+        // var formulaID
+        // var runnerID
         var runnerData
         let _formula_parameter = []
         let _runner_result = []
 
         try {
-            await formula.create({
+            formula.create({
                 name: req.body.name,
                 level: req.params.level,
                 level_reference_id: req.params.id,
@@ -71,39 +71,38 @@ module.exports = {
                 formula_xml: req.body.formula_xml,
                 is_active: false
             })
-            .then(result =>{
-                 formulaID = result.id
-            })
-            let end = Date.now()
-            let execute =(end - before)
-            let _runner = await runner.create({
-                formula_id: formulaID,
-                start: before,
-                end: end,
-                execute_time: execute,
-                formula_script: req.body.formula_script,
-                formula_xml: req.body.formula_xml,
-            })
-            .then(result =>{
-                runnerData = result
-                runnerID = result.id
-           })
-            await req.body.calculator_input.map(data => {
-                _formula_parameter.push(formula_parameter.create({
-                    formula_id: formulaID,
-                    parameter_id: data.parameter_id
-                }))
-                _runner_result.push(runner_result.create({
-                    parameter_name: data.parameter_name,
-                    parameter_id: data.parameter_id,
-                    value: data.value,
-                    runner_id:runnerID
-                }))
-            })
-           
-            await Promise.all([..._formula_parameter,runnerData,..._runner_result])
             .then(result => res.status(201).send(result))
             .catch(error => res.status(400).send(error));
+            // let end = Date.now()
+            // let execute =(end - before)
+            // let _runner = await runner.create({
+            //     formula_id: formulaID,
+            //     start: before,
+            //     end: end,
+            //     execute_time: execute,
+            //     formula_script: req.body.formula_script,
+            //     formula_xml: req.body.formula_xml,
+            // })
+            //     .then(result =>{
+            //         runnerData = result
+            //         runnerID = result.id
+            //    })
+            //     await req.body.calculator_input.map(data => {
+            //         _formula_parameter.push(formula_parameter.create({
+            //             formula_id: formulaID,
+            //             parameter_id: data.parameter_id
+            //         }))
+            //         _runner_result.push(runner_result.create({
+            //             parameter_name: data.parameter_name,
+            //             parameter_id: data.parameter_id,
+            //             value: data.value,
+            //             runner_id:runnerID
+            //         }))
+            //     })
+           
+            // await Promise.all([..._formula_parameter,runnerData,..._runner_result])
+            // .then(result => res.status(201).send(result))
+            // .catch(error => res.status(400).send(error));
         } catch (error) {
             res.status(400).send(error);
         }
@@ -118,14 +117,14 @@ module.exports = {
         let _runner_result = []
 
         try {
-            await formula.update({
-                name: req.body.name,
-                updatedAt :new Date(),
-            }, {
-                where: {
-                id: req.params.id
-                }
-            })
+            // await formula.update({
+            //     name: req.body.name,
+            //     updatedAt :new Date(),
+            // }, {
+            //     where: {
+            //     id: req.params.id
+            //     }
+            // })
             await formula.update({
                 name: req.body.name,
                 level: req.params.level,
@@ -138,37 +137,39 @@ module.exports = {
                     id: req.params.id_formula
                 }
             })
-
-            let end = Date.now()
-            let execute =(end - before)
-            let _runner = await runner.create({
-                formula_id: req.params.id_formula,
-                start: before,
-                end: end,
-                execute_time: execute,
-                formula_script: req.body.formula_script,
-                formula_xml: req.body.formula_xml,
-            })
-            .then(result =>{
-                runnerData = result
-                runnerID = result.id
-           })  
-            await req.body.calculator_input.map(data => {
-                _formula_parameter.push(formula_parameter.create({
-                    formula_id: req.params.id_formula,
-                    parameter_id: data.parameter_id
-                }))
-                _runner_result.push(runner_result.create({
-                    parameter_name: data.parameter_name,
-                    parameter_id: data.parameter_id,
-                    value: data.value,
-                    runner_id: runnerID
-                }))
-            })
-            
-            await Promise.all([..._formula_parameter,runnerData,..._runner_result])
-            .then(result => res.status(201).send(result))
+            .then(result => res.status(201).send(req.body))
             .catch(error => res.status(400).send(error));
+
+            //     let end = Date.now()
+            //     let execute =(end - before)
+            //     let _runner = await runner.create({
+            //         formula_id: req.params.id_formula,
+            //         start: before,
+            //         end: end,
+            //         execute_time: execute,
+            //         formula_script: req.body.formula_script,
+            //         formula_xml: req.body.formula_xml,
+            //     })
+            //     .then(result =>{
+            //         runnerData = result
+            //         runnerID = result.id
+            //    })  
+            //     await req.body.calculator_input.map(data => {
+            //         _formula_parameter.push(formula_parameter.create({
+            //             formula_id: req.params.id_formula,
+            //             parameter_id: data.parameter_id
+            //         }))
+            //         _runner_result.push(runner_result.create({
+            //             parameter_name: data.parameter_name,
+            //             parameter_id: data.parameter_id,
+            //             value: data.value,
+            //             runner_id: runnerID
+            //         }))
+            //     })
+                
+            //     await Promise.all([..._formula_parameter,runnerData,..._runner_result])
+            //     .then(result => res.status(201).send(result))
+            //     .catch(error => res.status(400).send(error));
         } catch (error) {
             res.status(400).send(error);
         }
