@@ -14,6 +14,7 @@ module.exports = {
     calculateResult(req, res){
         let options = {}
         let times = {}
+        let level = {}
 
         if ((req.query.start_at != undefined) && (req.query.start_at.length > 0)){
             times.time_start = sequelize.where(sequelize.col('start'), '>=', req.query.start_at);
@@ -23,6 +24,9 @@ module.exports = {
         }
         if ((req.query.parameter_id != undefined) && (req.query.parameter_id.length > 0)){
             options.parameter_id = sequelize.where(sequelize.col('parameter_id'), '=', req.query.parameter_id);
+        }
+        if ((req.params.level != undefined) && (req.params.level.length > 0)){
+            options.level = sequelize.where(sequelize.col('level'), '=', req.params.level);
         }
 
         var runner = {
@@ -35,6 +39,7 @@ module.exports = {
             model: Parameter,
             as: 'parameter',
             attributes:['id','name'],
+            where: level
         }
         RunnerResult.findAll({
             attributes: ['id','value',],
@@ -42,12 +47,13 @@ module.exports = {
             where: options
         })
         .then(result=>{
-            resp.ok(true, "Get list data plant.", result, res);
+            resp.ok(true, "Get list data calculator result.", result, res);
         })
         .catch((error) => {
-            resp.ok(false, "Failed get list data plant.", null, res.status(400));
+            resp.ok(false, "Failed get list calculator result.", null, res.status(400));
             console.log(error);
         }); 
 
-    }
+    },
+
 }
