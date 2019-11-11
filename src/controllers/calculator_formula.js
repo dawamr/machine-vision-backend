@@ -22,7 +22,7 @@ module.exports = {
         let sortBy = 'desc';
         let page = 1;
         let perPage = 10;
-        // let options = {};
+        let options = {};
         var new_result = [];
         var new_result1 = [];
         let i =0
@@ -42,7 +42,7 @@ module.exports = {
         perPage = req.query.per_page;
         }
         if ((req.query.search != undefined) && (req.query.search.length > 0)){
-            options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('machines.name')), 'LIKE', '%' + req.query.search + '%');
+            options.name = sequelize.where(sequelize.fn('LOWER', sequelize.col('machine.name')), 'LIKE', '%' + req.query.search.toLowerCase() + '%');
         }
         if ((req.query.line_id != undefined) && (req.query.line_id.length > 0)) {
             line_id = {
@@ -73,7 +73,8 @@ module.exports = {
         }
         let m = {
             model: machine,
-            attributes:[['id','id_machine'],['name','machine_name'],'created_at','updated_at'],
+            where: options,
+            attributes:[['id','id_machine'],'name','created_at','updated_at'],
             order: [
                 [orderBy, sortBy]
             ],
@@ -114,7 +115,7 @@ module.exports = {
                     
                     new_result1.push({
                         "machine_id" : y.machine.dataValues.id_machine,
-                        "machine_name" : y.machine.dataValues.machine_name,
+                        "machine_name" : y.machine.dataValues.name,
                         "createdAt":y.machine.dataValues.created_at,
                         "updatedAt":y.machine.dataValues.updated_at,
                             "line":{
