@@ -5,16 +5,33 @@ const FormulaParameter = require('../models').calculator_formula_parameter;
 const Parameter = require('../models').parameters;
 
 const resp = require('../views/response');
+const pagination = require('../utils/pagination');
 const sequelize = require('sequelize');
-const Op = sequelize.Op;
-const model = require('../models');
-const db = model.sequelize;
+const Op = sequelize.Op
 
 module.exports = {
     calculateResult(req, res){
         let options = {}
         let times = {}
         let level = {}
+
+        let orderBy = 'updatedAt';
+        let sortBy = 'desc';
+        let page = 1;
+        let perPage = 10;
+
+        if(req.query.order_by != undefined && req.query.order_by.length >0){
+            orderBy = req.query.order_by
+        }
+        if(req.query.sort_by != undefined && req.query.sort_by.length >0){
+            sortBy = req.query.sort_by
+        }
+        if(req.query.page != undefined && req.query.page.length >0){
+            page = req.query.page
+        }
+        if(req.query.per_page != undefined && req.query.per_page.length >0){
+            perPage = req.query.per_page
+        }
 
         if ((req.query.start_at != undefined) && (req.query.start_at.length > 0)){
             times.time_start = sequelize.where(sequelize.col('start'), '>=', req.query.start_at);
@@ -29,6 +46,8 @@ module.exports = {
             options.level = sequelize.where(sequelize.col('level'), '=', req.params.level);
         }
 
+        let { offsetResult, perPageResult, showPageResult } = pagination.builder(perPage, page);
+
         var runner = {
             model: Runner,
             as: 'runner',
@@ -41,13 +60,18 @@ module.exports = {
             attributes:['id','name'],
             where: level
         }
-        RunnerResult.findAll({
+        RunnerResult.findAndCountAll({
             attributes: ['id','value',],
             include:[parameter,runner],
-            where: options
+            where: options,
+            limit: perPageResult,
+            offset :offsetResult
         })
         .then(result=>{
-            resp.ok(true, "Get list data calculator result.", result, res);
+            let totalPage = Math.ceil(result.count / perPage);
+            let data = resp.paging(result.rows, parseInt(showPageResult), parseInt(perPageResult), totalPage, result.count);
+
+            resp.ok(true, "Get list data calculator result.", data, res);
         })
         .catch((error) => {
             resp.ok(false, "Failed get list calculator result.", null, res.status(400));
