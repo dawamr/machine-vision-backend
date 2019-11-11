@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     sub_category_id: DataTypes.INTEGER,
     name: DataTypes.STRING,
     types:DataTypes.STRING,
+    description:DataTypes.STRING,
     is_template: DataTypes.BOOLEAN
   }, {
     paranoid: true

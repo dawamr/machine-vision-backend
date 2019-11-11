@@ -176,7 +176,7 @@ module.exports = {
                         })
 
         var form_list = FormForm.findByPk(req.params.id,{
-            attributes:['id','name','types','is_template'],
+            attributes:['id','name','description','types','is_template'],
         })
 
         Promise.all([form_list,form_field])
@@ -189,7 +189,7 @@ module.exports = {
     },
 
     create(req,res){
-        // console.log('ok')
+        console.log(req.body.description)
         if(req.body.type != 'non-widget' && req.body.type != 'widget' ){
             resp.ok(false, `unknown type`, null, res.status(400));
         }
@@ -198,28 +198,27 @@ module.exports = {
             sub_category_id: req.body.sub_category,
             name: req.body.name,
             types: req.body.type,
-            is_template: "false"
+            is_template: "false",
+            description: req.body.description,
         })
         .then(created => res.status(201).send(created))
         .catch(error => res.status(400).send(error));
     },
 
     update(req,res){
-        return FormForm
-        .findOne({
-            attributes : ['id','sub_category_id','name','types','is_template','createdAt','updatedAt'],
-            where: {
-                id : req.params.id
-            },
+        FormForm.update({
+            name: req.body.name,
+            description: req.body.description,
+            sub_category_id: req.body.sub_category_id,
+            types: req.body.type,
+            is_template: req.body.is_template,
+            updatedAt :new Date(),
+        },{
+            where: {id: req.params.id}
         })
-        .then((FormForm)=>{
-            return FormForm.update({
-                name: req.body.name || FormForm.name,
-                sub_category_id: req.body.sub_category_id || FormForm.sub_category_id,
-                types: req.body.type || FormForm.types,
-                is_template: req.body.is_template || FormForm.is_template,
-                updatedAt :new Date(),
-            })
+        
+        FormForm.findByPk(req.params.id,{
+            attributes :['id','name','sub_category_id','types','description','is_template','createdAt','updatedAt'],
         })
         .then(update => res.status(201).send(update))
         .catch(error => res.status(400).send(error));
