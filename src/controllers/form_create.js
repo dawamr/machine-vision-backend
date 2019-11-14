@@ -82,6 +82,7 @@ module.exports = {
                     if(result2.length == 0){
                         FormForm.update(
                             {
+                                description: req.body.description,
                                 is_template: req.body.is_template,
                                 updatedAt :new Date(),
                             },
