@@ -199,7 +199,6 @@ module.exports = {
             name: req.body.name,
             types: req.body.type,
             is_template: "false",
-            description: req.body.description,
         })
         .then(created => res.status(201).send(created))
         .catch(error => res.status(400).send(error));
@@ -208,7 +207,6 @@ module.exports = {
     update(req,res){
         FormForm.update({
             name: req.body.name,
-            description: req.body.description,
             sub_category_id: req.body.sub_category_id,
             types: req.body.type,
             is_template: req.body.is_template,

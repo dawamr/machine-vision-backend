@@ -1,15 +1,10 @@
 {
   "development": {
-    "username": "wvwawicavvwocp",
-    "password": "2db35d293f62cfe2e4f659e98433d3786427b200cfbe12fc68793758fed68a6b",
-    "database": "d20rrtd3qp7u20",
-    "host": "ec2-54-83-9-169.compute-1.amazonaws.com",
-    "dialect": "postgres", 
-    "timezone": "Asia/Jakarta",
-    "dialectOptions": {
-      "ssl": true
-    },
-    "operatorsAliases": false
+    "username": "postgres",
+    "password": "postgres",
+    "database": "mavis",
+    "host": "localhost",
+    "dialect": "postgres"
   },
   "test": {
     "username": "wvwawicavvwocp",
