@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
     end: DataTypes.DATE,
     execute_time: DataTypes.INTEGER,
     formula_xml: DataTypes.TEXT,
-    formula_script: DataTypes.TEXT
+    formula_script: DataTypes.TEXT,
+    logs: DataTypes.TEXT
   }, {
     paranoid: true,
     deletedAt: 'deleteAt',

@@ -68,18 +68,26 @@ module.exports = {
 
         Formula.findByPk(req.body.formula_id)
         .then(data => {
-
+            var logs
+            let script = data.formula_script
             let end = Date.now()
             let execute =(end - before)
-
+            
+            try {
+               eval(script) 
+            } catch (error) {
+                logs = error.message
+                console.log(error)
+            }
+            
             Runner.create({
                 formula_id: req.body.formula_id,
                 start: before,
                 end: end,
                 execute_time: execute,
-                forula_script: data.formula_script,
+                formula_script: script,
                 formula_xml: data.formula_xml,
-                logs: req.body.logs
+                logs: logs
             })
             .then(result => {
                 resp.ok(true, 'success', result,res)
