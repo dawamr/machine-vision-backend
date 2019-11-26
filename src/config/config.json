@@ -1,17 +1,21 @@
 {
   "development": {
-    "username": "postgres",
-    "password": "postgres",
-    "database": "mavis",
-    "host": "localhost",
-    "dialect": "postgres"
+    "username": "lrpjtvacijkxls",
+    "password": "33836b8d4ec1d0323cabe7dadd3579dc28c874b87522296cdcb15e0a48b514b7",
+    "database": "d53c1ts2k4fc6q",
+    "host": "ec2-23-21-70-39.compute-1.amazonaws.com",
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": true
+    },
+    "operatorsAliases": false
   },
   "test": {
     "username": "wvwawicavvwocp",
     "password": "2db35d293f62cfe2e4f659e98433d3786427b200cfbe12fc68793758fed68a6b",
     "database": "d20rrtd3qp7u20",
     "host": "ec2-54-83-9-169.compute-1.amazonaws.com",
-    "dialect": "postgres", 
+    "dialect": "postgres",
     "dialectOptions": {
       "ssl": true
     },
@@ -20,9 +24,9 @@
   "production": {
     "username": "wvwawicavvwocp",
     "password": "2db35d293f62cfe2e4f659e98433d3786427b200cfbe12fc68793758fed68a6b",
-    "database": "d20rrtd3qp7u20", 
+    "database": "d20rrtd3qp7u20",
     "host": "ec2-54-83-9-169.compute-1.amazonaws.com",
-    "dialect": "postgres", 
+    "dialect": "postgres",
     "dialectOptions": {
       "ssl": true
     },
