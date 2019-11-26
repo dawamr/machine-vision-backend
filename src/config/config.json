@@ -1,13 +1,11 @@
 {
   "development": {
-    "username": "lrpjtvacijkxls",
-    "password": "33836b8d4ec1d0323cabe7dadd3579dc28c874b87522296cdcb15e0a48b514b7",
-    "database": "d53c1ts2k4fc6q",
-    "host": "ec2-23-21-70-39.compute-1.amazonaws.com",
+    "username": "admin",
+    "password": "1234",
+    "database": "mv1",
+    "host": "127.0.0.1",
     "dialect": "postgres",
-    "dialectOptions": {
-      "ssl": true
-    },
+
     "operatorsAliases": false
   },
   "test": {
